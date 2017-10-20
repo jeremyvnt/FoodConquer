@@ -1,0 +1,1 @@
+const RESOURCES = ['meat', 'water', 'cereal', 'money'];
