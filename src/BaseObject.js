@@ -1,8 +1,8 @@
 //moment.js !!!!
-require('resources')
+import Resources from './resources'
 
-class Base {
-
+export default class Base {
+	
 	constructor(cost, duration, requirements) {
 		this.cost = cost
 		this.duration = duration

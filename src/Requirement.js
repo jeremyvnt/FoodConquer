@@ -1,6 +1,6 @@
-require('BaseObject')
+import Base from './BaseObject'
 
-class Requirement extends Base {
+export default class Requirement extends Base {
 
 	constructor(cost, duration, requirements, levelMax, type) {
 		super(cost, duration, requirements)
