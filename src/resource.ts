@@ -1,3 +1,1 @@
-export default class Resource {
-  public static RESOURCES = ['meat', 'water', 'cereal', 'money']
-}
+export enum RESOURCES {'meat', 'water', 'cereal', 'money'}

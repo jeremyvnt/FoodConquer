@@ -4,9 +4,9 @@ import Statistic from './statistic'
 
 
 export default class Unit extends Base {
-  stats: Map<Statistic, number>
+  stats: Map<Statistic.STATS, number>
 
-  constructor(baseCost: Map<Resource, number>, stats: Map<Statistic, number>, duration: number) {
+  constructor(baseCost: Map<Resource.RESOURCES, number>, stats: Map<Statistic.STATS, number>, duration: number) {
 	  super(baseCost, duration)	
     this.stats = stats
   }
