@@ -21,3 +21,7 @@ yarn-debug.log*
 yarn-error.log*
 
 dist
+
+#sublime config
+foodConquer.sublime-project
+foodConquer.sublime-workspace
