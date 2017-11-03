@@ -19,6 +19,7 @@ export default class TechTree {
   static CAMERA_TECH : Map<string, number> = new Map([['Securite', 6]])
   static VIGILE_TECH : Map<string, number> = new Map([['Restaurant', 3],
   ['Securite', 4], ['Proteine', 3]])
+
   static SAMOURAI_TECH : Map<string, number> = new Map([['Restaurant', 5], 
   ['Securite', 6], ['Proteine', 6], ['Poisson', 4]])
   

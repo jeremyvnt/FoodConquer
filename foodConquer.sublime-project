@@ -1,0 +1,21 @@
+{
+	"folders":
+	[
+		{
+			"follow_symlinks": true,
+			"path": "."
+		}
+	],
+    "SublimeLinter":
+    {
+        "linters":
+        {
+            "flake8": {
+                "excludes": [
+                    "*/test/**"
+                ],
+                "ignore": "W"
+            }
+        }
+    }
+}

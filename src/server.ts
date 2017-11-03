@@ -1,7 +1,7 @@
 import * as express from 'express'
 import Unit from './unit'
-import Resource from './resource'
-import Statistic from './statistic'
+import { RESOURCES } from './resource'
+import { STATS } from './statistic'
 
 
 const app = express()
@@ -10,20 +10,20 @@ app.set('port', 3005)
 
 
 app.use((req: express.Request, res: express.Response, next: express.NextFunction) => {
-  console.log(Resource.RESOURCES)
+  // console.log(RESOURCES)
   const unit = new Unit(
-		new Map([
-			[Resource.RESOURCES.CEREAL, 10],
-			[Resource.RESOURCES.MEAT, 50],
-			[Resource.RESOURCES.WATER, 30],
-]),
-		new Map([
-			[Statistic.STATS.armor, 10],
-			[Statistic.STATS.health, 300],
-			[Statistic.STATS.strength, 30],
-]),
-1000)
-  res.status(404).send('PD')
+    new Map([
+      [RESOURCES.CEREAL, 10],
+      [RESOURCES.MEAT, 50],
+      [RESOURCES.WATER, 30],
+    ]),
+    new Map([
+      [STATS.armor, 10],
+      [STATS.health, 300],
+      [STATS.strength, 30],
+    ]),
+    1000)
+  res.status(200).send(JSON.stringify(unit))
 })
 
 app.listen(app.get('port'), () => {
