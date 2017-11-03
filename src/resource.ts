@@ -1,5 +1,3 @@
-// const RESOURCES:{[index:string] : {meat: 'string'} {water: 'Water'}}
-
 const RESOURCES: { [index:string] : string } = {
 
   MEAT: 'meat',
