@@ -1,10 +1,10 @@
 import Resource from './resource'
 
 export default class Base {
-  baseCost : Map<Resource, number>
+  baseCost : Map<string, number>
   duration: number
 	
-  constructor(bastCost: Map<Resource, number>, duration: number) {
+  constructor(bastCost: Map<string, number>, duration: number) {
     this.baseCost = bastCost
     this.duration = duration
   }

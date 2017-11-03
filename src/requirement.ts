@@ -2,13 +2,13 @@ import Base from './baseObject'
 import Resource from './resource'
 
 export default class Requirement extends Base {
-  baseCost: Map<Resource.RESOURCES, number>
+  baseCost: Map<string, number>
   duration: number
   level: number
   levelMax: number
   costFactor: number
 
-  constructor(baseCost: Map<Resource.RESOURCES,number>,duration: number,
+  constructor(baseCost: Map<string,number>,duration: number,
               levelMax: number, costFactor: number) {
     super(baseCost, duration)
     this.level = 0
@@ -19,10 +19,11 @@ export default class Requirement extends Base {
 
   getCost(): Map<string, number> {
     const cost: Map<string, number> = new Map()
-    for(let resource:Resource.RESOURCES in Resource.RESOURCES) {
-      const b = this.baseCost.get(resource) | 0
+
+    for (const resource in Resource.RESOURCES) {
+      const b = this.baseCost.get(Resource.RESOURCES[resource]) | 0
       cost.set(resource, Math.floor(b * (this.costFactor ** (this.level - 1))))
-    })
+    }
     return cost
   }
 }
