@@ -1,29 +1,37 @@
-import Base from './baseObject'
-import Resource from './resource'
+import { Base } from './baseObject'
+import { Resources } from './resource'
 
-export default class Requirement extends Base {
-  baseCost: Map<string, number>
+
+export interface RequirementDefinition {
+  baseCost: Map<Resources, number>
   duration: number
   level: number
   levelMax: number
   costFactor: number
+  name: string
+  description: string
+}
 
-  constructor(baseCost: Map<string,number>,duration: number,
-              levelMax: number, costFactor: number) {
-    super(baseCost, duration)
+export class Requirement extends Base {
+  level: number
+  levelMax: number
+  costFactor: number
+
+  constructor(definition: RequirementDefinition) {
+    super(definition)
     this.level = 0
-    this.levelMax = levelMax
-    this.costFactor = costFactor
-    this.baseCost = new Map()
+    this.levelMax = definition.levelMax
+    this.costFactor = definition.costFactor
   }
 
-  getCost(): Map<string, number> {
-    const cost: Map<string, number> = new Map()
+  getCost(): Map<Resources, number> {
+    const cost: Map<Resources, number> = new Map()
 
-    for (const resource in Resource.RESOURCES) {
-      const b = this.baseCost.get(Resource.RESOURCES[resource]) | 0
-      cost.set(resource, Math.floor(b * (this.costFactor ** (this.level - 1))))
-    }
+    this.baseCost.forEach((value:number, key:Resources) => {
+      const quantity = this.baseCost.get(key)
+      cost.set(key, Math.floor(quantity * (this.costFactor ** (this.level - 1))))
+    })
+
     return cost
   }
 }
