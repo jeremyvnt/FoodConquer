@@ -26,3 +26,6 @@ dist
 foodConquer.sublime-project
 foodConquer.sublime-workspace
 
+#vscode config
+.vscode/
+

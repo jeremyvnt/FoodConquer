@@ -1,1 +1,5 @@
-export enum STATS {'health', 'strength', 'armor'}
+export enum STATS {
+    HEALTH = 'health',
+    STRENGTH = 'strength',
+    AROMOR = 'armor',
+}
