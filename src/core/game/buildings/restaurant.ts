@@ -1,4 +1,4 @@
-import { Requirement } from '../../../objects/Requirement'
+import { Requirement } from './../../../objects/requirement'
 import { Resources } from '../../../objects/resource'
 
 const id = 'Restaurant'
