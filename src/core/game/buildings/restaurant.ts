@@ -1,9 +1,26 @@
-import Requirement from '../../../Requirement'
+import { Requirement } from '../../../Requirement'
+import { Resources } from '../../../resource'
 
-export default class Restaurant extends Requirement {
-  
-  constructor(baseCost: Map<Resource, number> ,
-              duration: number, levelMax: number, costFactor: number) {
-    super(baseCost, duration, levelMax, costFactor)
+const id = 'Restaurant'
+const name = 'Restaurant'
+const description = 'Un fastfood'
+
+export class Restaurant extends Requirement {
+
+  constructor(level: number) {
+    super({
+      id,
+      level,
+      name,
+      description,
+      baseCost: new Map([
+        [Resources.MONEY, 500], 
+        [Resources.MEAT, 300],
+        [Resources.WATER, 200],
+      ]),
+      duration: 3000,
+      levelMax: 30,
+      costFactor: 2,
+    })
   }
 }

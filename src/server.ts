@@ -1,4 +1,8 @@
 import * as express from 'express'
+import { Unit } from './unit'
+import { Resources } from './resource'
+import { Stats } from './statistic'
+import { Restaurant } from './core/game/buildings/restaurant'
 import * as path from 'path'
 import * as bodyParser from 'body-parser'
 import * as cookieParser from 'cookie-parser'
@@ -37,6 +41,7 @@ export class Server {
    * @memberof Server
    */
   public options: ServerOptions
+
 
   /**
    * Représente l'application Express du serveur

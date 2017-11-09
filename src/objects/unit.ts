@@ -1,13 +1,9 @@
-import { Base } from './baseObject'
+import { Base, BaseDefinition } from './baseObject'
 import { Resources } from './resource'
 import { Stats } from './statistic'
 
-export interface UnitDefinition {
-  baseCost: Map<Resources, number>
+export interface UnitDefinition extends BaseDefinition {
   stats: Map<Stats, number>
-  name: string
-  description: string
-  duration: number
 }
 
 export class Unit extends Base {
