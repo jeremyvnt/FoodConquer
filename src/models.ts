@@ -1,1 +1,1 @@
-export * from './models/Todo'
+export * from './objects/models/Todo'

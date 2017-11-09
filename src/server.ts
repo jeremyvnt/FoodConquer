@@ -5,7 +5,7 @@ import * as cookieParser from 'cookie-parser'
 import * as logger from 'morgan'
 import methodOverride = require('method-override')
 
-import { TodoController } from './controllers'
+import { TodoController, TestController } from './controllers/index'
 
 /**
  * Les options de lancement du serveur
@@ -113,6 +113,7 @@ export class Server {
     // ./controllers/index.js (ce qui est le cas)
     // Cela éviterait de devoir tous les lister ici.
     TodoController.connect(router)
+    TestController.connect(router)
     // XXXController.connect(router)
 
     this.app.use(router)
