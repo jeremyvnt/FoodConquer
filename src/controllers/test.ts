@@ -40,7 +40,8 @@ export class TestController extends BaseController {
       description: 'Un jaune',
       duration: 1500,
     })
-    const restaurant = new Restaurant(1)
+    const restaurant = new Restaurant(4)
+
       
     function strMapToObj(strMap: Map<string, number>) {
       const obj:any = Object.create(null)
@@ -57,7 +58,7 @@ export class TestController extends BaseController {
       return value
     }
       
-    this.res.status(200).send(JSON.stringify(unit, stringify))
+    this.res.status(200).send(JSON.stringify(restaurant.getCost(), stringify))
   }
 
 
