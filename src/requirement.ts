@@ -1,15 +1,11 @@
-import { Base } from './baseObject'
+import { Base, BaseDefinition } from './baseObject'
 import { Resources } from './resource'
 
 
-export interface RequirementDefinition {
-  baseCost: Map<Resources, number>
-  duration: number
+export interface RequirementDefinition extends BaseDefinition  {
   level: number
   levelMax: number
   costFactor: number
-  name: string
-  description: string
 }
 
 export class Requirement extends Base {
@@ -19,7 +15,7 @@ export class Requirement extends Base {
 
   constructor(definition: RequirementDefinition) {
     super(definition)
-    this.level = 0
+    this.level = definition.level
     this.levelMax = definition.levelMax
     this.costFactor = definition.costFactor
   }

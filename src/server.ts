@@ -2,6 +2,7 @@ import * as express from 'express'
 import { Unit } from './unit'
 import { Resources } from './resource'
 import { Stats } from './statistic'
+import { Restaurant } from './core/game/buildings/restaurant'
 
 
 const app = express()
@@ -15,9 +16,12 @@ app.use((req: express.Request, res: express.Response, next: express.NextFunction
     baseCost: new Map([[Resources.CEREAL, 10], [Resources.MEAT, 20]]),
     stats: new Map([[Stats.ARMOR, 5], [Stats.HEALTH, 50], [Stats.STRENGTH, 10]]),
     name: 'Chinois',
+    id: 'Chinois',
     description: 'Un jaune',
     duration: 1500,
   })
+
+  const restaurant = new Restaurant(1)
 
   function strMapToObj(strMap: Map<string, number>) {
     const obj:any = Object.create(null)
