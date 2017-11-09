@@ -1,4 +1,4 @@
-import { Resource } from './Resource'
+import { Unit } from './Unit'
 import { User } from './User'
 import {
   Table,Column, Model, CreatedAt, UpdatedAt, DataType, PrimaryKey, ForeignKey, AutoIncrement,
@@ -6,11 +6,11 @@ import {
 
 
 @Table
-export class UserResource extends Model<UserResource> {    
+export class UserUnit extends Model<UserUnit> {    
   @PrimaryKey
-  @ForeignKey(() => Resource)
+  @ForeignKey(() => Unit)
   @Column
-  resource: string
+  unitId: string
 
   @PrimaryKey
   @ForeignKey(() => User)
@@ -19,6 +19,9 @@ export class UserResource extends Model<UserResource> {
 
   @Column
   quantity: number
+
+  @Column
+  level: number
 
   @Column
   updateAt: number

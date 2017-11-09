@@ -1,5 +1,5 @@
-import { Resources } from '../../../objects/Resource'
-import { Resource } from '../../../objects/models/Resource'
+import { Requirement } from '../../../objects/models/Requirement'
+import { Resources } from '../../../objects/resource'
 import { User } from '../../../objects/models/User'
 import { UserResource } from '../../../objects/models/UserResource'
 

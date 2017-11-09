@@ -3,9 +3,7 @@ import {
   Table,Column, Model, CreatedAt, UpdatedAt, DataType, PrimaryKey, AutoIncrement,
 } from 'sequelize-typescript'
 
-@Table({
-  tableName: 'resource',
-})
+@Table
 export class Resource extends Model<Resource> {
 
   @PrimaryKey

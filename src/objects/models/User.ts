@@ -5,9 +5,7 @@ import {
   BelongsToMany,
 } from 'sequelize-typescript'
 
-@Table({
-  tableName: 'user',
-})
+@Table
 export class User extends Model<User> {
   @PrimaryKey
   @AutoIncrement
