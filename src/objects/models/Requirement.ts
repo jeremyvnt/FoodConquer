@@ -2,20 +2,11 @@ import {
   Table,Column, Model, CreatedAt, UpdatedAt, DataType, PrimaryKey, AutoIncrement,
 } from 'sequelize-typescript'
 
-@Table
-export class Requirement extends Model<Requirement> {
-  @PrimaryKey
-  @Column({
-    validate: {
-      notEmpty: true,
-      len: [3, 100],
-    },
-    type: DataType.ENUM(['NAME1', 'NAME2',
-    ]),
-  })
-  name: string
+import { Base } from './Base'
 
-  @PrimaryKey
+@Table
+export class Requirement extends Base<Requirement> {
+
   @Column({
     validate: {
       notEmpty: true,
@@ -28,18 +19,17 @@ export class Requirement extends Model<Requirement> {
   @Column({
     validate: {
       notEmpty: true,
-      len: [3, 100],
     },
-    type: DataType.STRING(100),
+    type: DataType.DECIMAL,
   })
-  description: string
+  costFactor: number
 
-	 @Column({
-   validate: {
-     notEmpty: true,
-   },
-   type: DataType.DECIMAL,
- })
-	baeDuration: number
+  @Column({
+    validate: {
+      notEmpty: true,
+    },
+    type: DataType.DECIMAL,
+  })
+	levelMax: number
 	
 }

@@ -9,7 +9,7 @@ export class UtilService {
 
   requirementLater = (timestamp: number, value: UserRequirement) => {
     const delay: number =  moment.duration(timestamp - moment.now()).asMilliseconds()
-    new Promise(resolve => setTimeout(
+    setTimeout(
         () => {
           UserRequirement.update({
             level: value.level + 1,
@@ -20,13 +20,13 @@ export class UtilService {
             },
           })
         }
-    , delay, value))
+    , delay, value)
   }
 
   unitLater = (timestamp: number, value: UserUnit, quantity: number) => {
     const delay: number =  moment.duration(timestamp - moment.now()).asMilliseconds()
     for (let i = 0; i < quantity; i++) {
-      new Promise(resolve => setTimeout(
+      setTimeout(
         () => {
           UserUnit.update({
             level: value.level + 1,
@@ -37,7 +37,7 @@ export class UtilService {
             },
           })
         }
-    , delay * i, value))  
+    , delay * i, value)  
     }
     
   }    

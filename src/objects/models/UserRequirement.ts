@@ -18,9 +18,6 @@ export class UserRequirement extends Model<UserRequirement> {
   userId: number
 
   @Column
-  quantity: number
-
-  @Column
   level: number
 
   @Column

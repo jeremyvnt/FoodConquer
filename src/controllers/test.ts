@@ -1,4 +1,5 @@
 import { Restaurant } from './../core/game/buildings/restaurant'
+import { Requirement } from './../objects/models/Requirement'
 import { Stats } from './../objects/statistic'
 import { BaseController, Route, NextFunction } from './'
 import { Todo } from '../models'
@@ -32,18 +33,24 @@ export class TestController extends BaseController {
    * @memberof TodoController
    */
   public index(next: NextFunction) {
-    const unit = new Unit({
+    /*const unit = new Unit({
       baseCost: new Map([[Resources.CEREAL, 10], [Resources.MEAT, 20]]),
       stats: new Map([[Stats.ARMOR, 5], [Stats.HEALTH, 50], [Stats.STRENGTH, 10]]),
       name: 'Chinois',
       id: 'Chinois',
       description: 'Un jaune',
-      duration: 1500,
-    })
-    const restaurant = new Restaurant(4)
+      baseDuration: 1500,
+    })*/
 
+
+    const restaurant = new Restaurant(5)
+    restaurant.save()
+
+    Restaurant.findAll<Restaurant>().then((restaurants) => {
+      this.res.json(restaurants)
+    })
       
-    function strMapToObj(strMap: Map<string, number>) {
+    /*function strMapToObj(strMap: Map<string, number>) {
       const obj:any = Object.create(null)
       for (const [k, v] of strMap) {
         obj[k] = v
@@ -56,9 +63,9 @@ export class TestController extends BaseController {
         return strMapToObj(value)
       }
       return value
-    }
+    }*/
       
-    this.res.status(200).send(JSON.stringify(restaurant.getCost(), stringify))
+    // this.res.status(200).send(JSON.stringify(restaurant.getCost(), stringify))
   }
 
 
