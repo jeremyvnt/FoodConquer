@@ -1,5 +1,5 @@
-import { Requirement } from '../../../Requirement'
-import { Resources } from '../../../resource'
+import { Requirement } from '../../../objects/Requirement'
+import { Resources } from '../../../objects/resource'
 
 const id = 'Restaurant'
 const name = 'Restaurant'
