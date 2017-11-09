@@ -8,7 +8,7 @@ const sequelize =  new Sequelize({
   username: 'root',
   password: '',
   storage: ':memory:',
-  modelPaths: [__dirname + '/models'],
+  modelPaths: [__dirname + '/objects/models'],
 })
 
 // On créé une instance de notre serveur avec une configuration

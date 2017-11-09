@@ -1,4 +1,4 @@
-import Resource from '../resource'
+import Resource from './resource'
 
 export default abstract class Base {
   baseCost: {[resource: string]: number}

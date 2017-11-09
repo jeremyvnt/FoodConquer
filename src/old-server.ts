@@ -6,11 +6,10 @@ import * as express from 'express'
 
 const app = express()
 
-app.set('port', 3005)
+app.set('port', 3010)
 
 
 app.use((req: express.Request, res: express.Response, next: express.NextFunction) => {
-  // console.log(RESOURCES)
   const unit = new Unit({
     baseCost: new Map([[Resources.CEREAL, 10], [Resources.MEAT, 20]]),
     stats: new Map([[Stats.ARMOR, 5], [Stats.HEALTH, 50], [Stats.STRENGTH, 10]]),
