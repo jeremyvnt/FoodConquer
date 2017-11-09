@@ -13,7 +13,7 @@ const sequelize =  new Sequelize({
 
 // On créé une instance de notre serveur avec une configuration
 const server = new Server({
-  port: 3000,
+  port: 3002,
 })
 
 // On synchronise la base

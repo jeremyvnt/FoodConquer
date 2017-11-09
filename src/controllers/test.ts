@@ -42,24 +42,24 @@ export class TestController extends BaseController {
     })
     const restaurant = new Restaurant(1)
       
+    function strMapToObj(strMap: Map<string, number>) {
+      const obj:any = Object.create(null)
+      for (const [k, v] of strMap) {
+        obj[k] = v
+      }
+      return obj
+    }
+
+    function stringify(key:any, value:any) {
+      if (value instanceof Map) {
+        return strMapToObj(value)
+      }
+      return value
+    }
       
-    this.res.status(200).send(JSON.stringify(unit, this.stringify))
+    this.res.status(200).send(JSON.stringify(unit, stringify))
   }
 
-  public strMapToObj(strMap: Map<string, number>) {
-	  const obj:any = Object.create(null)
-	  for (const [k, v] of strMap) {
-	    obj[k] = v
-	  }
-	  return obj
-  }
-
-  public stringify(key:any, value:any) {
-    if (value instanceof Map) {
-    	return this.strMapToObj(value)
-  	}
-    return value
-  }
 
   /**
    * Action qui créé une Todo
