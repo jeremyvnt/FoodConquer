@@ -7,11 +7,8 @@ import {
   tableName: 'resource',
 })
 export class Resource extends Model<Resource> {
-  @PrimaryKey
-  @AutoIncrement
-  @Column({ type: DataType.BIGINT })
-  id: number
 
+  @PrimaryKey
   @Column({
     validate: {
       notEmpty: true,

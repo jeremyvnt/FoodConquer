@@ -6,16 +6,16 @@ import {
 
 
 @Table
-export class UserResource extends Model<UserResource> { 
+export class UserResource extends Model<UserResource> {    
+  @PrimaryKey
+  @ForeignKey(() => Resource)
+  @Column
+  resource: string
+
   @PrimaryKey
   @ForeignKey(() => User)
   @Column
   userId: number
-   
-  @PrimaryKey
-  @ForeignKey(() => Resource)
-  @Column
-  resourceId: number
 
   @Column
   quantity: number

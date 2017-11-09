@@ -3,11 +3,11 @@ import { Sequelize } from 'sequelize-typescript'
 
 // On créé une instance de sequalize avec la configuration
 const sequelize =  new Sequelize({
-  database: 'some_db',
-  dialect: 'sqlite',
+  database: 'foodconquer',
+  dialect: 'mysql',
   username: 'root',
   password: '',
-  storage: ':memory:',
+  host: 'localhost',
   modelPaths: [__dirname + '/objects/models'],
 })
 
