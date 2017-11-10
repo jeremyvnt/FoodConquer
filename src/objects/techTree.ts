@@ -1,6 +1,6 @@
 const LABORATOIRE_TECH = new Map()
 const RESTAURANT_TECH = new Map()
-const BETAGE_TECH = new Map()
+const BETAIL_TECH = new Map()
 const PUIT_TECH = new Map()
 const CHAMPS_TECH = new Map()
 const MINE_TECH = new Map()
@@ -49,7 +49,7 @@ export class TechTree {
   static TECH_TREE: Map<string, Map<string, number>>  = new Map([
   	['Laboratoire', LABORATOIRE_TECH],
   	['Restaurant', RESTAURANT_TECH],
-  	['Betage', BETAGE_TECH],
+  	['Betail', BETAIL_TECH],
   	['Puit', PUIT_TECH],
   	['Champs', CHAMPS_TECH],
   	['Mine', MINE_TECH],
