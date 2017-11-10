@@ -1,5 +1,8 @@
-import { Restaurant } from './../core/game/buildings/restaurant'
+import { Champs } from './../core/game/buildings/champs'
+import { UtilService } from './../core/services/util'
+import { User } from './../objects/models/User'
 import { Requirement } from './../objects/models/Requirement'
+import { UserRequirement } from './../objects/models/UserRequirement'
 import { Stats } from './../objects/statistic'
 import { BaseController, Route, NextFunction } from './'
 import { Todo } from '../models'
@@ -41,31 +44,59 @@ export class TestController extends BaseController {
       description: 'Un jaune',
       baseDuration: 1500,
     })*/
-
-
-    const restaurant = new Restaurant(5)
-    restaurant.save()
-
-    Restaurant.findAll<Restaurant>().then((restaurants) => {
-      this.res.json(restaurants)
+    User.findAll().then((users) => {
+      console.log(users.length)
+      if (!users.length) {
+        const user = new User({
+          pseudo: 'Jerem',
+          email: 'jerem@g.C',
+          password: 'aaa',
+        })
+        user.save()
+      }
     })
-      
-    /*function strMapToObj(strMap: Map<string, number>) {
-      const obj:any = Object.create(null)
-      for (const [k, v] of strMap) {
-        obj[k] = v
-      }
-      return obj
-    }
+    Requirement.find({ where: { id:'Champs' } }).then((champs:Requirement) => {
+      if (!champs) {
+        const champs = new Requirement({
+          id: 'Champs',
+          name: 'Champs',
+          description: 'Un champs de céréales',
+          level: 0,
+          type: 'BUILDING',
+          baseCost: new Map([
+            [Resources.MONEY, 500], 
+            [Resources.MEAT, 300],
+            [Resources.WATER, 200],
+          ]),
+          baseDuration: 10000,
+          levelMax: 30,
+          costFactor: 2,
+        })
+        champs.save().then(() => {
+          const userRequirement = new UserRequirement({ 
+            userId: 1,
+            requirementId: champs.id,
+            level: champs.level,
+            updatedAt: new Date().valueOf() + champs.baseDuration,
+          })
 
-    function stringify(key:any, value:any) {
-      if (value instanceof Map) {
-        return strMapToObj(value)
+          userRequirement.save().then((ur) => {
+            this.res.json(ur)
+            UtilService.requirementLater(champs.baseDuration, ur)
+          })          
+        })
+      }else {
+        UserRequirement.findOne({ 
+          where: { userId: 1, requirementId: champs.id },
+        }).then((ur:UserRequirement) => {
+          this.res.json(ur)
+          ur.update({ updatedAt: new Date().valueOf() + champs.baseDuration })
+          UtilService.requirementLater(champs.baseDuration, ur)
+        })
       }
-      return value
-    }*/
-      
-    // this.res.status(200).send(JSON.stringify(restaurant.getCost(), stringify))
+    })
+
+
   }
 
 

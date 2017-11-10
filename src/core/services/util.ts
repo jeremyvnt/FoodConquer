@@ -5,10 +5,9 @@ import { UserUnit } from './../../objects/models/UserUnit'
 import { Model } from 'sequelize-typescript'
 
 
-export class UtilService {
+export abstract class UtilService {
 
-  requirementLater = (timestamp: number, value: UserRequirement) => {
-    const delay: number =  moment.duration(timestamp - moment.now()).asMilliseconds()
+  static requirementLater = (delay: number, value: UserRequirement) => {
     setTimeout(
         () => {
           UserRequirement.update({
@@ -18,13 +17,16 @@ export class UtilService {
               requirementId: value.requirementId,
               userId: value.userId,
             },
+          }).then((ur) => {
+            console.log(new Date().valueOf())
+          }).catch((error) => {
+            console.log(error)
           })
         }
     , delay, value)
   }
 
-  unitLater = (timestamp: number, value: UserUnit, quantity: number) => {
-    const delay: number =  moment.duration(timestamp - moment.now()).asMilliseconds()
+  static unitLater = (delay: number, value: UserUnit, quantity: number) => {
     for (let i = 0; i < quantity; i++) {
       setTimeout(
         () => {

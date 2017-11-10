@@ -20,6 +20,8 @@ export class UserRequirement extends Model<UserRequirement> {
   @Column
   level: number
 
-  @Column
-  updateAt: number
+  @Column({
+    type: DataType.BIGINT,
+  })
+  updatedAt: number
 }

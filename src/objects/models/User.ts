@@ -1,5 +1,7 @@
 import { Resource } from './Resource'
 import { UserResource } from './UserResource'
+import { Requirement } from './Requirement'
+import { UserRequirement } from './UserRequirement'
 import {
   Table, Column, Model, CreatedAt, UpdatedAt, DataType, PrimaryKey, AutoIncrement,
   BelongsToMany,
@@ -41,4 +43,7 @@ export class User extends Model<User> {
 
   @BelongsToMany(() => Resource, () => UserResource)
   resources: Resource[]
+
+  @BelongsToMany(() => Requirement, () => UserRequirement)
+  requirements: Resource[]
 }

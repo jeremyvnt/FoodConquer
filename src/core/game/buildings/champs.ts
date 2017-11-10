@@ -1,22 +1,24 @@
 import { Requirement } from './../../../objects/models/requirement'
 import { Resources } from '../../../objects/resource'
 
-const id = 'Restaurant'
-const name = 'Restaurant'
-const description = 'Un fastfood'
+const id = 'Champs'
+const name = 'Champs'
+const description = 'Un champs de céréales'
 
-export class Restaurant extends Requirement {
+export class Champs extends Requirement {
 
   constructor(level: number) {
     super({
       id,
       name,
       description,
-      /*baseCost: new Map([
+      level,
+      type: 'BUILDING',
+      baseCost: new Map([
         [Resources.MONEY, 500], 
         [Resources.MEAT, 300],
         [Resources.WATER, 200],
-      ]),*/
+      ]),
       baseDuration: 5000,
       levelMax: 30,
       costFactor: 2,
