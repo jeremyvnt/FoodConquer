@@ -18,6 +18,7 @@ export class TestController extends BaseController {
     { path: '/', action: 'rootIndex', root: true },
     { path: '/', action: 'index' },
     { path: '/speed-production', action: 'speedProduction' },
+    { path: '/resources', action: 'resources' },
     { path: '/upgrade-building/:buildingId', action: 'upgradeBuilding' },
     { verb: 'post', path: '/', action: 'create' },
   ]
@@ -47,6 +48,9 @@ export class TestController extends BaseController {
       description: 'Un jaune',
       baseDuration: 1500,
     })*/
+
+    const resourceService = new ResourcesService()
+
     User.findOne<User>({ where: { pseudo: 'Jerem' } }).then((user) => {
       if (!user) {
         const user = new User({
@@ -56,7 +60,7 @@ export class TestController extends BaseController {
         })
         user.save()
       }
-      ResourcesService.getGlobalProductionSpeed(user).then((globalSpeed) => {
+      resourceService.getGlobalProductionSpeed(user).then((globalSpeed) => {
         this.res.json(globalSpeed)
       })
       /*Requirement.findOne<Requirement>({ where: { id:'Champs' } }).then((champs) => {
@@ -113,12 +117,36 @@ export class TestController extends BaseController {
    * @memberof TodoController
    */
   public speedProduction(next: NextFunction) {
+
+    const resourceService = new ResourcesService()
+
     User.findOne<User>({ where: { pseudo: 'Jerem' } }).then((user) => {
-      ResourcesService.getGlobalProductionSpeed(user).then((globalSpeed) => {
+      resourceService.getGlobalProductionSpeed(user).then((globalSpeed) => {
         this.res.json(globalSpeed)
       })
-    }).catch((response) => {
-      this.res.json(response)
+    }).catch((err) => {
+      this.res.json(err)
+    })
+  }
+
+  /**
+   * Retourne les ressources actuelles
+   * 
+   * @param {NextFunction} next 
+   * @memberof TodoController
+   */
+  public resources(next: NextFunction) {
+
+    const resourceService = new ResourcesService()
+
+    User.findOne<User>({ where: { pseudo: 'Jerem' } }).then((user) => {
+      resourceService.getUserResources(user).then((resources) => {
+        this.res.json(resources)
+      }).catch((err) => {
+        this.res.json(5)        
+      })
+    }).catch((err) => {
+      this.res.json(1)
     })
   }
 

@@ -20,6 +20,8 @@ export class UserResource extends Model<UserResource> {
   @Column
   quantity: number
 
-  @Column
-  updateAt: number
+  @Column({
+    type: DataType.BIGINT,
+  })
+  updatedAt: number
 }
