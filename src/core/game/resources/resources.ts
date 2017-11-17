@@ -17,17 +17,17 @@ export class ResourcesService {
     })
 
     return {
-      [Resources.CEREAL]: this.calculProductionSpeed(
+      [Resources.CEREAL]: this.getBaseProduction(
         Resources.CEREAL, 
         userRequirements.find((value) => {
           return value.requirementId === 'Champs'
         }).level),
-      [Resources.MEAT]: this.calculProductionSpeed(
+      [Resources.MEAT]: this.getBaseProduction(
         Resources.MEAT, 
         userRequirements.find((value) => {
           return value.requirementId === 'Betail'
         }).level),
-      [Resources.WATER]: this.calculProductionSpeed(
+      [Resources.WATER]: this.getBaseProduction(
         Resources.CEREAL, 
         userRequirements.find((value) => {
           return value.requirementId === 'Puit'
@@ -44,7 +44,7 @@ export class ResourcesService {
           requirementId: this.getProductionBuildingId(resource),
         },
       }).then((userRequirement) => {
-        return this.calculProductionSpeed(resource, userRequirement.level)
+        return this.getBaseProduction(resource, userRequirement.level)
       }).catch((response) => {
         return 0
       })
@@ -53,7 +53,7 @@ export class ResourcesService {
 
 
 
-  private getProductionBuildingId(resource: Resources):string {
+  private getProductionBuildingId(resource: string):string {
     let buildingId: string
     switch (resource) {
       case Resources.CEREAL:
@@ -64,6 +64,9 @@ export class ResourcesService {
         break
       case Resources.WATER:
         buildingId = 'Puit'
+        break
+      case Resources.MONEY:
+        buildingId = 'Mine'
         break
     }
     return buildingId
@@ -80,47 +83,34 @@ export class ResourcesService {
       case 'Puit':
         resources = Resources.WATER
         break
+      case 'Mine':
+        resources = Resources.MONEY
+        break
     }
     return resources
   }
 
-  private getResourceFromString(resourceName: string): Resources {
-    let resource: Resources
-    switch (resourceName) {
-      case Resources.MEAT.toString():
-        resource = Resources.MEAT
-        break
-      case Resources.WATER.toString():
-        resource = Resources.WATER
-        break
-      case Resources.CEREAL.toString():
-        resource = Resources.CEREAL
-        break
-      default:
-        resource = null
-        break
-    }
-    return resource
-  }
 
+  private getBaseProduction(resource: string, 
+                            buildingLevel: number): number {
 
-  private calculProductionSpeed(resource: Resources, 
-                                buildingLevel: number): number {
-
-    let speed: number
+    let production: number
 
     switch (resource) {
       case Resources.CEREAL:
-        speed = 30 * buildingLevel * 1.1 ** buildingLevel
+        production = 30 * buildingLevel * 1.1 ** buildingLevel
         break
       case Resources.MEAT:
-        speed = 20 * buildingLevel * 1.1 ** buildingLevel
+      case Resources.MONEY:
+        production = 20 * buildingLevel * 1.1 ** buildingLevel
         break
       case Resources.WATER:
-        speed = 10 * buildingLevel * 1.1 ** buildingLevel
+        production = 10 * buildingLevel * 1.1 ** buildingLevel
         break
+      default:
+        production = 0
     }
-    return speed / 1000 / 60 
+    return Math.round(production)
   }
 
 
@@ -129,7 +119,7 @@ export class ResourcesService {
     const userRequirements = await UserRequirement.findAll<UserRequirement>({
       where: {
         userId: user.id,
-        requirementId: ['Champs', 'Betail', 'Puit'],
+        requirementId: ['Champs', 'Betail', 'Puit', 'Mine'],
       },
     })
 
@@ -138,50 +128,112 @@ export class ResourcesService {
         userId: user.id,
       },
     })
+    
+    const resources: any[] = []
+    let moneyUptake = 0
 
+    userRequirements.forEach((userRequirement) =>  {
+      moneyUptake += this.getMoneyUptake(userRequirement)
+    })
 
-    const resources: any = {
-      [Resources.CEREAL]: 0,
-      [Resources.MEAT]: 0,
-      [Resources.WATER]: 0,
-    }
-    userRequirements.forEach((userRequirement) => {
-      const userResource = userResources.find((value) => {
-        return value.resource === this.getResourceFromBuildingId(
-          userRequirement.requirementId,
-        ).toString()
+    userResources.forEach((userResource) => {   
+      
+
+      const userRequirement: UserRequirement = userRequirements.find((value) => {
+        return value.requirementId === this.getProductionBuildingId(
+          userResource.resource,
+        )
       })
-      resources[userResource.resource] = this.calculUserResource(
-        userResource, 
-        userRequirement,
-      )
+
+      if (userRequirement) {
+        let quantity = this.calculUserResource(userResource, userRequirement)
+        const production = this.getBaseProduction(userResource.resource, userRequirement.level)
+        
+        if (userResource.resource === Resources.MONEY) {
+          quantity -= moneyUptake
+        }
+        
+        const resource = {
+          quantity,
+          production,
+          name: userResource.resource,
+        }
+
+        resources.push(resource)
+      }
     })
 
     return resources
   }
 
 
+  private getMoneyUptake(userRequirement: UserRequirement): number {
+    let moneyUptake = 0
+
+    switch (userRequirement.requirementId) {
+      case 'Champs':
+        moneyUptake = 10 * userRequirement.level * 1.1 ** userRequirement.level
+        break
+      case 'Betail':
+        moneyUptake = 10 * userRequirement.level * 1.1 ** userRequirement.level
+        break
+      case 'Puit':
+        moneyUptake = 10 * userRequirement.level * 1.1 ** userRequirement.level
+        break
+      default:
+        moneyUptake = 0
+        break
+    }
+    return Math.round(moneyUptake)
+  }
+
   private calculUserResource(userResource: UserResource, 
                              userRequirement: UserRequirement): number {
 
-    const resource: Resources = this.getResourceFromBuildingId(userRequirement.requirementId)
     let quantity: number
+    if (userResource.resource !== Resources.MONEY) {
+      quantity = this.calculUserBaseResource(userResource, userRequirement)
+    } else {
+      quantity = this.calculUserSpecialResource(userResource, userRequirement)
+    }
+    return Math.round(quantity)
+  }
+
+  private calculUserBaseResource(userResource: UserResource, 
+                                 userRequirement: UserRequirement): number {
+
+    const resource: Resources = this.getResourceFromBuildingId(userRequirement.requirementId)
+    let quantity: number = userResource.quantity
 
     if (userRequirement.updatedAt > new Date().valueOf()) {
-      quantity = (new Date().valueOf() - userResource.updatedAt) * 
-        this.calculProductionSpeed(resource, userRequirement.level - 1)
+      quantity += ((new Date().valueOf() - userResource.updatedAt) / 3600000) * 
+        this.getBaseProduction(resource, userRequirement.level - 1)
     } else {
       if (userResource.updatedAt < userRequirement.updatedAt) {
-        quantity = (new Date().valueOf() - userRequirement.updatedAt) * 
-            this.calculProductionSpeed(resource, userRequirement.level)
-          + (userRequirement.updatedAt - userResource.updatedAt) * 
-            this.calculProductionSpeed(resource, userRequirement.level - 1)
+        quantity += ((new Date().valueOf() - userRequirement.updatedAt) / 3600000) * 
+            this.getBaseProduction(resource, userRequirement.level)
+          + ((userRequirement.updatedAt - userResource.updatedAt) / 3600000) * 
+            this.getBaseProduction(resource, userRequirement.level - 1)
       } else {
-        quantity = (new Date().valueOf() - userResource.updatedAt) * 
-            this.calculProductionSpeed(resource, userRequirement.level)
+        quantity += ((new Date().valueOf() - userResource.updatedAt) / 3600000) * 
+            this.getBaseProduction(resource, userRequirement.level)
       }
-      
     }
-    return Math.round(quantity + userResource.quantity)
+    return quantity
   }
+
+  private calculUserSpecialResource(userResource: UserResource, 
+                                    userRequirement: UserRequirement): number {
+
+    let quantity: number = userResource.quantity
+    const resource: Resources = this.getResourceFromBuildingId(userRequirement.requirementId)
+
+    if (userRequirement.updatedAt > new Date().valueOf()) {
+      quantity = this.getBaseProduction(resource, userRequirement.level - 1)        
+    } else {
+      quantity = this.getBaseProduction(resource, userRequirement.level)
+    }
+    return quantity
+  }
+
 }
