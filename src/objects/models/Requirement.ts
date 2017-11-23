@@ -1,8 +1,9 @@
+import { Resource, RequirementResource } from '../../models'
 import {
-  Table, Column, Model, CreatedAt, UpdatedAt, DataType, PrimaryKey, AutoIncrement,
+  Table, Column, Model, CreatedAt, UpdatedAt, DataType, PrimaryKey, AutoIncrement, BelongsToMany,
 } from 'sequelize-typescript'
 
-import { Base, BaseDefinition } from '../base'
+import { BaseDefinition } from '../base'
 import { Resources } from '../resource'
 import { TechTree } from '../techTree'
 
@@ -23,23 +24,33 @@ export class Requirement extends Model<Requirement> {
   @Column({
     validate: {
       notEmpty: true,
-      len: [3, 100],
     },
     type: DataType.STRING,
   })
   id: string
-  name: string
 
-  @PrimaryKey
   @Column({
     validate: {
       notEmpty: true,
-      len: [3, 100],
+    },
+    type: DataType.STRING,
+  })
+  name: string
+
+  @Column({
+    validate: {
+      notEmpty: true,
     },
     type: DataType.STRING,
   })
   type: string
 
+  @Column({
+    validate: {
+      notEmpty: true,
+    },
+    type: DataType.TEXT,
+  })
   description: string
 
   @Column({
@@ -56,38 +67,6 @@ export class Requirement extends Model<Requirement> {
     },
     type: DataType.INTEGER,
   })
-  money: number
-
-  @Column({
-    validate: {
-      notEmpty: true,
-    },
-    type: DataType.INTEGER,
-  })
-  meatBaseCost: number
-
-  @Column({
-    validate: {
-      notEmpty: true,
-    },
-    type: DataType.INTEGER,
-  })
-  waterBaseCost: number
-
-  @Column({
-    validate: {
-      notEmpty: true,
-    },
-    type: DataType.INTEGER,
-  })
-  cerealBaseCost: number
-
-  @Column({
-    validate: {
-      notEmpty: true,
-    },
-    type: DataType.INTEGER,
-  })
   costFactor: number
 
   @Column({
@@ -96,11 +75,13 @@ export class Requirement extends Model<Requirement> {
     },
     type: DataType.INTEGER,
   })
-  level: number
+  levelMax: number
+
+  @BelongsToMany(() => Resource, () => RequirementResource)
+  resources: Resource[]
 
   baseCost: Map<Resources, number>
   technologies: Map<string, number>
-  levelMax: number
 
   constructor(definition: RequirementDefinition) {
     super()
@@ -114,5 +95,4 @@ export class Requirement extends Model<Requirement> {
     this.levelMax = definition.levelMax
     this.costFactor = definition.costFactor
   }
-
 }

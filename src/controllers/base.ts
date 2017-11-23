@@ -1,5 +1,8 @@
+import { ResourcesService } from './../core/game/resources/resources'
 import { Request, Response, NextFunction, Router, IRouterMatcher } from 'express'
 export { NextFunction }
+
+import { User, Requirement, UserRequirement, RequirementResource } from '../models'
 
 /**
  * Définition de la configuration d'une Route
@@ -63,7 +66,7 @@ export abstract class BaseController {
    */
   static basePath: string = ''
 
-  
+
   /**
    * La requête
    * 
@@ -81,6 +84,14 @@ export abstract class BaseController {
   res: Response
 
   /**
+   * Resource service
+   * 
+   * @type {Service}
+   * @memberof BaseController
+   */
+  resourcesService: ResourcesService
+
+  /**
    * Creates an instance of BaseController.
    * 
    * An instance of a controller handles a single request, therefor it needs the req and res as
@@ -90,9 +101,10 @@ export abstract class BaseController {
    * @param {Response} res 
    * @memberof BaseController
    */
-  constructor (req: Request, res: Response) {
+  constructor(req: Request, res: Response) {
     this.req = req
     this.res = res
+    this.resourcesService = new ResourcesService()
   }
 
   /**
@@ -149,7 +161,44 @@ export abstract class BaseController {
         // On appelle la bonne action dans le controller enfant
         childController[route.action](next)
       })
-      
+
     }
+  }
+
+  /**
+ * Fonction qui liste tous les Requirements en fonction du type souhaité
+ * 
+ * @param {NextFunction} next 
+ * @param {RequirementType} requirementType
+ * @memberof BaseController
+ */
+  getRequirementList(next: NextFunction, requirementType: string) {
+    // Get current user (grâce à Passport)
+    User.findOne<User>({ where: { pseudo: 'Jerem' } }).then((user) => {
+      UserRequirement.findAll<UserRequirement>({
+        where: {
+          userId: user.id,
+        },
+        include: [{
+          model: Requirement,
+          where: { type: requirementType },
+          include: [{
+            model: RequirementResource,
+          }],
+        }],
+      }).then((userRequirements) => {
+        console.log('User Requirements: ', userRequirements)
+        // merge le tableau de ressources avec userRequirements et return le tout
+        this.resourcesService.getGlobalProductionSpeed(user).then((globalSpeed) => {
+          // merge globalSpeed avec userRequirements
+          const result = Object.assign(
+            {},
+            { resources: globalSpeed },
+            { buildings: userRequirements },
+          )
+          this.res.json(result)
+        })
+      })
+    }).catch(next)
   }
 }

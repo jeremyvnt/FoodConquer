@@ -1,10 +1,11 @@
-import { User, Requirement, UserRequirement } from '../models'
+import { User, Requirement, UserRequirement, RequirementResource } from '../models'
 import { ResourcesService } from '../core/game/resources/resources'
 import { BaseController, Route, NextFunction } from './'
 
 export class BuildingController extends BaseController {
 
-  static basePath = '/building'
+  private basePath = '/building'
+  private requirementType = 'BUILDING'
 
   static routes: Route[] = [
     { path: '/', action: 'index' },
@@ -15,47 +16,54 @@ export class BuildingController extends BaseController {
 	 * Action qui liste les différents buildings
 	 * 
 	 * @param {NextFunction} next 
-	 * @memberof TodoController
+	 * @memberof BuildingController
 	 */
   public index(next: NextFunction) {
-    // Get current user (grâce à Passport)
+    this.getRequirementList(next, this.requirementType)
+  }
+
+  /**
+   * Action qui améliore ou créé un batiment
+   * 
+   * @param {NextFunction} next 
+   * @memberof BuildingController
+   */
+  public createOrUpdate(next: NextFunction) {
+    console.log(this.req.body)
+    // const requirement = new Todo(this.req.body)
+    const requirementIdentifier = this.req.body.requirement.id
+
     User.findOne<User>({ where: { pseudo: 'Jerem' } }).then((user) => {
-      UserRequirement.findAll<UserRequirement>({
+      UserRequirement.findOne<UserRequirement>({
         where: {
           userId: user.id,
+          requirementId: requirementIdentifier,
         },
         include: [{
           model: Requirement,
-          where: { type: 'BUILDING' },
+          where: { type: this.requirementType },
+          include: [{
+            model: RequirementResource,
+          }],
         }],
-      }).then((userRequirements) => {
-        console.log('User Requirements: ', userRequirements)
-        // merge le tableau de ressources avec userRequirements et return le tout
-        ResourcesService.getGlobalProductionSpeed(user).then((globalSpeed) => {
-          // merge globalSpeed avec userRequirements
-          const result = Object.assign(
-            {},
-            { resources: globalSpeed },
-            { buildings: userRequirements },
-          )
-          this.res.json(result)
-        })
+      }).then((ur) => {
+        if (ur) {
+          // update
+          // set new value on ur object
+          ur.update({
+            updatedAt: new Date().valueOf(),
+            // + methode qui calcule la temps de construction en fonction du level
+            level: ur.level + 1,
+          }).then(() => {
+            this.res.redirect(200, this.basePath)
+          }).catch(next)
+        }
+        // create
+        const newUserRequirement = new UserRequirement(user.id, requirementIdentifier)
+        newUserRequirement.save().then(() => {
+          this.res.redirect(200, this.basePath)
+        }).catch(next)
       })
-    }).catch(next)
-  }
-
-	/**
-	 * Action qui créé une Todo
-	 * 
-	 * @param {NextFunction} next 
-	 * @memberof TodoController
-	 */
-  public create(next: NextFunction) {
-    console.log(this.req.body)
-    const todo = new Todo(this.req.body)
-
-    todo.save().then(() => {
-      this.res.json(todo)
-    }).catch(next) // On oublie pas le catch !!!!!
+    })
   }
 }

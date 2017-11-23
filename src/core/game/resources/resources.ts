@@ -1,14 +1,11 @@
-import { Requirement } from '../../../objects/models/Requirement'
-import { Resources } from '../../../objects/Resource'
-import { Resource } from '../../../objects/models/Resource'
-import { User } from '../../../objects/models/User'
-import { UserRequirement } from '../../../objects/models/UserRequirement'
-import { UserResource } from '../../../objects/models/UserResource'
+import { Resources } from '../../../objects/resource'
+import { User, Resource, Requirement, UserRequirement, UserResource } from '../../../models'
+
 
 
 export class ResourcesService {
 
-  public async getGlobalProductionSpeed(user: User):Promise<object> {
+  public async getGlobalProductionSpeed(user: User): Promise<object> {
     const userRequirements = await UserRequirement.findAll<UserRequirement>({
       where: {
         userId: user.id,
@@ -18,17 +15,17 @@ export class ResourcesService {
 
     return {
       [Resources.CEREAL]: this.calculProductionSpeed(
-        Resources.CEREAL, 
+        Resources.CEREAL,
         userRequirements.find((value) => {
           return value.requirementId === 'Champs'
         }).level),
       [Resources.MEAT]: this.calculProductionSpeed(
-        Resources.MEAT, 
+        Resources.MEAT,
         userRequirements.find((value) => {
           return value.requirementId === 'Betail'
         }).level),
       [Resources.WATER]: this.calculProductionSpeed(
-        Resources.CEREAL, 
+        Resources.CEREAL,
         userRequirements.find((value) => {
           return value.requirementId === 'Puit'
         }).level),
@@ -36,11 +33,11 @@ export class ResourcesService {
   }
 
 
-  public getProductionSpeed(user: User, resource: Resources):Promise<number> {
+  public getProductionSpeed(user: User, resource: Resources): Promise<number> {
     return new Promise(() => {
       UserRequirement.findOne<UserRequirement>({
-        where: { 
-          userId: user.id, 
+        where: {
+          userId: user.id,
           requirementId: this.getProductionBuildingId(resource),
         },
       }).then((userRequirement) => {
@@ -53,7 +50,7 @@ export class ResourcesService {
 
 
 
-  private getProductionBuildingId(resource: Resources):string {
+  private getProductionBuildingId(resource: Resources): string {
     let buildingId: string
     switch (resource) {
       case Resources.CEREAL:
@@ -104,7 +101,7 @@ export class ResourcesService {
   }
 
 
-  private calculProductionSpeed(resource: Resources, 
+  private calculProductionSpeed(resource: Resources,
                                 buildingLevel: number): number {
 
     let speed: number
@@ -120,7 +117,7 @@ export class ResourcesService {
         speed = 10 * buildingLevel * 1.1 ** buildingLevel
         break
     }
-    return speed / 1000 / 60 
+    return speed / 1000 / 60
   }
 
 
@@ -152,7 +149,7 @@ export class ResourcesService {
         ).toString()
       })
       resources[userResource.resource] = this.calculUserResource(
-        userResource, 
+        userResource,
         userRequirement,
       )
     })
@@ -161,26 +158,26 @@ export class ResourcesService {
   }
 
 
-  private calculUserResource(userResource: UserResource, 
+  private calculUserResource(userResource: UserResource,
                              userRequirement: UserRequirement): number {
 
     const resource: Resources = this.getResourceFromBuildingId(userRequirement.requirementId)
     let quantity: number
 
     if (userRequirement.updatedAt > new Date().valueOf()) {
-      quantity = (new Date().valueOf() - userResource.updatedAt) * 
+      quantity = (new Date().valueOf() - userResource.updatedAt) *
         this.calculProductionSpeed(resource, userRequirement.level - 1)
     } else {
       if (userResource.updatedAt < userRequirement.updatedAt) {
-        quantity = (new Date().valueOf() - userRequirement.updatedAt) * 
-            this.calculProductionSpeed(resource, userRequirement.level)
-          + (userRequirement.updatedAt - userResource.updatedAt) * 
-            this.calculProductionSpeed(resource, userRequirement.level - 1)
+        quantity = (new Date().valueOf() - userRequirement.updatedAt) *
+          this.calculProductionSpeed(resource, userRequirement.level)
+          + (userRequirement.updatedAt - userResource.updatedAt) *
+          this.calculProductionSpeed(resource, userRequirement.level - 1)
       } else {
-        quantity = (new Date().valueOf() - userResource.updatedAt) * 
-            this.calculProductionSpeed(resource, userRequirement.level)
+        quantity = (new Date().valueOf() - userResource.updatedAt) *
+          this.calculProductionSpeed(resource, userRequirement.level)
       }
-      
+
     }
     return Math.round(quantity + userResource.quantity)
   }
