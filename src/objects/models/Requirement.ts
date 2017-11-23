@@ -56,38 +56,6 @@ export class Requirement extends Model<Requirement> {
     },
     type: DataType.INTEGER,
   })
-  money: number
-
-  @Column({
-    validate: {
-      notEmpty: true,
-    },
-    type: DataType.INTEGER,
-  })
-  meatBaseCost: number
-
-  @Column({
-    validate: {
-      notEmpty: true,
-    },
-    type: DataType.INTEGER,
-  })
-  waterBaseCost: number
-
-  @Column({
-    validate: {
-      notEmpty: true,
-    },
-    type: DataType.INTEGER,
-  })
-  cerealBaseCost: number
-
-  @Column({
-    validate: {
-      notEmpty: true,
-    },
-    type: DataType.INTEGER,
-  })
   costFactor: number
 
   @Column({
@@ -96,11 +64,10 @@ export class Requirement extends Model<Requirement> {
     },
     type: DataType.INTEGER,
   })
-  level: number
+  levelMax: number
 
   baseCost: Map<Resources, number>
   technologies: Map<string, number>
-  levelMax: number
 
   constructor(definition: RequirementDefinition) {
     super()

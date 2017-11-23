@@ -4,7 +4,7 @@ import { Requirement } from './Requirement'
 import { UserRequirement } from './UserRequirement'
 import {
   Table, Column, Model, CreatedAt, UpdatedAt, DataType, PrimaryKey, AutoIncrement,
-  BelongsToMany,
+  BelongsToMany, HasMany,
 } from 'sequelize-typescript'
 
 @Table
@@ -41,9 +41,9 @@ export class User extends Model<User> {
   })
   password: string
 
-  @BelongsToMany(() => Resource, () => UserResource)
+  @HasMany(() => UserResource)
   resources: Resource[]
 
-  @BelongsToMany(() => Requirement, () => UserRequirement)
+  @HasMany(() => UserRequirement)
   requirements: Resource[]
 }
