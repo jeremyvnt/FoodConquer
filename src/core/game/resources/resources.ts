@@ -1,5 +1,6 @@
 import { Resources } from '../../../objects/resource'
 import { User, Resource, Requirement, UserRequirement, UserResource } from '../../../models'
+import { Model } from 'sequelize-typescript'
 
 
 
@@ -68,6 +69,21 @@ export class ResourcesService {
     }
     return buildingId
   }
+  private getStockageBuildingId(resource: string):string {
+    let buildingId: string
+    switch (resource) {
+      case Resources.CEREAL:
+        buildingId = 'Silot'
+        break
+      case Resources.MEAT:
+        buildingId = 'Entrepot'
+        break
+      case Resources.WATER:
+        buildingId = 'Citerne'
+        break
+    }
+    return buildingId
+  }
   private getResourceFromBuildingId(buildingId: string): Resources {
     let resources: Resources
     switch (buildingId) {
@@ -113,19 +129,17 @@ export class ResourcesService {
 
 
   public async getUserResources(user: User) {
-    const userRequirements = await UserRequirement.findAll<UserRequirement>({
-      where: {
-        userId: user.id,
-        requirementId: ['Champs', 'Betail', 'Puit', 'Mine'],
+    const userRequirements =  <UserRequirement[]> await user.$get(
+      'requirements', 
+      { 
+        where: { 
+          Requirementid: ['Champs', 'Betail', 'Puit'],
+        }, 
       },
-    })
+     )
 
-    const userResources = await UserResource.findAll<UserResource>({
-      where: {
-        userId: user.id,
-      },
-    })
-    
+    const userResources = <UserResource[]> await user.$get('resources')
+
     const resources: any[] = []
     let moneyUptake = 0
 
@@ -133,17 +147,16 @@ export class ResourcesService {
       moneyUptake += this.getMoneyUptake(userRequirement)
     })
 
-    userResources.forEach((userResource) => {   
+    await Promise.all(userResources.map(async (userResource) => {   
       
-
-      const userRequirement: UserRequirement = userRequirements.find((value) => {
+      const userRequirement = userRequirements.find((value) => {
         return value.requirementId === this.getProductionBuildingId(
           userResource.resource,
         )
       })
 
       if (userRequirement) {
-        let quantity = this.calculUserResource(userResource, userRequirement)
+        let quantity = await this.calculUserResource(user, userResource, userRequirement)
         const production = this.getBaseProduction(userResource.resource, userRequirement.level)
         
         if (userResource.resource === Resources.MONEY) {
@@ -158,7 +171,7 @@ export class ResourcesService {
 
         resources.push(resource)
       }
-    })
+    }))
 
     return resources
   }
@@ -184,23 +197,28 @@ export class ResourcesService {
     return Math.round(moneyUptake)
   }
 
-  private calculUserResource(userResource: UserResource, 
-                             userRequirement: UserRequirement): number {
+  private async calculUserResource(user: User,
+                                   userResource: UserResource, 
+                                   userRequirement: UserRequirement) {
 
     let quantity: number
     if (userResource.resource !== Resources.MONEY) {
-      quantity = this.calculUserBaseResource(userResource, userRequirement)
+      const max = await this.getStockageMaxResources(user, userResource)
+      quantity = this.calculUserBaseResource(user, userResource, userRequirement)
+      quantity = quantity > max ? max : quantity
     } else {
       quantity = this.calculUserSpecialResource(userResource, userRequirement)
     }
+
     return Math.round(quantity)
   }
 
-  private calculUserBaseResource(userResource: UserResource, 
+  private calculUserBaseResource(user: User,
+                                 userResource: UserResource, 
                                  userRequirement: UserRequirement): number {
 
     const resource: Resources = this.getResourceFromBuildingId(userRequirement.requirementId)
-    let quantity: number = userResource.quantity
+    let quantity = userResource.quantity
 
     if (userRequirement.updatedAt > new Date().valueOf()) {
       quantity += ((new Date().valueOf() - userResource.updatedAt) / 3600000) * 
@@ -233,4 +251,29 @@ export class ResourcesService {
     return quantity
   }
 
+
+  private async getStockageMaxResources(user: User, userResource: UserResource) {
+    const stockageBuilding = this.getStockageBuildingId(userResource.resource) 
+    
+    let level = 0
+
+    try {
+      level = (<UserRequirement> await user.$get(
+        'requirement',
+        {
+          where: {
+            id: stockageBuilding,
+          },
+        },
+      )).level     
+    } catch {
+
+    }
+    return this.getStockageCapacity(level)
+  }
+
+
+  private getStockageCapacity(level: number) {
+    return Math.round(2.5 * Math.exp(20 * level / 33)) * 5000
+  }
 }
