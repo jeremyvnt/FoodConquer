@@ -14,7 +14,7 @@ export class UserUnit extends Model<UserUnit> {
 
   @PrimaryKey
   @ForeignKey(() => User)
-  @Column
+  @Column({ type: DataType.BIGINT })
   userId: number
 
   @Column

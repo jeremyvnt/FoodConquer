@@ -10,50 +10,6 @@ import { UserResource } from '../../../objects/models/UserResource'
 
 export class ResourcesService {
 
-  public async getGlobalProductionSpeed(user: User):Promise<object> {
-    const userRequirements = await UserRequirement.findAll<UserRequirement>({
-      where: {
-        userId: user.id,
-        requirementId: ['Champs', 'Betail', 'Puit'],
-      },
-    })
-
-    return {
-      [Resources.CEREAL]: this.getBaseProduction(
-        Resources.CEREAL, 
-        userRequirements.find((value) => {
-          return value.requirementId === 'Champs'
-        }).level),
-      [Resources.MEAT]: this.getBaseProduction(
-        Resources.MEAT, 
-        userRequirements.find((value) => {
-          return value.requirementId === 'Betail'
-        }).level),
-      [Resources.WATER]: this.getBaseProduction(
-        Resources.CEREAL, 
-        userRequirements.find((value) => {
-          return value.requirementId === 'Puit'
-        }).level),
-    }
-  }
-
-
-  public getProductionSpeed(user: User, resource: Resources):Promise<number> {
-    return new Promise(() => {
-      UserRequirement.findOne<UserRequirement>({
-        where: { 
-          userId: user.id, 
-          requirementId: this.getProductionBuildingId(resource),
-        },
-      }).then((userRequirement) => {
-        return this.getBaseProduction(resource, userRequirement.level)
-      }).catch((response) => {
-        return 0
-      })
-    })
-  }
-
-
 
   private getProductionBuildingId(resource: string):string {
     let buildingId: string
@@ -258,26 +214,17 @@ export class ResourcesService {
 
   private async getStockageMaxResources(user: User, userResource: UserResource) {
     const stockageBuilding = this.getStockageBuildingId(userResource.resource) 
-    
-    let level = 0
-
-    try {
-      level = (<UserRequirement> await user.$get(
-        'requirement',
-        {
-          where: {
-            id: stockageBuilding,
-          },
+    const userRequirement = <UserRequirement> await user.$get(
+      'requirement',
+      {
+        where: {
+          id: stockageBuilding,
         },
-      )).level     
-    } catch {
+      },
+    )
 
-    }
-    return this.getStockageCapacity(level)
-  }
+    const level = userRequirement ? userRequirement.level : 0
 
-
-  private getStockageCapacity(level: number) {
     return Math.round(2.5 * Math.exp(20 * level / 33)) * 5000
   }
 }
