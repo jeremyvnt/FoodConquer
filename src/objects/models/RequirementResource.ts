@@ -8,7 +8,7 @@ export class RequirementResource extends Model<RequirementResource> {
   @PrimaryKey
   @ForeignKey(() => Requirement)
   @Column
-  requirementId: number
+  requirementId: string
 
   @PrimaryKey
   @ForeignKey(() => Resource)
