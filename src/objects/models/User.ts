@@ -42,8 +42,8 @@ export class User extends Model<User> {
   password: string
 
   @HasMany(() => UserResource)
-  resources: Resource[]
+  resources: UserResource[]
 
   @HasMany(() => UserRequirement)
-  requirements: Resource[]
+  requirements: UserRequirement[]
 }

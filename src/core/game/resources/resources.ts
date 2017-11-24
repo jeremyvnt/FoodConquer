@@ -6,23 +6,6 @@ import { Model } from 'sequelize-typescript'
 
 export class ResourcesService {
 
-  public getProductionSpeed(user: User, resource: Resources): Promise<number> {
-    return new Promise(() => {
-      UserRequirement.findOne<UserRequirement>({
-        where: {
-          userId: user.id,
-          requirementId: this.getProductionBuildingId(resource.toString()),
-        },
-      }).then((userRequirement) => {
-        return this.getBaseProduction(resource.toString(), userRequirement.level)
-      }).catch((response) => {
-        return 0
-      })
-    })
-  }
-
-
-
   private getProductionBuildingId(resource: string): string {
     let buildingId: string
     switch (resource) {
@@ -77,7 +60,7 @@ export class ResourcesService {
 
 
   private getBaseProduction(resource: string,
-    buildingLevel: number): number {
+                            buildingLevel: number): number {
 
     let production: number
 
@@ -170,8 +153,8 @@ export class ResourcesService {
   }
 
   private async calculUserResource(user: User,
-    userResource: UserResource,
-    userRequirement: UserRequirement) {
+                                   userResource: UserResource,
+                                   userRequirement: UserRequirement) {
 
     let quantity: number
     if (userResource.resource !== Resources.MONEY.toString()) {
@@ -186,8 +169,8 @@ export class ResourcesService {
   }
 
   private calculUserBaseResource(user: User,
-    userResource: UserResource,
-    userRequirement: UserRequirement): number {
+                                 userResource: UserResource,
+                                 userRequirement: UserRequirement): number {
 
     const resource: Resources = this.getResourceFromBuildingId(userRequirement.requirementId)
     let quantity = userResource.quantity
@@ -210,7 +193,7 @@ export class ResourcesService {
   }
 
   private calculUserSpecialResource(userResource: UserResource,
-    userRequirement: UserRequirement): number {
+                                    userRequirement: UserRequirement): number {
 
     let quantity: number = userResource.quantity
     const resource: Resources = this.getResourceFromBuildingId(userRequirement.requirementId)
@@ -225,27 +208,18 @@ export class ResourcesService {
 
 
   private async getStockageMaxResources(user: User, userResource: UserResource) {
-    const stockageBuilding = this.getStockageBuildingId(userResource.resource)
-
-    let level = 0
-
-    try {
-      level = (<UserRequirement>await user.$get(
-        'requirement',
-        {
-          where: {
-            id: stockageBuilding,
-          },
+    const stockageBuilding = this.getStockageBuildingId(userResource.resource) 
+    const userRequirement = <UserRequirement> await user.$get(
+      'requirement',
+      {
+        where: {
+          id: stockageBuilding,
         },
-      )).level
-    } catch {
+      },
+    )
 
-    }
-    return this.getStockageCapacity(level)
-  }
+    const level = userRequirement ? userRequirement.level : 0
 
-
-  private getStockageCapacity(level: number) {
     return Math.round(2.5 * Math.exp(20 * level / 33)) * 5000
   }
 }

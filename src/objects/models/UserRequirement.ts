@@ -1,7 +1,16 @@
 import { Requirement } from './Requirement'
 import { User } from './User'
 import {
-  Table,Column, Model, CreatedAt, UpdatedAt, DataType, PrimaryKey, ForeignKey, AutoIncrement,
+  Table,
+  Column, 
+  Model, 
+  CreatedAt, 
+  UpdatedAt, 
+  DataType, 
+  PrimaryKey, 
+  ForeignKey, 
+  AutoIncrement, 
+  BelongsTo,
 } from 'sequelize-typescript'
 
 
@@ -9,13 +18,19 @@ import {
 export class UserRequirement extends Model<UserRequirement> {    
   @PrimaryKey
   @ForeignKey(() => Requirement)
-  @Column
+  @Column({ type: DataType.STRING })
   requirementId: string
+
+  @BelongsTo(() => Requirement)
+  requirement: Requirement
 
   @PrimaryKey
   @ForeignKey(() => User)
-  @Column
+  @Column({ type: DataType.BIGINT })
   userId: number
+
+  @BelongsTo(() => User)
+  user: User
 
   @Column
   level: number
