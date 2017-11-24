@@ -1,4 +1,5 @@
 export * from './objects/models/Requirement'
+export * from './objects/models/RequirementResource'
 export * from './objects/models/Resource'
 export * from './objects/models/Todo'
 export * from './objects/models/Unit'

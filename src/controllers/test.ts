@@ -16,8 +16,7 @@ export class TestController extends BaseController {
 
   static routes: Route[] = [
     { path: '/', action: 'rootIndex', root: true },
-    { path: '/', action: 'index' },
-    { path: '/speed-production', action: 'speedProduction' },
+    { path: '/', action: 'resources' },
     { path: '/resources', action: 'resources' },
     { path: '/upgrade-building/:buildingId', action: 'upgradeBuilding' },
     { verb: 'post', path: '/', action: 'create' },
@@ -48,86 +47,68 @@ export class TestController extends BaseController {
       description: 'Un jaune',
       baseDuration: 1500,
     })*/
-
-    const resourceService = new ResourcesService()
-
-    User.findOne<User>({ where: { pseudo: 'Jerem' } }).then((user) => {
-      if (!user) {
-        const user = new User({
-          pseudo: 'Jerem',
-          email: 'jerem@g.C',
-          password: 'aaa',
-        })
-        user.save()
-      }
-      resourceService.getGlobalProductionSpeed(user).then((globalSpeed) => {
-        this.res.json(globalSpeed)
-      })
-      /*Requirement.findOne<Requirement>({ where: { id:'Champs' } }).then((champs) => {
-        if (!champs) {
-          const champs = new Requirement({
-            id: 'Champs',
-            name: 'Champs',
-            description: 'Un champs de céréales',
-            level: 0,
-            type: 'BUILDING',
-            baseCost: new Map([
-              [Resources.MONEY, 500], 
-              [Resources.MEAT, 300],
-              [Resources.WATER, 200],
-            ]),
-            baseDuration: 10000,
-            levelMax: 30,
-            costFactor: 2,
-          })
-          champs.save().then(() => {
-            const userRequirement = new UserRequirement({ 
-              userId: 1,
-              requirementId: champs.id,
-              level: champs.level,
-              updatedAt: new Date().valueOf() + champs.baseDuration,
+    /*
+        const resourceService = new ResourcesService()
+    
+        User.findOne<User>({ where: { pseudo: 'Jerem' } }).then((user) => {
+          if (!user) {
+            const user = new User({
+              pseudo: 'Jerem',
+              email: 'jerem@g.C',
+              password: 'aaa',
             })
-
-            userRequirement.save().then((ur) => {
-              this.res.json(ur)
-              UtilService.requirementLater(champs.baseDuration, ur)
-            })          
+            user.save()
+          }
+          resourceService.getGlobalProductionSpeed(user).then((globalSpeed) => {
+            this.res.json(globalSpeed)
           })
-        }else {
-          UserRequirement.findOne<UserRequirement>({ 
-            where: { userId: 1, requirementId: champs.id },
-          }).then((ur) => {
-            ResourcesService.getSpeedResource(user, Resources.CEREAL).then((speed) => {
-              this.res.json(speed)
-            }).catch((response) => {
-              this.res.json(response)              
-            })
-            ur.update({ updatedAt: new Date().valueOf() + champs.baseDuration })
-            UtilService.requirementLater(champs.baseDuration, ur)
+          Requirement.findOne<Requirement>({ where: { id:'Champs' } }).then((champs) => {
+            if (!champs) {
+              const champs = new Requirement({
+                id: 'Champs',
+                name: 'Champs',
+                description: 'Un champs de céréales',
+                level: 0,
+                type: 'BUILDING',
+                baseCost: new Map([
+                  [Resources.MONEY, 500], 
+                  [Resources.MEAT, 300],
+                  [Resources.WATER, 200],
+                ]),
+                baseDuration: 10000,
+                levelMax: 30,
+                costFactor: 2,
+              })
+              champs.save().then(() => {
+                const userRequirement = new UserRequirement({ 
+                  userId: 1,
+                  requirementId: champs.id,
+                  level: champs.level,
+                  updatedAt: new Date().valueOf() + champs.baseDuration,
+                })
+    
+                userRequirement.save().then((ur) => {
+                  this.res.json(ur)
+                  UtilService.requirementLater(champs.baseDuration, ur)
+                })          
+              })
+            }else {
+              UserRequirement.findOne<UserRequirement>({ 
+                where: { userId: 1, requirementId: champs.id },
+              }).then((ur) => {
+                ResourcesService.getSpeedResource(user, Resources.CEREAL).then((speed) => {
+                  this.res.json(speed)
+                }).catch((response) => {
+                  this.res.json(response)              
+                })
+                ur.update({ updatedAt: new Date().valueOf() + champs.baseDuration })
+                UtilService.requirementLater(champs.baseDuration, ur)
+              })
+            }
           })
-        }
-      })*/
-    })
+  })*/
   }
 
-  /**
-   * Retourne les vitesses du production
-   * 
-   * @param {NextFunction} next 
-   * @memberof TodoController
-   */
-  public speedProduction(next: NextFunction) {
-
-    const resourceService = new ResourcesService()
-
-    User.findOne<User>({ where: { pseudo: 'Jerem' } }).then((user) => {
-      resourceService.getGlobalProductionSpeed(user).then((globalSpeed) => {
-        this.res.json(globalSpeed)
-      })
-    }).catch((err) => {
-      this.res.json(err)
-    })
-  }
 
   /**
    * Retourne les ressources actuelles
@@ -143,7 +124,7 @@ export class TestController extends BaseController {
       resourceService.getUserResources(user).then((resources) => {
         this.res.json(resources)
       }).catch((err) => {
-        this.res.json(err)        
+        this.res.json(err)
       })
     }).catch((err) => {
       this.res.json(1)
@@ -158,15 +139,15 @@ export class TestController extends BaseController {
    */
   public upgradeBuilding(next: NextFunction) {
     User.findOne<User>({ where: { pseudo: 'Jerem' } }).then((user) => {
-      UserRequirement.findOne<UserRequirement>({ 
+      UserRequirement.findOne<UserRequirement>({
         where: { userId: 1, requirementId: this.req.params.buildingId },
       }).then((ur) => {
-        Requirement.findOne<Requirement>({ 
+        Requirement.findOne<Requirement>({
           where: { id: ur.requirementId },
         }).then((requirement) => {
           ur.update({ updatedAt: new Date().valueOf() + requirement.baseDuration })
           this.res.json(ur)
-          UtilService.requirementLater(requirement.baseDuration, ur)         
+          UtilService.requirementLater(requirement.baseDuration, ur)
         })
       })
     }).catch((response) => {
