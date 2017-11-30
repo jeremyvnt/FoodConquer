@@ -103,6 +103,8 @@ export abstract class BaseController {
    * @memberof BaseController
    */
   constructor(req: Request, res: Response) {
+    res.header('Access-Control-Allow-Origin', '*')
+    res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept')
     this.req = req
     this.res = res
     this.resourcesService = new ResourcesService()
