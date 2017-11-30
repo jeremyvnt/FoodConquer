@@ -9,7 +9,7 @@ export class ResearchController extends BaseController {
 
   static routes: Route[] = [
     { path: '/', action: 'index' },
-    { verb: 'post', path: '/', action: 'create' },
+    //{ verb: 'post', path: '/', action: 'create' },
   ]
 
 	/**

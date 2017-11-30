@@ -12,7 +12,6 @@ export interface RequirementDefinition extends BaseDefinition {
   type: string
   level: number
   levelMax: number
-  costFactor: number
 }
 
 @Table({
@@ -59,22 +58,6 @@ export class Requirement extends Model<Requirement> {
     },
     type: DataType.INTEGER,
   })
-  baseDuration: number
-
-  @Column({
-    validate: {
-      notEmpty: true,
-    },
-    type: DataType.INTEGER,
-  })
-  costFactor: number
-
-  @Column({
-    validate: {
-      notEmpty: true,
-    },
-    type: DataType.INTEGER,
-  })
   levelMax: number
 
   @BelongsToMany(() => Resource, () => RequirementResource)
@@ -88,11 +71,9 @@ export class Requirement extends Model<Requirement> {
     this.id = definition.id
     this.name = definition.name
     this.description = definition.description
-    this.baseDuration = definition.baseDuration
     this.baseCost = definition.baseCost
     this.technologies = TechTree.TECH_TREE.get(this.id)
     this.type = definition.type
     this.levelMax = definition.levelMax
-    this.costFactor = definition.costFactor
   }
 }

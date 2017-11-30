@@ -1,3 +1,4 @@
+import { UserResource } from './../objects/models/UserResource';
 import { ResourcesService } from './../core/game/resources/resources'
 import { Request, Response, NextFunction, Router, IRouterMatcher } from 'express'
 export { NextFunction }
@@ -188,11 +189,11 @@ export abstract class BaseController {
         }],
       }).then((userRequirements) => {
         // merge le tableau de ressources avec userRequirements et return le tout
-        this.resourcesService.getUserResources(user).then((globalSpeed) => {
-          // merge globalSpeed avec userRequirements
+        this.resourcesService.getUserResources(user).then((userResources) => {
+          // merge userResources avec userRequirements
           const result = Object.assign(
             {},
-            { resources: globalSpeed },
+            { resources: userResources },
             { buildings: userRequirements },
           )
           this.res.json(result)
