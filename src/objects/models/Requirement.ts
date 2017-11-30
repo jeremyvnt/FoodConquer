@@ -1,6 +1,6 @@
 import { Resource, RequirementResource } from '../../models'
 import {
-  Table, Column, Model, CreatedAt, UpdatedAt, DataType, PrimaryKey, AutoIncrement, BelongsToMany,
+  Table, Column, Model, CreatedAt, UpdatedAt, DataType, PrimaryKey, AutoIncrement, BelongsToMany, HasMany
 } from 'sequelize-typescript'
 
 import { BaseDefinition } from '../base'
@@ -60,8 +60,9 @@ export class Requirement extends Model<Requirement> {
   })
   levelMax: number
 
-  @BelongsToMany(() => Resource, () => RequirementResource)
-  resources: Resource[]
+  @HasMany(() => RequirementResource)
+  resources: RequirementResource[]
+  
 
   baseCost: Map<Resources, number>
   technologies: Map<string, number>

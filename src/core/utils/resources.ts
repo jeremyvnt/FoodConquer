@@ -1,7 +1,7 @@
-import { Resources } from '../../../objects/resource'
-import { User, Resource, Requirement, UserRequirement, UserResource } from '../../../models'
+import { Resources } from '../../objects/resource'
+import { User, Resource, Requirement, UserRequirement, UserResource } from '../../models'
 import { Model } from 'sequelize-typescript'
-import { maxStokage, baseProduction, moneyUptake } from './../../utils/formula'
+import { maxStokage, baseProduction, moneyUptake } from './formula'
 
 
 
@@ -78,7 +78,7 @@ export class ResourcesService {
     userRequirements.forEach((userRequirement) => {
       totalMoneyUptake += moneyUptake(userRequirement)
     })
-    
+  
     await Promise.all(userResources.map(async (userResource) => {
       
       const userRequirement = userRequirements.find((value) => {

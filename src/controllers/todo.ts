@@ -6,7 +6,6 @@ export class TodoController extends BaseController {
   static basePath = '/todos'
 
   static routes: Route[] = [
-    { path: '/', action: 'rootIndex', root: true },
     { path: '/', action: 'index' },
     { verb: 'post', path: '/', action: 'create' },
   ]

@@ -118,8 +118,8 @@ export class Server {
     // @todo, possible d'utiliser une boucle ici si on indexe tous nos controllers dans le fichier
     // ./controllers/index.js (ce qui est le cas)
     // Cela éviterait de devoir tous les lister ici.
-    TodoController.connect(router)
     TestController.connect(router)
+    TodoController.connect(router)
     BuildingController.connect(router)
     ResearchController.connect(router)
 

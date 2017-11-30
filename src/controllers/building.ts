@@ -1,10 +1,10 @@
 import { User, Requirement, UserRequirement, RequirementResource } from '../models'
-import { ResourcesService } from '../core/game/resources/resources'
+import { ResourcesService } from '../core/utils/resources'
 import { BaseController, Route, NextFunction } from './'
 
 export class BuildingController extends BaseController {
 
-  private basePath = '/building'
+  static basePath = '/building'
   private requirementType = 'BUILDING'
 
   static routes: Route[] = [
@@ -55,13 +55,13 @@ export class BuildingController extends BaseController {
             // + methode qui calcule la temps de construction en fonction du level
             level: ur.level + 1,
           }).then(() => {
-            this.res.redirect(200, this.basePath)
+            this.res.redirect(200, BuildingController.basePath)
           }).catch(next)
         }
         // create
         const newUserRequirement = new UserRequirement(user.id, requirementIdentifier)
         newUserRequirement.save().then(() => {
-          this.res.redirect(200, this.basePath)
+          this.res.redirect(200, BuildingController.basePath)
         }).catch(next)
       })
     })
