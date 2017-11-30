@@ -1,6 +1,7 @@
 import { Resources } from '../../../objects/resource'
 import { User, Resource, Requirement, UserRequirement, UserResource } from '../../../models'
 import { Model } from 'sequelize-typescript'
+import { maxStokage, baseProduction, moneyUptake } from './../../utils/formula'
 
 
 
@@ -59,30 +60,6 @@ export class ResourcesService {
   }
 
 
-  private getBaseProduction(resource: string,
-                            buildingLevel: number): number {
-
-    let production: number
-
-    switch (resource) {
-      case Resources.CEREAL.toString():
-        production = 30 * buildingLevel * 1.1 ** buildingLevel
-        break
-      case Resources.MEAT.toString():
-      case Resources.MONEY.toString():
-        production = 20 * buildingLevel * 1.1 ** buildingLevel
-        break
-      case Resources.WATER.toString():
-        production = 10 * buildingLevel * 1.1 ** buildingLevel
-        break
-      default:
-        production = 0
-    }
-    return Math.round(production)
-  }
-
-
-
   public async getUserResources(user: User) {
     const userRequirements = <UserRequirement[]>await user.$get(
       'requirements',
@@ -96,10 +73,10 @@ export class ResourcesService {
     const userResources = <UserResource[]>await user.$get('resources')
 
     const resources: any[] = []
-    let moneyUptake = 0
+    let totalMoneyUptake = 0
 
     userRequirements.forEach((userRequirement) => {
-      moneyUptake += this.getMoneyUptake(userRequirement)
+      totalMoneyUptake += moneyUptake(userRequirement)
     })
 
     await Promise.all(userResources.map(async (userResource) => {
@@ -112,10 +89,10 @@ export class ResourcesService {
 
       if (userRequirement) {
         let quantity = await this.calculUserResource(user, userResource, userRequirement)
-        const production = this.getBaseProduction(userResource.resource, userRequirement.level)
+        const production = baseProduction(userResource.resource, userRequirement.level)
 
         if (userResource.resource === Resources.MONEY.toString()) {
-          quantity -= moneyUptake
+          quantity -= totalMoneyUptake
         }
 
         const resource = {
@@ -129,27 +106,6 @@ export class ResourcesService {
     }))
 
     return resources
-  }
-
-
-  private getMoneyUptake(userRequirement: UserRequirement): number {
-    let moneyUptake = 0
-
-    switch (userRequirement.requirementId) {
-      case 'Champs':
-        moneyUptake = 10 * userRequirement.level * 1.1 ** userRequirement.level
-        break
-      case 'Betail':
-        moneyUptake = 10 * userRequirement.level * 1.1 ** userRequirement.level
-        break
-      case 'Puit':
-        moneyUptake = 10 * userRequirement.level * 1.1 ** userRequirement.level
-        break
-      default:
-        moneyUptake = 0
-        break
-    }
-    return Math.round(moneyUptake)
   }
 
   private async calculUserResource(user: User,
@@ -177,16 +133,16 @@ export class ResourcesService {
 
     if (userRequirement.updatedAt > new Date().valueOf()) {
       quantity += ((new Date().valueOf() - userResource.updatedAt) / 3600000) *
-        this.getBaseProduction(resource.toString(), userRequirement.level - 1)
+        baseProduction(resource.toString(), userRequirement.level - 1)
     } else {
       if (userResource.updatedAt < userRequirement.updatedAt) {
         quantity += ((new Date().valueOf() - userRequirement.updatedAt) / 3600000) *
-          this.getBaseProduction(resource.toString(), userRequirement.level)
+          baseProduction(resource.toString(), userRequirement.level)
           + ((userRequirement.updatedAt - userResource.updatedAt) / 3600000) *
-          this.getBaseProduction(resource.toString(), userRequirement.level - 1)
+          baseProduction(resource.toString(), userRequirement.level - 1)
       } else {
         quantity += ((new Date().valueOf() - userResource.updatedAt) / 3600000) *
-          this.getBaseProduction(resource.toString(), userRequirement.level)
+          baseProduction(resource.toString(), userRequirement.level)
       }
     }
     return quantity
@@ -199,9 +155,9 @@ export class ResourcesService {
     const resource: Resources = this.getResourceFromBuildingId(userRequirement.requirementId)
 
     if (userRequirement.updatedAt > new Date().valueOf()) {
-      quantity = this.getBaseProduction(resource.toString(), userRequirement.level - 1)
+      quantity = baseProduction(resource.toString(), userRequirement.level - 1)
     } else {
-      quantity = this.getBaseProduction(resource.toString(), userRequirement.level)
+      quantity = baseProduction(resource.toString(), userRequirement.level)
     }
     return quantity
   }
@@ -220,6 +176,6 @@ export class ResourcesService {
 
     const level = userRequirement ? userRequirement.level : 0
 
-    return Math.round(2.5 * Math.exp(20 * level / 33)) * 5000
+    return maxStokage(level)
   }
 }
