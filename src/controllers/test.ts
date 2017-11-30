@@ -124,7 +124,7 @@ export class TestController extends BaseController {
       resourceService.getUserResources(user).then((resources) => {
         this.res.json(resources)
       }).catch((err) => {
-        this.res.json(err)
+        this.res.json(55)
       })
     }).catch((err) => {
       this.res.json(1)
