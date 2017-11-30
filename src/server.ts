@@ -5,7 +5,12 @@ import * as cookieParser from 'cookie-parser'
 import * as logger from 'morgan'
 import methodOverride = require('method-override')
 
-import { TodoController, TestController } from './controllers/index'
+import {
+  TodoController,
+  TestController,
+  BuildingController,
+  ResearchController,
+} from './controllers/index'
 
 /**
  * Les options de lancement du serveur
@@ -53,7 +58,7 @@ export class Server {
    * @param {ServerOptions} [options={}] 
    * @memberof Server
    */
-  constructor (options: ServerOptions = {}) {
+  constructor(options: ServerOptions = {}) {
     const defaults: ServerOptions = {
       port: 8080,
     }
@@ -65,7 +70,7 @@ export class Server {
     this.useInitialMiddlewares()
 
     this.useControllersRouting()
-    
+
     this.useFallbackMiddlewares()
   }
 
@@ -74,7 +79,7 @@ export class Server {
    * 
    * @memberof Server
    */
-  public useInitialMiddlewares () {
+  public useInitialMiddlewares() {
     // this.app.set('views', path.join(__dirname, 'views'))
     // this.app.set('view engine', 'pug')
 
@@ -96,7 +101,7 @@ export class Server {
    * 
    * @memberof Server
    */
-  public useFallbackMiddlewares () {
+  public useFallbackMiddlewares() {
     this.app.use(this.notFoundMiddleware)
     this.app.use(this.errorMiddleware)
   }
@@ -106,7 +111,7 @@ export class Server {
    * 
    * @memberof Server
    */
-  public useControllersRouting () {
+  public useControllersRouting() {
     const router = express.Router()
 
     // Les différents controllers
@@ -115,7 +120,8 @@ export class Server {
     // Cela éviterait de devoir tous les lister ici.
     TodoController.connect(router)
     TestController.connect(router)
-    // XXXController.connect(router)
+    BuildingController.connect(router)
+    ResearchController.connect(router)
 
     this.app.use(router)
   }
@@ -125,7 +131,7 @@ export class Server {
    * 
    * @memberof Server
    */
-  public run () {
+  public run() {
     this.app.listen(this.options.port, () => {
       console.log(`Started on port ${this.options.port}`)
     })
@@ -167,8 +173,10 @@ export class Server {
     next: express.NextFunction,
   ) {
     res.status(err.status || 500)
-    res.json({ error: {
-      message: err.message || 'Unknown error',
-    }})
+    res.json({
+      error: {
+        message: err.message || 'Unknown error',
+      }
+    })
   }
 }

@@ -138,21 +138,7 @@ export class TestController extends BaseController {
    * @memberof TodoController
    */
   public upgradeBuilding(next: NextFunction) {
-    User.findOne<User>({ where: { pseudo: 'Jerem' } }).then((user) => {
-      UserRequirement.findOne<UserRequirement>({
-        where: { userId: 1, requirementId: this.req.params.buildingId },
-      }).then((ur) => {
-        Requirement.findOne<Requirement>({
-          where: { id: ur.requirementId },
-        }).then((requirement) => {
-          ur.update({ updatedAt: new Date().valueOf() + requirement.baseDuration })
-          this.res.json(ur)
-          UtilService.requirementLater(requirement.baseDuration, ur)
-        })
-      })
-    }).catch((response) => {
-      this.res.json(response)
-    })
+    
   }
 
 

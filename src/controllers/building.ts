@@ -9,7 +9,7 @@ export class BuildingController extends BaseController {
 
   static routes: Route[] = [
     { path: '/', action: 'index' },
-    { verb: 'post', path: '/', action: 'create' },
+    { verb: 'post', path: '/', action: 'createOrUpdate' },
   ]
   // niveau, temps de construction, ressource lvl après, image, description
 	/**
