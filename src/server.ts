@@ -6,7 +6,6 @@ import * as logger from 'morgan'
 import methodOverride = require('method-override')
 
 import {
-  TodoController,
   TestController,
   BuildingController,
   ResearchController,
@@ -80,9 +79,6 @@ export class Server {
    * @memberof Server
    */
   public useInitialMiddlewares() {
-    // this.app.set('views', path.join(__dirname, 'views'))
-    // this.app.set('view engine', 'pug')
-
     // Si vous lancez le projet depuis VSCode il vous faut rajouter
     // `"outputCapture": "std"` dans votre configuration du `.vscode/launch.json`
     // Car morgan log sur stdout par defaut qui n'est pas affiché dans la console de débogage
@@ -118,7 +114,6 @@ export class Server {
     // @todo, possible d'utiliser une boucle ici si on indexe tous nos controllers dans le fichier
     // ./controllers/index.js (ce qui est le cas)
     // Cela éviterait de devoir tous les lister ici.
-    TodoController.connect(router)
     TestController.connect(router)
     BuildingController.connect(router)
     ResearchController.connect(router)
@@ -176,7 +171,7 @@ export class Server {
     res.json({
       error: {
         message: err.message || 'Unknown error',
-      }
+      },
     })
   }
 }

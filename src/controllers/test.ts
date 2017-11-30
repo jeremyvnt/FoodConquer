@@ -15,7 +15,6 @@ export class TestController extends BaseController {
   static basePath = '/test'
 
   static routes: Route[] = [
-    { path: '/', action: 'rootIndex', root: true },
     { path: '/', action: 'resources' },
     { path: '/resources', action: 'resources' },
     { path: '/upgrade-building/:buildingId', action: 'upgradeBuilding' },
@@ -23,20 +22,10 @@ export class TestController extends BaseController {
   ]
 
   /**
-   * Action qui redirige vers la bonne route
-   * 
-   * @param {NextFunction} next 
-   * @memberof TodoController
-   */
-  public rootIndex(next: NextFunction) {
-    this.res.redirect(301, '/test')
-  }
-
-  /**
    * Action qui liste nos Todos
    * 
    * @param {NextFunction} next 
-   * @memberof TodoController
+   * @memberof TestController
    */
   public index(next: NextFunction) {
     /*const unit = new Unit({
@@ -114,7 +103,7 @@ export class TestController extends BaseController {
    * Retourne les ressources actuelles
    * 
    * @param {NextFunction} next 
-   * @memberof TodoController
+   * @memberof TestController
    */
   public resources(next: NextFunction) {
 
@@ -135,10 +124,10 @@ export class TestController extends BaseController {
    * Upgrade un batiment
    * 
    * @param {NextFunction} next 
-   * @memberof TodoController
+   * @memberof TestController
    */
   public upgradeBuilding(next: NextFunction) {
-    
+
   }
 
 
@@ -146,7 +135,7 @@ export class TestController extends BaseController {
    * Action qui créé une Todo
    * 
    * @param {NextFunction} next 
-   * @memberof TodoController
+   * @memberof TestController
    */
   public create(next: NextFunction) {
     console.log(this.req.body)

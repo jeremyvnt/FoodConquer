@@ -4,12 +4,12 @@ import { BaseController, Route, NextFunction } from './'
 
 export class ResearchController extends BaseController {
 
-  private basePath = '/research'
+  static basePath = '/research'
   private requirementType = 'RESEARCH'
 
   static routes: Route[] = [
     { path: '/', action: 'index' },
-    //{ verb: 'post', path: '/', action: 'create' },
+    // { verb: 'post', path: '/', action: 'create' },
   ]
 
 	/**

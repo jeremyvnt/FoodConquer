@@ -1,4 +1,4 @@
-import { UserResource } from './../objects/models/UserResource';
+import { UserResource } from './../objects/models/UserResource'
 import { ResourcesService } from './../core/game/resources/resources'
 import { Request, Response, NextFunction, Router, IRouterMatcher } from 'express'
 export { NextFunction }
