@@ -65,7 +65,7 @@ export class ResourcesService {
       'requirements',
       {
         where: {
-          Requirementid: ['Champs', 'Betail', 'Puit'],
+          Requirementid: ['Champs', 'Betail', 'Puit', 'Mine'],
         },
       },
     )
@@ -78,9 +78,9 @@ export class ResourcesService {
     userRequirements.forEach((userRequirement) => {
       totalMoneyUptake += moneyUptake(userRequirement)
     })
-
+    
     await Promise.all(userResources.map(async (userResource) => {
-
+      
       const userRequirement = userRequirements.find((value) => {
         return value.requirementId === this.getProductionBuildingId(
           userResource.resource,
@@ -88,6 +88,7 @@ export class ResourcesService {
       })
 
       if (userRequirement) {
+
         let quantity = await this.calculUserResource(user, userResource, userRequirement)
         const production = baseProduction(userResource.resource, userRequirement.level)
 
@@ -165,16 +166,21 @@ export class ResourcesService {
 
   private async getStockageMaxResources(user: User, userResource: UserResource) {
     const stockageBuilding = this.getStockageBuildingId(userResource.resource) 
-    const userRequirement = <UserRequirement> await user.$get(
-      'requirement',
-      {
-        where: {
-          id: stockageBuilding,
-        },
-      },
-    )
+    let level = 0
 
-    const level = userRequirement ? userRequirement.level : 0
+    try {
+     const userRequirement = <UserRequirement> await user.$get(
+        'requirement',
+        {
+          where: {
+            id: stockageBuilding,
+          },
+        },
+      )
+     level = userRequirement.level
+    } catch {
+
+    }
 
     return maxStokage(level)
   }

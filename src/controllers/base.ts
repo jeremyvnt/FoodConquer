@@ -187,9 +187,8 @@ export abstract class BaseController {
           }],
         }],
       }).then((userRequirements) => {
-        console.log('User Requirements: ', userRequirements)
         // merge le tableau de ressources avec userRequirements et return le tout
-        this.resourcesService.getGlobalProductionSpeed(user).then((globalSpeed) => {
+        this.resourcesService.getUserResources(user).then((globalSpeed) => {
           // merge globalSpeed avec userRequirements
           const result = Object.assign(
             {},
