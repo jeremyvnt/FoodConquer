@@ -1,6 +1,6 @@
 import { Resource, User, Requirement } from '../../models'
 import {
-  Table, Column, Model, CreatedAt, UpdatedAt, DataType, PrimaryKey, ForeignKey, AutoIncrement,
+  Table, Column, Model, CreatedAt, UpdatedAt, DataType, PrimaryKey, ForeignKey, AutoIncrement, BelongsTo
 } from 'sequelize-typescript'
 
 @Table
@@ -19,4 +19,7 @@ export class RequirementResource extends Model<RequirementResource> {
     type: DataType.BIGINT,
   })
   cost: number
+
+  @BelongsTo(() => Requirement)
+  requirement: Requirement
 }

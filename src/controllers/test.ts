@@ -1,6 +1,5 @@
 import { Champs } from './../core/game/buildings/champs'
-import { UtilService } from './../core/services/util'
-import { ResourcesService } from './../core/game/resources/resources'
+import { ResourcesService } from './../core/utils/resources'
 import { User } from './../objects/models/User'
 import { Requirement } from './../objects/models/Requirement'
 import { UserRequirement } from './../objects/models/UserRequirement'

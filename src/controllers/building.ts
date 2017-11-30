@@ -1,5 +1,5 @@
 import { User, Requirement, UserRequirement, RequirementResource } from '../models'
-import { ResourcesService } from '../core/game/resources/resources'
+import { ResourcesService } from '../core/utils/resources'
 import { BaseController, Route, NextFunction } from './'
 
 export class BuildingController extends BaseController {
