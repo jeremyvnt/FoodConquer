@@ -6,7 +6,6 @@ export class TodoController extends BaseController {
   static basePath = '/todos'
 
   static routes: Route[] = [
-    { path: '/', action: 'rootIndex', root: true },
     { path: '/', action: 'index' },
     { verb: 'post', path: '/', action: 'create' },
   ]
@@ -17,9 +16,6 @@ export class TodoController extends BaseController {
    * @param {NextFunction} next 
    * @memberof TodoController
    */
-  public rootIndex(next: NextFunction) {
-    this.res.redirect(301, '/todos')
-  }
 
   /**
    * Action qui liste nos Todos
