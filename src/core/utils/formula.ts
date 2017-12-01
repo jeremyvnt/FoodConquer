@@ -63,7 +63,7 @@ export const upgradeCost = (cerealCost: number,
     [Resources.WATER]: 0,
   }
 
-  switch (userRequirement.id) {
+  switch (userRequirement.requirementId) {
     case 'Champs':
     case 'Mine':
     case 'Puits':
@@ -74,11 +74,12 @@ export const upgradeCost = (cerealCost: number,
     case 'Betail':
       cost[Resources.CEREAL] = cerealCost * 1.6 ** userRequirement.level
       cost[Resources.MEAT] = meatCost * 1.6 ** userRequirement.level
-      cost[Resources.WATER] = waterCost * 1.6 ** userRequirement.level 
+      cost[Resources.WATER] = waterCost * 1.6 ** userRequirement.level
+      break
     default:
       cost[Resources.CEREAL] = cerealCost * 2 ** userRequirement.level
       cost[Resources.MEAT] = meatCost * 2 ** userRequirement.level
-      cost[Resources.WATER] = waterCost * 2 ** userRequirement.level    
+      cost[Resources.WATER] = waterCost * 2 ** userRequirement.level
       break
   }
   return cost
