@@ -115,7 +115,7 @@ export class TestController extends BaseController {
         this.res.json(55)
       })
     }).catch((err) => {
-      this.res.json(1)
+      this.res.json(10)
     })
   }
 

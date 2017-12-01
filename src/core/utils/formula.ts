@@ -12,9 +12,11 @@ export const baseProduction = (resource: string,
 
   switch (resource) {
     case Resources.CEREAL.toString():
-      production = 30 * level * 1.1 ** level
+      production = 30 + 30 * level * 1.1 ** level
       break
     case Resources.MEAT.toString():
+      production = 15 + 20 * level * 1.1 ** level
+      break
     case Resources.MONEY.toString():
       production = 20 * level * 1.1 ** level
       break
