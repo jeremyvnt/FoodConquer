@@ -1,14 +1,14 @@
 import { Resources } from '../../objects/resource'
 import { User, Resource, Requirement, UserRequirement, RequirementResource } from '../../models'
 import { Model } from 'sequelize-typescript'
-import { buildingTime } from './formula'
+import { buildingTime, upgradeCost } from './formula'
 
 export class BuildingService {
 
-  public async getBuildingTime(user: User, userRequirement: UserRequirement) {
-
+  public async getBuildingTime(user: User, cerealCost: number, meatCost: number) {
+    
     let portugaisLevel = 0
-    let artisantLevel = 0
+    let artisantLevel  = 0
 
     try {
       const portugaisRequirement = <UserRequirement>await user.$get(
@@ -37,6 +37,17 @@ export class BuildingService {
     } catch (e) {
 
     }
+    
+
+    return buildingTime(
+      cerealCost,
+      meatCost,
+      portugaisLevel,
+      artisantLevel,
+    )
+  }
+
+  public async getUpgradeCost(user: User, userRequirement: UserRequirement) {
 
     const requirement = <Requirement>await userRequirement.$get('requirement')
     const cerealCost = <RequirementResource>await requirement.$get(
@@ -55,15 +66,16 @@ export class BuildingService {
         },
       },
     )
-
-    return buildingTime(
-      cerealCost.cost,
-      meatCost.cost,
-      userRequirement.level,
-      portugaisLevel,
-      artisantLevel,
+    const waterCost = <RequirementResource> await requirement.$get(
+      'resources',
+      {
+        where: {
+          resource: Resources.WATER,
+        },
+      },
     )
 
+    return upgradeCost(cerealCost.cost, meatCost.cost, waterCost.cost, userRequirement)
   }
 
   /**

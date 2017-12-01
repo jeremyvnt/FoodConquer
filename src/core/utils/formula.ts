@@ -25,6 +25,7 @@ export const baseProduction = (resource: string,
       break
     default:
       production = 0
+      break
   }
   return Math.round(production)
 }
@@ -40,7 +41,7 @@ export const moneyUptake = (userRequirement: UserRequirement): number => {
     case 'Betail':
       moneyUptake = 10 * userRequirement.level * 1.1 ** userRequirement.level
       break
-    case 'Puit':
+    case 'Puits':
       moneyUptake = 10 * userRequirement.level * 1.1 ** userRequirement.level
       break
     default:
@@ -51,11 +52,44 @@ export const moneyUptake = (userRequirement: UserRequirement): number => {
 }
 
 
+export const upgradeCost = (cerealCost: number,
+                            meatCost: number,
+                            waterCost: number,
+                            userRequirement: UserRequirement): any => {
+
+  const cost = {
+    [Resources.CEREAL]: 0,
+    [Resources.MEAT]: 0,
+    [Resources.WATER]: 0,
+  }
+
+  switch (userRequirement.id) {
+    case 'Champs':
+    case 'Mine':
+    case 'Puits':
+      cost[Resources.CEREAL] = cerealCost * 1.5 ** userRequirement.level
+      cost[Resources.MEAT] = meatCost * 1.5 ** userRequirement.level
+      cost[Resources.WATER] = waterCost * 1.5 ** userRequirement.level
+      break
+    case 'Betail':
+      cost[Resources.CEREAL] = cerealCost * 1.6 ** userRequirement.level
+      cost[Resources.MEAT] = meatCost * 1.6 ** userRequirement.level
+      cost[Resources.WATER] = waterCost * 1.6 ** userRequirement.level 
+    default:
+      cost[Resources.CEREAL] = cerealCost * 2 ** userRequirement.level
+      cost[Resources.MEAT] = meatCost * 2 ** userRequirement.level
+      cost[Resources.WATER] = waterCost * 2 ** userRequirement.level    
+      break
+  }
+  return cost
+}
+
+
+
 export const buildingTime = (cerealCost: number,
                              meatCost: number,
-                             level: number,
                              portugaisLevel: number,
                              artisantLevel: number): number => {
 
-  return (cerealCost + meatCost) / (2500 * (4 - level / 2) * (1 + portugaisLevel)) * (2 ** artisantLevel)
+  return (cerealCost + meatCost) / (2500 * (1 + portugaisLevel)) * (2 ** artisantLevel)
 }

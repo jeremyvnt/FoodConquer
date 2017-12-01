@@ -7,6 +7,6 @@
     ],
     "import-name": false,
     "no-increment-decrement": false,
-    "maximum-line-length": 110
+    "max-line-length": [true, 110]
   }
 }
