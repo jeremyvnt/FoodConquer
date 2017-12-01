@@ -1,11 +1,13 @@
 import { User, Requirement, UserRequirement, RequirementResource } from '../models'
 import { ResourcesService } from '../core/utils/resources'
+import { BuildingService } from './../core/utils/buildings'
 import { BaseController, Route, NextFunction } from './'
 
 export class BuildingController extends BaseController {
 
   static basePath = '/building'
   private requirementType = 'BUILDING'
+  private buildingService = new BuildingService()
 
   static routes: Route[] = [
     { path: '/', action: 'index' },
@@ -45,13 +47,12 @@ export class BuildingController extends BaseController {
             model: RequirementResource,
           }],
         }],
-      }).then((ur) => {
+      }).then(async (ur) => {
         if (ur) {
           // update
           // set new value on ur object
           ur.update({
-            updatedAt: new Date().valueOf(),
-            // + methode qui calcule la temps de construction en fonction du level
+            updatedAt: new Date().valueOf() + await this.buildingService.getBuildingTime(user, ur),
             level: ur.level + 1,
           }).then(() => {
             this.res.redirect(200, BuildingController.basePath)

@@ -6,53 +6,54 @@ import { buildingTime } from './formula'
 export class BuildingService {
 
   public async getBuildingTime(user: User, userRequirement: UserRequirement) {
-    
-    let portugaisLevel, artisantLevel  = 0
+
+    let portugaisLevel = 0
+    let artisantLevel = 0
 
     try {
-      const portugaisRequirement = <UserRequirement> await user.$get(
+      const portugaisRequirement = <UserRequirement>await user.$get(
         'requirements',
         {
           where: {
-            RequirementId: 'Portugais'
-          }
-        }
-      )   
-      portugaisLevel = portugaisRequirement.level   
-    } catch {
+            RequirementId: 'Portugais',
+          },
+        },
+      )
+      portugaisLevel = portugaisRequirement.level
+    } catch (e) {
 
     }
 
     try {
-      const artisantRequirement = <UserRequirement> await user.$get(
+      const artisantRequirement = <UserRequirement>await user.$get(
         'requirements',
         {
           where: {
-            RequirementId: 'Portugais'
-          }
-        }
+            RequirementId: 'Portugais',
+          },
+        },
       )
       artisantLevel = artisantRequirement.level
-    } catch {
+    } catch (e) {
 
     }
 
-    const requirement = <Requirement> await userRequirement.$get('requirement')
-    const cerealCost = <RequirementResource> await requirement.$get(
+    const requirement = <Requirement>await userRequirement.$get('requirement')
+    const cerealCost = <RequirementResource>await requirement.$get(
       'resources',
       {
         where: {
-          resource: Resources.CEREAL
-        }
-      }
+          resource: Resources.CEREAL,
+        },
+      },
     )
-    const meatCost = <RequirementResource> await requirement.$get(
+    const meatCost = <RequirementResource>await requirement.$get(
       'resources',
       {
         where: {
-          resource: Resources.MEAT
-        }
-      }
+          resource: Resources.MEAT,
+        },
+      },
     )
 
     return buildingTime(
@@ -60,7 +61,7 @@ export class BuildingService {
       meatCost.cost,
       userRequirement.level,
       portugaisLevel,
-      artisantLevel
+      artisantLevel,
     )
 
   }
