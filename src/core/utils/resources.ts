@@ -89,16 +89,22 @@ export class ResourcesService {
 
       if (userRequirement) {
 
-        let quantity = await this.calculUserResource(user, userResource, userRequirement)
+        let quantity = this.calculUserResource(user, userResource, userRequirement)
         const production = baseProduction(userResource.resource, userRequirement.level)
+        let max: number
 
         if (userResource.resource === Resources.MONEY.toString()) {
           quantity -= totalMoneyUptake
+        } else {
+          max = <number> await this.getStockageMaxResources(user, userResource)
+          if( quantity > max)
+            quantity = max
         }
 
         const resource = {
           quantity,
           production,
+          max,
           name: userResource.resource,
         }
 
@@ -109,15 +115,13 @@ export class ResourcesService {
     return resources
   }
 
-  private async calculUserResource(user: User,
-                                   userResource: UserResource,
-                                   userRequirement: UserRequirement) {
+  private calculUserResource(user: User,
+                             userResource: UserResource,
+                             userRequirement: UserRequirement): number {
 
     let quantity: number
     if (userResource.resource !== Resources.MONEY.toString()) {
-      const max = await this.getStockageMaxResources(user, userResource)
       quantity = this.calculUserBaseResource(user, userResource, userRequirement)
-      quantity = quantity > max ? max : quantity
     } else {
       quantity = this.calculUserSpecialResource(userResource, userRequirement)
     }
