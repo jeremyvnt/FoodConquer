@@ -175,40 +175,33 @@ export abstract class BaseController {
  * @param {RequirementType} requirementType
  * @memberof BaseController
  */
-  getRequirementList(next: NextFunction, requirementType: string) {
+  async getRequirementList(next: NextFunction, requirementType: string) {
     // Get current user (grâce à Passport)
-    User.findOne<User>({ where: { pseudo: 'Jerem' } }).then((user) => {
-      UserRequirement.findAll<UserRequirement>({
+    const user = await User.findOne<User>({ where: { pseudo: 'Jerem' } })
+    const userRequirements = <UserRequirement[]>await user.$get('requirements', {
+      include: [{
+        model: Requirement,
         where: {
-          userId: user.id,
+          type: requirementType,
         },
-        include: [{
-          model: Requirement,
-          where: { type: requirementType },
-          include: [{
-            model: RequirementResource,
-          }],
-        }],
-      }).then((userRequirements) => {
-        // merge le tableau de ressources avec userRequirements et return le tout
-        this.resourcesService.getUserResources(user).then((userResources) => {
-          // merge userResources avec userRequirements
-          const buildings: any = []
-          userRequirements.map((ur) => {
-            const { level, updatedAt } = ur
-            const { id, name, description, type, levelMax } = ur.requirement
-            const building = { id, name, type, description, levelMax, level, updatedAt }
-            buildings.push(building)
-          })
+      }],
+    })
+    const userResources = await this.resourcesService.getUserResources(user)
 
-          const result = {
-            resources: userResources,
-            buildings,
-          }
+    // merge userResources avec userRequirements
+    const requirements: any = []
+    userRequirements.map((ur) => {
+      const { level, updatedAt } = ur
+      const { id, name, description, type, levelMax } = ur.requirement
+      const requirement = { id, name, type, description, levelMax, level, updatedAt }
+      requirements.push(requirement)
+    })
 
-          this.res.json(result)
-        })
-      })
-    }).catch(next)
+    const result = {
+      resources: userResources,
+      requirements,
+    }
+
+    return result
   }
 }

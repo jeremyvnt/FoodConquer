@@ -6,38 +6,38 @@ import { buildingTime, upgradeCost } from './formula'
 export class BuildingService {
 
   public async getBuildingTime(user: User, cerealCost: number, meatCost: number) {
-    
+
     let portugaisLevel = 0
-    let artisantLevel  = 0
+    let artisantLevel = 0
 
     try {
-      const portugaisRequirement = <UserRequirement>await user.$get(
+      const portugaisRequirement = (<UserRequirement[]>await user.$get(
         'requirements',
         {
           where: {
-            RequirementId: 'Portugais',
+            requirementId: 'Portugais',
           },
         },
-      )
+      ))[0]
       portugaisLevel = portugaisRequirement.level
     } catch (e) {
 
     }
 
     try {
-      const artisantRequirement = <UserRequirement>await user.$get(
+      const artisantRequirement = (<UserRequirement[]>await user.$get(
         'requirements',
         {
           where: {
             RequirementId: 'Portugais',
           },
         },
-      )
+      ))[0]
       artisantLevel = artisantRequirement.level
     } catch (e) {
 
     }
-    
+
 
     return buildingTime(
       cerealCost,
@@ -50,45 +50,33 @@ export class BuildingService {
   public async getUpgradeCost(user: User, userRequirement: UserRequirement) {
 
     const requirement = <Requirement>await userRequirement.$get('requirement')
-    const cerealCost = <RequirementResource>await requirement.$get(
+    const cerealCost = (<RequirementResource[]>await requirement.$get(
       'resources',
       {
         where: {
-          resource: Resources.CEREAL,
+          resourceId: Resources.CEREAL,
         },
       },
-    )
-    const meatCost = <RequirementResource>await requirement.$get(
+    ))[0]
+
+    const meatCost = (<RequirementResource[]>await requirement.$get(
       'resources',
       {
         where: {
-          resource: Resources.MEAT,
+          resourceId: Resources.MEAT,
         },
       },
-    )
-    const waterCost = <RequirementResource> await requirement.$get(
+    ))[0]
+
+    const waterCost = (<RequirementResource[]>await requirement.$get(
       'resources',
       {
         where: {
-          resource: Resources.WATER,
+          resourceId: Resources.WATER,
         },
       },
-    )
+    ))[0]
 
     return upgradeCost(cerealCost.cost, meatCost.cost, waterCost.cost, userRequirement)
   }
-
-  /**
-   * 
-   * Get updated date when building gonna be build
-   * 
-   * @param {User} user 
-   * @param {UserRequirement} userRequirement 
-   * @returns number : timestamp
-   * @memberof BuildingService
-   */
-  public async getNextUpdatedDate(user: User, userRequirement: UserRequirement) {
-    return Date().valueOf() + this.getBuildingTime(user, userRequirement)
-  }
-
 }
