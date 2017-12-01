@@ -17,7 +17,7 @@ export class ResourcesService {
         buildingId = 'Betail'
         break
       case Resources.WATER.toString():
-        buildingId = 'Puit'
+        buildingId = 'Puits'
         break
       case Resources.MONEY.toString():
         buildingId = 'Mine'
@@ -49,7 +49,7 @@ export class ResourcesService {
       case 'Betail':
         resources = Resources.MEAT
         break
-      case 'Puit':
+      case 'Puits':
         resources = Resources.WATER
         break
       case 'Mine':
@@ -65,7 +65,7 @@ export class ResourcesService {
       'requirements',
       {
         where: {
-          Requirementid: ['Champs', 'Betail', 'Puit', 'Mine'],
+          Requirementid: ['Champs', 'Betail', 'Puits', 'Mine'],
         },
       },
     )

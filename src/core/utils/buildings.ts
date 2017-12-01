@@ -1,22 +1,23 @@
 import { Resources } from '../../objects/resource'
 import { User, Resource, Requirement, UserRequirement, RequirementResource } from '../../models'
 import { Model } from 'sequelize-typescript'
-import { buildingTime } from './formula'
+import { buildingTime, upgradeCost } from './formula'
 
 export class BuildingService {
 
-  public async getBuildingTime(user: User, userRequirement: UserRequirement) {
+  public async getBuildingTime(user: User, cerealCost: number, meatCost: number) {
     
-    let portugaisLevel, artisantLevel  = 0
+    let portugaisLevel = 0
+    let artisantLevel  = 0
 
     try {
       const portugaisRequirement = <UserRequirement> await user.$get(
         'requirements',
         {
           where: {
-            RequirementId: 'Portugais'
-          }
-        }
+            RequirementId: 'Portugais',
+          },
+        },
       )   
       portugaisLevel = portugaisRequirement.level   
     } catch {
@@ -28,41 +29,54 @@ export class BuildingService {
         'requirements',
         {
           where: {
-            RequirementId: 'Portugais'
-          }
-        }
+            RequirementId: 'Portugais',
+          },
+        },
       )
       artisantLevel = artisantRequirement.level
     } catch {
 
     }
+    
+
+    return buildingTime(
+      cerealCost,
+      meatCost,
+      portugaisLevel,
+      artisantLevel,
+    )
+  }
+
+  public async getUpgradeCost(user: User, userRequirement: UserRequirement) {
 
     const requirement = <Requirement> await userRequirement.$get('requirement')
     const cerealCost = <RequirementResource> await requirement.$get(
       'resources',
       {
         where: {
-          resource: Resources.CEREAL
-        }
-      }
+          resource: Resources.CEREAL,
+        },
+      },
     )
     const meatCost = <RequirementResource> await requirement.$get(
       'resources',
       {
         where: {
-          resource: Resources.MEAT
-        }
-      }
+          resource: Resources.MEAT,
+        },
+      },
+    )
+    const waterCost = <RequirementResource> await requirement.$get(
+      'resources',
+      {
+        where: {
+          resource: Resources.WATER,
+        },
+      },
     )
 
-    return buildingTime(
-      cerealCost.cost,
-      meatCost.cost,
-      userRequirement.level,
-      portugaisLevel,
-      artisantLevel
-    )
+    return upgradeCost(cerealCost.cost, meatCost.cost, waterCost.cost, userRequirement)
+
 
   }
-
 }
