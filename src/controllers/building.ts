@@ -17,7 +17,7 @@ export class BuildingController extends BaseController {
 	/**
 	 * Action qui liste les différents buildings
 	 * 
-	 * @param {NextFunction} next 
+	 * @param {NextFunction} next
 	 * @memberof BuildingController
 	 */
   public index(next: NextFunction) {
@@ -30,12 +30,14 @@ export class BuildingController extends BaseController {
    * @param {NextFunction} next 
    * @memberof BuildingController
    */
-  public createOrUpdate(next: NextFunction) {
+  public async createOrUpdate(next: NextFunction) {
     console.log(this.req.body)
     const requirementIdentifier = this.req.body.requirement.id
 
-    User.findOne<User>({ where: { pseudo: 'Jerem' } }).then((user) => {
-      UserRequirement.findOne<UserRequirement>({
+    const user = await User.findOne<User>({ where: { pseudo: 'Jerem' } })
+
+    try {
+      const userRequirement = await UserRequirement.findOne<UserRequirement>({
         where: {
           userId: user.id,
           requirementId: requirementIdentifier,
@@ -47,23 +49,22 @@ export class BuildingController extends BaseController {
             model: RequirementResource,
           }],
         }],
-      }).then(async (ur) => {
-        if (ur) {
-          // update
-          // set new value on ur object
-          ur.update({
-            updatedAt: new Date().valueOf() + await this.buildingService.getBuildingTime(user, ur),
-            level: ur.level + 1,
-          }).then(() => {
-            this.res.redirect(200, BuildingController.basePath)
-          }).catch(next)
-        }
-        // create
-        const newUserRequirement = new UserRequirement(user.id, requirementIdentifier)
-        newUserRequirement.save().then(() => {
-          this.res.redirect(200, BuildingController.basePath)
-        }).catch(next)
       })
-    })
+
+      // userRequirement exist so we update it
+      await userRequirement.update({
+        updatedAt: await this.buildingService.getNextUpdatedDate(user, userRequirement),
+        level: userRequirement.level + 1,
+      }).then(() => {
+        this.res.redirect(200, BuildingController.basePath)
+      }).catch(next)
+    } catch (e) {
+      // userRequirement doesn't exist we create it
+      const newUserRequirement = new UserRequirement(user.id, requirementIdentifier)
+      newUserRequirement.save().then(() => {
+        this.res.redirect(200, BuildingController.basePath)
+      }).catch(next)
+    }
   }
 }
+

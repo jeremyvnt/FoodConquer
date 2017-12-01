@@ -22,8 +22,8 @@ INSERT INTO Requirement(id, name, type, description, levelMax) VALUES (
 );
 
 INSERT INTO Requirement(id, name, type, description, levelMax) VALUES (
-  'Puit',
-  'Puit',
+  'Puits',
+  'Puits',
   'BUILDING',
   'Reserve d''eau',
   50
@@ -41,10 +41,10 @@ INSERT INTO RequirementResource(requirementId, resourceId, cost) VALUES ('Betail
 INSERT INTO RequirementResource(requirementId, resourceId, cost) VALUES ('Betail', 'cereal', 48);
 INSERT INTO RequirementResource(requirementId, resourceId, cost) VALUES ('Betail', 'money', 0);
 ##Puit
-INSERT INTO RequirementResource(requirementId, resourceId, cost) VALUES ('Puit', 'meat ', 75);
-INSERT INTO RequirementResource(requirementId, resourceId, cost) VALUES ('Puit', 'water', 0);
-INSERT INTO RequirementResource(requirementId, resourceId, cost) VALUES ('Puit', 'cereal', 225);
-INSERT INTO RequirementResource(requirementId, resourceId, cost) VALUES ('Puit', 'money', 0);
+INSERT INTO RequirementResource(requirementId, resourceId, cost) VALUES ('Puits', 'meat ', 75);
+INSERT INTO RequirementResource(requirementId, resourceId, cost) VALUES ('Puits', 'water', 0);
+INSERT INTO RequirementResource(requirementId, resourceId, cost) VALUES ('Puits', 'cereal', 225);
+INSERT INTO RequirementResource(requirementId, resourceId, cost) VALUES ('Puits', 'money', 0);
 
 #User 1
 INSERT INTO User(pseudo, email, password) VALUES ('Jerem','jeremy.vnt@gmail.com', 'password');
@@ -60,7 +60,7 @@ INSERT INTO UserResource(resource, userId, quantity, updatedAt) VALUES ('money',
 ##UserRequirement
 INSERT INTO UserRequirement(requirementId, userId, level, updatedAt) VALUES ('Champs', @user_id, 0, LOCALTIMESTAMP);
 INSERT INTO UserRequirement(requirementId, userId, level, updatedAt) VALUES ('Betail', @user_id, 0, LOCALTIMESTAMP);
-INSERT INTO UserRequirement(requirementId, userId, level, updatedAt) VALUES ('Puit', @user_id, 0, LOCALTIMESTAMP);
+INSERT INTO UserRequirement(requirementId, userId, level, updatedAt) VALUES ('Puits', @user_id, 0, LOCALTIMESTAMP);
 
 
 ##UserUnit

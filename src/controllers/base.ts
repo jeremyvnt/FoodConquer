@@ -1,4 +1,4 @@
-import { UserResource } from './../objects/models/UserResource';
+import { UserResource } from './../objects/models/UserResource'
 import { ResourcesService } from './../core/utils/resources'
 import { Request, Response, NextFunction, Router, IRouterMatcher } from 'express'
 export { NextFunction }
@@ -193,11 +193,19 @@ export abstract class BaseController {
         // merge le tableau de ressources avec userRequirements et return le tout
         this.resourcesService.getUserResources(user).then((userResources) => {
           // merge userResources avec userRequirements
-          const result = Object.assign(
-            {},
-            { resources: userResources },
-            { buildings: userRequirements },
-          )
+          const buildings: any = []
+          userRequirements.map((ur) => {
+            const { level, updatedAt } = ur
+            const { id, name, description, type, levelMax } = ur.requirement
+            const building = { id, name, type, description, levelMax, level, updatedAt }
+            buildings.push(building)
+          })
+
+          const result = {
+            resources: userResources,
+            buildings,
+          }
+
           this.res.json(result)
         })
       })

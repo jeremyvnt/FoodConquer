@@ -66,4 +66,17 @@ export class BuildingService {
 
   }
 
+  /**
+   * 
+   * Get updated date when building gonna be build
+   * 
+   * @param {User} user 
+   * @param {UserRequirement} userRequirement 
+   * @returns number : timestamp
+   * @memberof BuildingService
+   */
+  public async getNextUpdatedDate(user: User, userRequirement: UserRequirement) {
+    return Date().valueOf() + this.getBuildingTime(user, userRequirement)
+  }
+
 }
