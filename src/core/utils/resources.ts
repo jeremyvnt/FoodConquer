@@ -78,9 +78,9 @@ export class ResourcesService {
     userRequirements.forEach((userRequirement) => {
       totalMoneyUptake += moneyUptake(userRequirement)
     })
-  
+
     await Promise.all(userResources.map(async (userResource) => {
-      
+
       const userRequirement = userRequirements.find((value) => {
         return value.requirementId === this.getProductionBuildingId(
           userResource.resource,
@@ -96,8 +96,8 @@ export class ResourcesService {
         if (userResource.resource === Resources.MONEY.toString()) {
           quantity -= totalMoneyUptake
         } else {
-          max = <number> await this.getStockageMaxResources(user, userResource)
-          if( quantity > max)
+          max = <number>await this.getStockageMaxResources(user, userResource)
+          if (quantity > max)
             quantity = max
         }
 
@@ -169,11 +169,11 @@ export class ResourcesService {
 
 
   private async getStockageMaxResources(user: User, userResource: UserResource) {
-    const stockageBuilding = this.getStockageBuildingId(userResource.resource) 
+    const stockageBuilding = this.getStockageBuildingId(userResource.resource)
     let level = 0
 
     try {
-     const userRequirement = <UserRequirement> await user.$get(
+      const userRequirement = <UserRequirement>await user.$get(
         'requirement',
         {
           where: {
@@ -181,8 +181,8 @@ export class ResourcesService {
           },
         },
       )
-     level = userRequirement.level
-    } catch {
+      level = userRequirement.level
+    } catch (e) {
 
     }
 

@@ -11,21 +11,21 @@ export class BuildingService {
     let artisantLevel  = 0
 
     try {
-      const portugaisRequirement = <UserRequirement> await user.$get(
+      const portugaisRequirement = <UserRequirement>await user.$get(
         'requirements',
         {
           where: {
             RequirementId: 'Portugais',
           },
         },
-      )   
-      portugaisLevel = portugaisRequirement.level   
-    } catch {
+      )
+      portugaisLevel = portugaisRequirement.level
+    } catch (e) {
 
     }
 
     try {
-      const artisantRequirement = <UserRequirement> await user.$get(
+      const artisantRequirement = <UserRequirement>await user.$get(
         'requirements',
         {
           where: {
@@ -34,7 +34,7 @@ export class BuildingService {
         },
       )
       artisantLevel = artisantRequirement.level
-    } catch {
+    } catch (e) {
 
     }
     
@@ -49,8 +49,8 @@ export class BuildingService {
 
   public async getUpgradeCost(user: User, userRequirement: UserRequirement) {
 
-    const requirement = <Requirement> await userRequirement.$get('requirement')
-    const cerealCost = <RequirementResource> await requirement.$get(
+    const requirement = <Requirement>await userRequirement.$get('requirement')
+    const cerealCost = <RequirementResource>await requirement.$get(
       'resources',
       {
         where: {
@@ -58,7 +58,7 @@ export class BuildingService {
         },
       },
     )
-    const meatCost = <RequirementResource> await requirement.$get(
+    const meatCost = <RequirementResource>await requirement.$get(
       'resources',
       {
         where: {
@@ -76,7 +76,5 @@ export class BuildingService {
     )
 
     return upgradeCost(cerealCost.cost, meatCost.cost, waterCost.cost, userRequirement)
-
-
   }
 }
