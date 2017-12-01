@@ -30,7 +30,6 @@ export class BuildingController extends BaseController {
    */
   public createOrUpdate(next: NextFunction) {
     console.log(this.req.body)
-    // const requirement = new Todo(this.req.body)
     const requirementIdentifier = this.req.body.requirement.id
 
     User.findOne<User>({ where: { pseudo: 'Jerem' } }).then((user) => {

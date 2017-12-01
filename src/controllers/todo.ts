@@ -16,9 +16,6 @@ export class TodoController extends BaseController {
    * @param {NextFunction} next 
    * @memberof TodoController
    */
-  public rootIndex(next: NextFunction) {
-    this.res.redirect(301, '/todos')
-  }
 
   /**
    * Action qui liste nos Todos
