@@ -39,30 +39,33 @@ export class BuildingController extends BaseController {
 
     const user = await User.findOne<User>({ where: { pseudo: 'Jerem' } })
 
-    const userRequirement = (<UserRequirement[]>await user.$get(
-      'requirements',
+    const requirement = await Requirement.findOne<Requirement>(
       {
         where: {
-          requirementId: buildingId,
+          id: buildingId,
         },
-        include: [{
-          model: Requirement,
-          where: {
-            type: this.requirementType,
-          },
-        }],
       },
-    ))[0]
+    )
+    const userRequirement = <UserRequirement[]>await requirement.$get(
+      'userRequirements',
+      {
+        where: {
+          userId: user.id,
+        },
+      },
+    )
 
-    const cost = await this.buildingService.getUpgradeCost(user, userRequirement)
+    const level = userRequirement.length ? userRequirement[0].level : 0
+    const updatedAt = userRequirement.length ? userRequirement[0].updatedAt : 0
+
+    const cost = await this.buildingService.getUpgradeCost(user, requirement, level)
     const buildDuration = await this.buildingService.getBuildingTime(
       user,
       cost[Resources.CEREAL],
       cost[Resources.MEAT],
     )
 
-    const { level, updatedAt } = userRequirement
-    const { id, name, description, type, levelMax } = userRequirement.requirement
+    const { id, name, description, type, levelMax } = requirement
     const building = { id, name, type, description, levelMax, level, updatedAt, cost, buildDuration }
     this.res.json(building)
   }
@@ -75,41 +78,53 @@ export class BuildingController extends BaseController {
    */
   public async createOrUpdate(next: NextFunction) {
     console.log(this.req.body)
-    const requirementIdentifier = this.req.body.requirement.id
+    const requirementIdentifier = this.req.body.id
 
     const user = await User.findOne<User>({ where: { pseudo: 'Jerem' } })
 
-    try {
-      const userRequirement = <UserRequirement>await user.$get(
-        'requirements',
-        {
-          where: {
-            requirementId: requirementIdentifier,
-          },
+    const userRequirement = (<UserRequirement[]>await user.$get(
+      'requirements',
+      {
+        where: {
+          requirementId: requirementIdentifier,
         },
-      )
+        include: [{
+          model: Requirement,
+          where: {
+            type: this.requirementType,
+          },
+        }],
+      },
+    ))[0]
 
-      // userRequirement exist so we update it
-      const cost = await this.buildingService.getUpgradeCost(user, userRequirement)
-      const buildDuration = await this.buildingService.getBuildingTime(
-        user,
-        cost[Resources.CEREAL],
-        cost[Resources.MEAT],
-      )
+    // userRequirement exist so we update it
+    /*const cost = await this.buildingService.getUpgradeCost(user, userRequirement)
+    const buildDuration = await this.buildingService.getBuildingTime(
+      user,
+      cost[Resources.CEREAL],
+      cost[Resources.MEAT],
+    )
 
-      userRequirement.update({
-        updatedAt: Date().valueOf() + (buildDuration * 3600000),
-        level: userRequirement.level + 1,
-      }).then(() => {
-        this.res.redirect(200, BuildingController.basePath)
-      }).catch(next)
-    } catch (e) {
+    userRequirement.update({
+      updatedAt: Date().valueOf() + (buildDuration * 3600000),
+      level: userRequirement.level + 1,
+    }).then(() => {
+      this.res.redirect(200, BuildingController.basePath)
+    }).catch(next)*/
+
+    
+    if (userRequirement) {
+      await this.buildingService.upgradeBuilding(user, userRequirement)
+      this.res.redirect(200, BuildingController.basePath)      
+    } else {
       // userRequirement doesn't exist we create it
       const newUserRequirement = new UserRequirement(user.id, requirementIdentifier)
       newUserRequirement.save().then(() => {
         this.res.redirect(200, BuildingController.basePath)
-      }).catch(next)
+      }).catch(next)      
     }
+  
+    
   }
 }
 

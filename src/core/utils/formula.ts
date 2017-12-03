@@ -1,5 +1,5 @@
 import { Resources } from '../../objects/resource'
-import { UserRequirement } from '../../models'
+import { UserRequirement, Requirement } from '../../models'
 
 export const maxStokage = (level: number): number => {
   return Math.round(2.5 * Math.exp(20 * level / 33)) * 5000
@@ -55,7 +55,8 @@ export const moneyUptake = (userRequirement: UserRequirement): number => {
 export const upgradeCost = (cerealCost: number,
                             meatCost: number,
                             waterCost: number,
-                            userRequirement: UserRequirement): any => {
+                            requirement: Requirement,
+                            level: number): any => {
 
   const cost = {
     [Resources.CEREAL]: 0,
@@ -63,25 +64,30 @@ export const upgradeCost = (cerealCost: number,
     [Resources.WATER]: 0,
   }
 
-  switch (userRequirement.requirementId) {
+  switch (requirement.id) {
     case 'Champs':
     case 'Mine':
     case 'Puits':
-      cost[Resources.CEREAL] = cerealCost * 1.5 ** userRequirement.level
-      cost[Resources.MEAT] = meatCost * 1.5 ** userRequirement.level
-      cost[Resources.WATER] = waterCost * 1.5 ** userRequirement.level
+      cost[Resources.CEREAL] = cerealCost * 1.5 ** level
+      cost[Resources.MEAT] = meatCost * 1.5 ** level
+      cost[Resources.WATER] = waterCost * 1.5 ** level
       break
     case 'Betail':
-      cost[Resources.CEREAL] = cerealCost * 1.6 ** userRequirement.level
-      cost[Resources.MEAT] = meatCost * 1.6 ** userRequirement.level
-      cost[Resources.WATER] = waterCost * 1.6 ** userRequirement.level
+      cost[Resources.CEREAL] = cerealCost * 1.6 ** level
+      cost[Resources.MEAT] = meatCost * 1.6 ** level
+      cost[Resources.WATER] = waterCost * 1.6 ** level
       break
     default:
-      cost[Resources.CEREAL] = cerealCost * 2 ** userRequirement.level
-      cost[Resources.MEAT] = meatCost * 2 ** userRequirement.level
-      cost[Resources.WATER] = waterCost * 2 ** userRequirement.level
+      cost[Resources.CEREAL] = cerealCost * 2 ** level
+      cost[Resources.MEAT] = meatCost * 2 ** level
+      cost[Resources.WATER] = waterCost * 2 ** level
       break
   }
+
+  for (const index in cost) {
+    cost[index] === 0 && delete cost[index]
+  }
+
   return cost
 }
 

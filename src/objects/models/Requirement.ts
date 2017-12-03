@@ -1,6 +1,9 @@
-import { Resource, RequirementResource } from '../../models'
+import { Resource, RequirementResource, UserRequirement } from '../../models'
 import {
-  Table, Column, Model, CreatedAt, UpdatedAt, DataType, PrimaryKey, AutoIncrement, BelongsToMany, HasMany
+  Table, Column, Model, 
+  CreatedAt, UpdatedAt, DataType, 
+  PrimaryKey, AutoIncrement, BelongsToMany, 
+  HasMany,
 } from 'sequelize-typescript'
 
 import { BaseDefinition } from '../base'
@@ -62,6 +65,9 @@ export class Requirement extends Model<Requirement> {
 
   @HasMany(() => RequirementResource)
   resources: RequirementResource[]
+
+  @HasMany(() => UserRequirement)
+  userRequirements: UserRequirement[]
   
 
   baseCost: Map<Resources, number>

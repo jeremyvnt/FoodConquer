@@ -1,7 +1,8 @@
 import { Resources } from '../../objects/resource'
-import { User, Resource, Requirement, UserRequirement, RequirementResource } from '../../models'
+import { User, Resource, Requirement, UserRequirement, RequirementResource, UserResource } from '../../models'
 import { Model } from 'sequelize-typescript'
 import { buildingTime, upgradeCost } from './formula'
+import { ResourcesService } from './resources'
 
 export class BuildingService {
 
@@ -47,9 +48,8 @@ export class BuildingService {
     )
   }
 
-  public async getUpgradeCost(user: User, userRequirement: UserRequirement) {
-
-    const requirement = <Requirement>await userRequirement.$get('requirement')
+  public async getUpgradeCost(user: User, requirement: Requirement, level: number) {
+    
     const cerealCost = (<RequirementResource[]>await requirement.$get(
       'resources',
       {
@@ -77,6 +77,50 @@ export class BuildingService {
       },
     ))[0]
 
-    return upgradeCost(cerealCost.cost, meatCost.cost, waterCost.cost, userRequirement)
+    return upgradeCost(cerealCost.cost, meatCost.cost, waterCost.cost, requirement, level)
+  }
+
+
+  public async upgradeBuilding(user: User, userRequirement: UserRequirement) {
+    const resourcesService = new ResourcesService()
+    const userResources = await resourcesService.getUserResources(user)
+    const upgradeCost = await this.getUpgradeCost(user, userRequirement.requirement, userRequirement.level)
+    const buildingTime = await this.getBuildingTime(
+      user, 
+      upgradeCost[Resources.CEREAL], 
+      upgradeCost[Resources.MEAT],
+    )
+
+
+    for (const resource in upgradeCost) {
+      const cost = upgradeCost[resource]
+      const userResource = userResources.find((userResource) => {
+        return userResource.name === resource
+      })
+      if (userResource.quantity < cost)
+        return false
+    }
+
+    for (const resource in upgradeCost) {
+      const cost = upgradeCost[resource]
+      const quantity = userResources.find((userResource) => {
+        return userResource.name === resource
+      }).quantity
+      const userResource = (<UserResource[]>await user.$get(
+        'resources',
+        {
+          where: {
+            resource,
+          },
+        },
+      ))[0]
+
+      userResource.set('quantity', quantity - cost)
+      userResource.set('updatedAt', new Date().valueOf())
+      userResource.save()
+    }
+    userRequirement.set('level', userRequirement.level + 1)
+    userRequirement.set('updatedAt', new Date().valueOf() + buildingTime * 3600000)
+    userRequirement.save()
   }
 }
