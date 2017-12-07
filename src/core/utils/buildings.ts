@@ -16,7 +16,7 @@ export class BuildingService {
         'requirements',
         {
           where: {
-            requirementId: 'Portugais',
+            requirementId: 'portugais',
           },
         },
       ))[0]
@@ -30,7 +30,7 @@ export class BuildingService {
         'requirements',
         {
           where: {
-            RequirementId: 'Portugais',
+            RequirementId: 'portugais',
           },
         },
       ))[0]
@@ -81,28 +81,56 @@ export class BuildingService {
   }
 
 
+
+
   public async upgradeBuilding(user: User, userRequirement: UserRequirement) {
+    
+    if (userRequirement.updatedAt > new Date().valueOf())
+      return false
+
     const resourcesService = new ResourcesService()
     const userResources = await resourcesService.getUserResources(user)
-    const upgradeCost = await this.getUpgradeCost(user, userRequirement.requirement, userRequirement.level)
+    const cost = await this.getUpgradeCost(user, userRequirement.requirement, userRequirement.level)
+
     const buildingTime = await this.getBuildingTime(
       user, 
-      upgradeCost[Resources.CEREAL], 
-      upgradeCost[Resources.MEAT],
+      cost[Resources.CEREAL], 
+      cost[Resources.MEAT],
     )
+    
+    if (!this.canBuyBuilding(userResources, cost))
+      throw new Error('Not enougth resources')
+
+    await this.withdrawResources(user, userResources, cost)
+
+    userRequirement.set('level', userRequirement.level + 1)
+    userRequirement.set('updatedAt', new Date().valueOf() + buildingTime * 3600000)
+    userRequirement.save()
+  }
 
 
-    for (const resource in upgradeCost) {
-      const cost = upgradeCost[resource]
+
+
+
+  private canBuyBuilding(userResources: any[], cost: any[]) {
+    let canBuy = true
+
+    for (const resource in cost) {
+      const tempCost = cost[resource]
       const userResource = userResources.find((userResource) => {
         return userResource.name === resource
       })
-      if (userResource.quantity < cost)
-        return false
+      if (userResource.quantity < tempCost)
+        canBuy = false
     }
+    return canBuy
+  }
 
-    for (const resource in upgradeCost) {
-      const cost = upgradeCost[resource]
+
+
+  private async withdrawResources(user: User, userResources: any[], cost: any[]) {
+    for (const resource in cost) {
+      const tempCost = cost[resource]
       const quantity = userResources.find((userResource) => {
         return userResource.name === resource
       }).quantity
@@ -115,12 +143,39 @@ export class BuildingService {
         },
       ))[0]
 
-      userResource.set('quantity', quantity - cost)
+      userResource.set('quantity', quantity - tempCost)
       userResource.set('updatedAt', new Date().valueOf())
       userResource.save()
     }
-    userRequirement.set('level', userRequirement.level + 1)
-    userRequirement.set('updatedAt', new Date().valueOf() + buildingTime * 3600000)
-    userRequirement.save()
+  }
+
+
+
+
+  public async createBuilding(user: User, requirementId: string) {
+    const requirement = await Requirement.findOne<Requirement>({ where: { id: requirementId } })
+   
+    const resourcesService = new ResourcesService()
+    const userResources = await resourcesService.getUserResources(user)
+    const cost = await this.getUpgradeCost(user, requirement, 0)
+    const buildingTime = await this.getBuildingTime(
+      user, 
+      cost[Resources.CEREAL], 
+      cost[Resources.MEAT],
+    )
+
+    if (!this.canBuyBuilding(userResources, cost))
+      throw new Error('Not enougth resources')
+
+    await this.withdrawResources(user, userResources, cost)
+
+    const newUserRequirement = new UserRequirement()
+
+    newUserRequirement.$set('requirement', requirement)
+    newUserRequirement.$set('user', user)
+    newUserRequirement.set('level', 1)
+    newUserRequirement.set('updatedAt', new Date().valueOf() + buildingTime * 3600000)
+
+    newUserRequirement.save()
   }
 }

@@ -33,7 +33,6 @@ export const baseProduction = (resource: string,
 
 export const moneyUptake = (userRequirement: UserRequirement): number => {
   let moneyUptake = 0
-
   switch (userRequirement.requirementId) {
     case 'Champs':
       moneyUptake = 10 * userRequirement.level * 1.1 ** userRequirement.level

@@ -11,16 +11,16 @@ export class ResourcesService {
     let buildingId: string
     switch (resource) {
       case Resources.CEREAL.toString():
-        buildingId = 'Champs'
+        buildingId = 'champs'
         break
       case Resources.MEAT.toString():
-        buildingId = 'Betail'
+        buildingId = 'betail'
         break
       case Resources.WATER.toString():
-        buildingId = 'Puits'
+        buildingId = 'puits'
         break
       case Resources.MONEY.toString():
-        buildingId = 'Mine'
+        buildingId = 'mine'
         break
     }
     return buildingId
@@ -29,13 +29,13 @@ export class ResourcesService {
     let buildingId: string
     switch (resource) {
       case Resources.CEREAL.toString():
-        buildingId = 'Silot'
+        buildingId = 'silot'
         break
       case Resources.MEAT.toString():
-        buildingId = 'Entrepot'
+        buildingId = 'entrepot'
         break
       case Resources.WATER.toString():
-        buildingId = 'Citerne'
+        buildingId = 'citerne'
         break
     }
     return buildingId
@@ -43,16 +43,16 @@ export class ResourcesService {
   private getResourceFromBuildingId(buildingId: string): Resources {
     let resources: Resources
     switch (buildingId) {
-      case 'Champs':
+      case 'champs':
         resources = Resources.CEREAL
         break
-      case 'Betail':
+      case 'betail':
         resources = Resources.MEAT
         break
-      case 'Puits':
+      case 'puits':
         resources = Resources.WATER
         break
-      case 'Mine':
+      case 'mine':
         resources = Resources.MONEY
         break
     }
@@ -65,7 +65,7 @@ export class ResourcesService {
       'requirements',
       {
         where: {
-          Requirementid: ['Champs', 'Betail', 'Puits', 'Mine'],
+          Requirementid: ['champs', 'betail', 'puits', 'mine'],
         },
       },
     )
@@ -87,29 +87,28 @@ export class ResourcesService {
         )
       })
 
-      if (userRequirement) {
+      let quantity = 0
+      let production = 0
+      let max: number
 
-        let quantity = this.calculUserResource(user, userResource, userRequirement)
-        const production = baseProduction(userResource.resource, userRequirement.level)
-        let max: number
+      quantity = this.calculUserResource(user, userResource, userRequirement)
+      production = baseProduction(userResource.resource, userRequirement ? userRequirement.level : 0)
 
-        if (userResource.resource === Resources.MONEY.toString()) {
-          quantity -= totalMoneyUptake
-        } else {
-          max = <number>await this.getStockageMaxResources(user, userResource)
-          if (quantity > max)
-            quantity = max
-        }
-
-        const resource = {
-          quantity,
-          production,
-          max,
-          name: userResource.resource,
-        }
-
-        resources.push(resource)
+      if (userResource.resource === Resources.MONEY.toString()) {
+        quantity -= totalMoneyUptake
+      } else {
+        max = <number>await this.getStockageMaxResources(user, userResource)
+        if (quantity > max)
+          quantity = max
       }
+
+      const resource = {
+        quantity,
+        production,
+        max,
+        name: userResource.resource,
+      }
+      resources.push(resource)
     }))
 
     return resources
@@ -117,7 +116,7 @@ export class ResourcesService {
 
   private calculUserResource(user: User,
                              userResource: UserResource,
-                             userRequirement: UserRequirement): number {
+                             userRequirement?: UserRequirement): number {
 
     let quantity: number
     if (userResource.resource !== Resources.MONEY.toString()) {
@@ -131,38 +130,39 @@ export class ResourcesService {
 
   private calculUserBaseResource(user: User,
                                  userResource: UserResource,
-                                 userRequirement: UserRequirement): number {
+                                 userRequirement?: UserRequirement): number {
 
-    const resource: Resources = this.getResourceFromBuildingId(userRequirement.requirementId)
+    const resource = userResource.resource
     let quantity = userResource.quantity
 
-    if (userRequirement.updatedAt > new Date().valueOf()) {
+    if (userRequirement && userRequirement.updatedAt > new Date().valueOf()) {
       quantity += ((new Date().valueOf() - userResource.updatedAt) / 3600000) *
-        baseProduction(resource.toString(), userRequirement.level - 1)
+        baseProduction(resource, userRequirement.level - 1)
     } else {
-      if (userResource.updatedAt < userRequirement.updatedAt) {
+      if (userRequirement && userResource.updatedAt < userRequirement.updatedAt) {
         quantity += ((new Date().valueOf() - userRequirement.updatedAt) / 3600000) *
-          baseProduction(resource.toString(), userRequirement.level)
+          baseProduction(resource, userRequirement.level)
           + ((userRequirement.updatedAt - userResource.updatedAt) / 3600000) *
-          baseProduction(resource.toString(), userRequirement.level - 1)
+          baseProduction(resource, userRequirement.level - 1)
       } else {
         quantity += ((new Date().valueOf() - userResource.updatedAt) / 3600000) *
-          baseProduction(resource.toString(), userRequirement.level)
+          baseProduction(resource, userRequirement ? userRequirement.level : 0)
       }
     }
+
     return quantity
   }
 
   private calculUserSpecialResource(userResource: UserResource,
-                                    userRequirement: UserRequirement): number {
+                                    userRequirement?: UserRequirement): number {
 
+    const resource = userResource.resource
     let quantity: number = userResource.quantity
-    const resource: Resources = this.getResourceFromBuildingId(userRequirement.requirementId)
 
-    if (userRequirement.updatedAt > new Date().valueOf()) {
+    if (userRequirement && userRequirement.updatedAt > new Date().valueOf()) {
       quantity = baseProduction(resource.toString(), userRequirement.level - 1)
     } else {
-      quantity = baseProduction(resource.toString(), userRequirement.level)
+      quantity = baseProduction(resource.toString(), userRequirement ? userRequirement.level : 0)
     }
     return quantity
   }
