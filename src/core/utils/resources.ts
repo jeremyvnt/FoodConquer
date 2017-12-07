@@ -188,4 +188,45 @@ export class ResourcesService {
 
     return maxStokage(level)
   }
+
+
+
+  public hasEnoughResources(userResources: any[], cost: any[]) {
+    let canBuy = true
+
+    for (const resource in cost) {
+      const tempCost = cost[resource]
+      const userResource = userResources.find((userResource) => {
+        return userResource.name === resource
+      })
+      if (userResource.quantity < tempCost)
+        canBuy = false
+    }
+    return canBuy
+  }
+
+
+
+  public async withdrawResources(user: User, userResources: any[], cost: any[]) {
+    for (const resource in cost) {
+      const tempCost = cost[resource]
+      const quantity = userResources.find((userResource) => {
+        return userResource.name === resource
+      }).quantity
+      const userResource = (<UserResource[]>await user.$get(
+        'resources',
+        {
+          where: {
+            resource,
+          },
+        },
+      ))[0]
+
+      userResource.set('quantity', quantity - tempCost)
+      userResource.set('updatedAt', new Date().valueOf())
+      userResource.save()
+    }
+  }
+
+
 }

@@ -52,6 +52,12 @@ export class BuildingController extends BaseController {
         where: {
           userId: user.id,
         },
+        include: [{
+          model: Requirement,
+          where: {
+            type: this.requirementType,
+          },
+        }],
       },
     )
 

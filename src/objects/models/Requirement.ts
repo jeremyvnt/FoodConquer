@@ -8,7 +8,7 @@ import {
 
 import { BaseDefinition } from '../base'
 import { Resources } from '../resource'
-import { TechTree } from '../techTree'
+import { TECH_TREE } from '../techTree'
 
 
 export interface RequirementDefinition extends BaseDefinition {
@@ -68,19 +68,4 @@ export class Requirement extends Model<Requirement> {
 
   @HasMany(() => UserRequirement)
   userRequirements: UserRequirement[]
-  
-
-  baseCost: Map<Resources, number>
-  technologies: Map<string, number>
-
-  constructor(definition: RequirementDefinition) {
-    super()
-    this.id = definition.id
-    this.name = definition.name
-    this.description = definition.description
-    this.baseCost = definition.baseCost
-    this.technologies = TechTree.TECH_TREE.get(this.id)
-    this.type = definition.type
-    this.levelMax = definition.levelMax
-  }
 }

@@ -1,8 +1,9 @@
 import { Resources } from '../../objects/resource'
 import { User, Resource, Requirement, UserRequirement, RequirementResource, UserResource } from '../../models'
-import { Model } from 'sequelize-typescript'
+import { Model, Sequelize } from 'sequelize-typescript'
 import { buildingTime, upgradeCost } from './formula'
 import { ResourcesService } from './resources'
+import { TECH_TREE } from '../../objects/techTree'
 
 export class BuildingService {
 
@@ -98,10 +99,13 @@ export class BuildingService {
       cost[Resources.MEAT],
     )
     
-    if (!this.canBuyBuilding(userResources, cost))
+    if (!await this.hasRequirements(user, userRequirement.requirement))
+      throw new Error('Needs some requirements')      
+
+    if (!resourcesService.hasEnoughResources(userResources, cost))
       throw new Error('Not enougth resources')
 
-    await this.withdrawResources(user, userResources, cost)
+    await resourcesService.withdrawResources(user, userResources, cost)
 
     userRequirement.set('level', userRequirement.level + 1)
     userRequirement.set('updatedAt', new Date().valueOf() + buildingTime * 3600000)
@@ -109,46 +113,27 @@ export class BuildingService {
   }
 
 
-
-
-
-  private canBuyBuilding(userResources: any[], cost: any[]) {
-    let canBuy = true
-
-    for (const resource in cost) {
-      const tempCost = cost[resource]
-      const userResource = userResources.find((userResource) => {
-        return userResource.name === resource
-      })
-      if (userResource.quantity < tempCost)
-        canBuy = false
-    }
-    return canBuy
-  }
-
-
-
-  private async withdrawResources(user: User, userResources: any[], cost: any[]) {
-    for (const resource in cost) {
-      const tempCost = cost[resource]
-      const quantity = userResources.find((userResource) => {
-        return userResource.name === resource
-      }).quantity
-      const userResource = (<UserResource[]>await user.$get(
-        'resources',
+  public async hasRequirements(user: User, requirement: Requirement) {
+    const requirementsTree = TECH_TREE.get(requirement.id)
+    console.log(JSON.stringify(requirementsTree))
+    for (const entrie of requirementsTree) {
+      const userRequirement = <UserRequirement[]> await user.$get(
+        'requirements',
         {
           where: {
-            resource,
+            requirementId: entrie[0],
+            level: {
+              [Sequelize.Op.gte]: entrie[1],
+            },
           },
         },
-      ))[0]
-
-      userResource.set('quantity', quantity - tempCost)
-      userResource.set('updatedAt', new Date().valueOf())
-      userResource.save()
+      )
+      if (!userRequirement.length)
+        return false
     }
-  }
 
+    return true
+  }
 
 
 
@@ -164,10 +149,10 @@ export class BuildingService {
       cost[Resources.MEAT],
     )
 
-    if (!this.canBuyBuilding(userResources, cost))
+    if (!resourcesService.hasEnoughResources(userResources, cost))
       throw new Error('Not enougth resources')
 
-    await this.withdrawResources(user, userResources, cost)
+    await resourcesService.withdrawResources(user, userResources, cost)
 
     const newUserRequirement = new UserRequirement()
 
