@@ -99,3 +99,11 @@ export const buildingTime = (cerealCost: number,
 
   return (cerealCost + meatCost) / (2500 * (1 + portugaisLevel)) * (2 ** artisantLevel)
 }
+
+
+export const researchTime = (cerealCost: number,
+                             meatCost: number,
+                             laboratoireLevel: number) => {
+
+  return (cerealCost + meatCost) / (1000 * (1 + laboratoireLevel))
+}
