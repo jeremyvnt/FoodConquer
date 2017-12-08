@@ -1,7 +1,7 @@
 import { Resources } from '../../objects/resource'
-import { User, Resource, Requirement, UserRequirement, UserResource } from '../../models'
+import { User, Resource, Requirement, UserRequirement, UserResource, RequirementResource } from '../../models'
 import { Model } from 'sequelize-typescript'
-import { maxStokage, baseProduction, moneyUptake } from './formula'
+import { maxStokage, baseProduction, moneyUptake, upgradeCost } from './formula'
 
 
 
@@ -226,6 +226,40 @@ export class ResourcesService {
       userResource.set('updatedAt', new Date().valueOf())
       userResource.save()
     }
+  }
+
+
+
+  public async getUpgradeCost(user: User, requirement: Requirement, level: number) {
+    
+    const cerealCost = (<RequirementResource[]>await requirement.$get(
+      'resources',
+      {
+        where: {
+          resourceId: Resources.CEREAL,
+        },
+      },
+    ))[0]
+
+    const meatCost = (<RequirementResource[]>await requirement.$get(
+      'resources',
+      {
+        where: {
+          resourceId: Resources.MEAT,
+        },
+      },
+    ))[0]
+
+    const waterCost = (<RequirementResource[]>await requirement.$get(
+      'resources',
+      {
+        where: {
+          resourceId: Resources.WATER,
+        },
+      },
+    ))[0]
+
+    return upgradeCost(cerealCost.cost, meatCost.cost, waterCost.cost, requirement, level)
   }
 
 

@@ -1,44 +1,33 @@
 import { Resources } from '../../objects/resource'
 import { User, Resource, Requirement, UserRequirement, RequirementResource, UserResource } from '../../models'
 import { Model, Sequelize } from 'sequelize-typescript'
-import { buildingTime, upgradeCost } from './formula'
+import { buildingTime, researchTime } from './formula'
 import { ResourcesService } from './resources'
 import { TECH_TREE } from '../../objects/techTree'
 
-export class BuildingService {
+export class RequirementService {
 
   public async getBuildingTime(user: User, cerealCost: number, meatCost: number) {
 
-    let portugaisLevel = 0
-    let artisantLevel = 0
-
-    try {
-      const portugaisRequirement = (<UserRequirement[]>await user.$get(
-        'requirements',
-        {
-          where: {
-            requirementId: 'portugais',
-          },
+    const portugaisRequirement = (<UserRequirement[]>await user.$get(
+      'requirements',
+      {
+        where: {
+          requirementId: 'portugais',
         },
-      ))[0]
-      portugaisLevel = portugaisRequirement.level
-    } catch (e) {
+      },
+    ))
+    const portugaisLevel = portugaisRequirement.length ? portugaisRequirement[0].level : 0
 
-    }
-
-    try {
-      const artisantRequirement = (<UserRequirement[]>await user.$get(
-        'requirements',
-        {
-          where: {
-            RequirementId: 'portugais',
-          },
+    const artisantRequirement = (<UserRequirement[]>await user.$get(
+      'requirements',
+      {
+        where: {
+          RequirementId: 'artisant',
         },
-      ))[0]
-      artisantLevel = artisantRequirement.level
-    } catch (e) {
-
-    }
+      },
+    ))
+    const artisantLevel = artisantRequirement.length ? artisantRequirement[0].level : 0
 
 
     return buildingTime(
@@ -49,55 +38,29 @@ export class BuildingService {
     )
   }
 
-  public async getUpgradeCost(user: User, requirement: Requirement, level: number) {
-    
-    const cerealCost = (<RequirementResource[]>await requirement.$get(
-      'resources',
-      {
-        where: {
-          resourceId: Resources.CEREAL,
-        },
-      },
-    ))[0]
 
-    const meatCost = (<RequirementResource[]>await requirement.$get(
-      'resources',
-      {
-        where: {
-          resourceId: Resources.MEAT,
-        },
-      },
-    ))[0]
-
-    const waterCost = (<RequirementResource[]>await requirement.$get(
-      'resources',
-      {
-        where: {
-          resourceId: Resources.WATER,
-        },
-      },
-    ))[0]
-
-    return upgradeCost(cerealCost.cost, meatCost.cost, waterCost.cost, requirement, level)
-  }
-
-
-
-
-  public async upgradeBuilding(user: User, userRequirement: UserRequirement) {
+  public async upgradeRequirement(user: User, userRequirement: UserRequirement) {
     
     if (userRequirement.updatedAt > new Date().valueOf())
       return false
 
     const resourcesService = new ResourcesService()
     const userResources = await resourcesService.getUserResources(user)
-    const cost = await this.getUpgradeCost(user, userRequirement.requirement, userRequirement.level)
+    const cost = await resourcesService.getUpgradeCost(user, userRequirement.requirement, userRequirement.level)
 
-    const buildingTime = await this.getBuildingTime(
-      user, 
-      cost[Resources.CEREAL], 
-      cost[Resources.MEAT],
-    )
+    const buildingTime = userRequirement.requirement.type === "BUILDING" ? 
+      await this.getBuildingTime(
+        user, 
+        cost[Resources.CEREAL], 
+        cost[Resources.MEAT],
+      ) :
+      await this.getResearchTime(
+        user, 
+        cost[Resources.CEREAL], 
+        cost[Resources.MEAT],
+      )
+
+
     
     if (!await this.hasRequirements(user, userRequirement.requirement))
       throw new Error('Needs some requirements')      
@@ -115,7 +78,6 @@ export class BuildingService {
 
   public async hasRequirements(user: User, requirement: Requirement) {
     const requirementsTree = TECH_TREE.get(requirement.id)
-    console.log(JSON.stringify(requirementsTree))
     for (const entrie of requirementsTree) {
       const userRequirement = <UserRequirement[]> await user.$get(
         'requirements',
@@ -137,17 +99,25 @@ export class BuildingService {
 
 
 
-  public async createBuilding(user: User, requirementId: string) {
+  public async createRequirement(user: User, requirementId: string) {
     const requirement = await Requirement.findOne<Requirement>({ where: { id: requirementId } })
    
     const resourcesService = new ResourcesService()
     const userResources = await resourcesService.getUserResources(user)
-    const cost = await this.getUpgradeCost(user, requirement, 0)
-    const buildingTime = await this.getBuildingTime(
-      user, 
-      cost[Resources.CEREAL], 
-      cost[Resources.MEAT],
-    )
+    const cost = await resourcesService.getUpgradeCost(user, requirement, 0)
+    
+    const buildingTime = requirement.type === "BUILDING" ? 
+      await this.getBuildingTime(
+        user, 
+        cost[Resources.CEREAL], 
+        cost[Resources.MEAT],
+      ) :
+      await this.getResearchTime(
+        user, 
+        cost[Resources.CEREAL], 
+        cost[Resources.MEAT],
+      )
+
 
     if (!resourcesService.hasEnoughResources(userResources, cost))
       throw new Error('Not enougth resources')
@@ -163,4 +133,26 @@ export class BuildingService {
 
     newUserRequirement.save()
   }
+
+
+  public async getResearchTime(user: User, cerealCost: number, meatCost: number) {
+    const laboratoireRequirement = (<UserRequirement[]>await user.$get(
+      'requirements',
+      {
+        where: {
+          RequirementId: 'laboratoire',
+        },
+      },
+    ))
+    const laboratoireLevel = laboratoireRequirement.length ? laboratoireRequirement[0].level : 0
+
+
+    return researchTime(
+      cerealCost,
+      meatCost,
+      laboratoireLevel,
+    )
+  }
+
+
 }
