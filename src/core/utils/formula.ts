@@ -107,3 +107,5 @@ export const researchTime = (cerealCost: number,
 
   return (cerealCost + meatCost) / (1000 * (1 + laboratoireLevel))
 }
+
+

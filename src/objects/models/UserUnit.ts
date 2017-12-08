@@ -2,6 +2,7 @@ import { Unit } from './Unit'
 import { User } from './User'
 import {
   Table,Column, Model, CreatedAt, UpdatedAt, DataType, PrimaryKey, ForeignKey, AutoIncrement,
+  BelongsTo,
 } from 'sequelize-typescript'
 
 
@@ -20,9 +21,14 @@ export class UserUnit extends Model<UserUnit> {
   @Column
   quantity: number
 
-  @Column
-  level: number
+  @Column({
+    type: DataType.BIGINT,
+  })
+  updatedAt: number
 
-  @Column
-  updateAt: number
+  @BelongsTo(() => User)
+  user: User
+
+  @BelongsTo(() => Unit)
+  unit: Unit
 }

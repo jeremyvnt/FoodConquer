@@ -2,6 +2,7 @@ import { Resource } from './Resource'
 import { UserResource } from './UserResource'
 import { Requirement } from './Requirement'
 import { UserRequirement } from './UserRequirement'
+import { UserUnit } from './UserUnit'
 import {
   Table, Column, Model, CreatedAt, UpdatedAt, DataType, PrimaryKey, AutoIncrement,
   BelongsToMany, HasMany,
@@ -46,4 +47,7 @@ export class User extends Model<User> {
 
   @HasMany(() => UserRequirement)
   requirements: UserRequirement[]
+
+  @HasMany(() => UserUnit)
+  units: UserUnit[]
 }

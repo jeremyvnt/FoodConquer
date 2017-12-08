@@ -7,7 +7,7 @@ import { TECH_TREE } from '../../objects/techTree'
 
 export class RequirementService {
 
-  public async getBuildingTime(user: User, cerealCost: number, meatCost: number) {
+  public async getBuildingTime(user: User, cerealCost: number = 0, meatCost: number = 0) {
 
     const portugaisRequirement = (<UserRequirement[]>await user.$get(
       'requirements',
@@ -29,7 +29,6 @@ export class RequirementService {
     ))
     const artisantLevel = artisantRequirement.length ? artisantRequirement[0].level : 0
 
-
     return buildingTime(
       cerealCost,
       meatCost,
@@ -46,9 +45,13 @@ export class RequirementService {
 
     const resourcesService = new ResourcesService()
     const userResources = await resourcesService.getUserResources(user)
-    const cost = await resourcesService.getUpgradeCost(user, userRequirement.requirement, userRequirement.level)
+    const cost = await resourcesService.getUpgradeCost(
+      user, 
+      userRequirement.requirement, 
+      userRequirement.level,
+    )
 
-    const buildingTime = userRequirement.requirement.type === "BUILDING" ? 
+    const buildingTime = userRequirement.requirement.type === 'BUILDING' ? 
       await this.getBuildingTime(
         user, 
         cost[Resources.CEREAL], 
@@ -106,7 +109,7 @@ export class RequirementService {
     const userResources = await resourcesService.getUserResources(user)
     const cost = await resourcesService.getUpgradeCost(user, requirement, 0)
     
-    const buildingTime = requirement.type === "BUILDING" ? 
+    const buildingTime = requirement.type === 'BUILDING' ? 
       await this.getBuildingTime(
         user, 
         cost[Resources.CEREAL], 
