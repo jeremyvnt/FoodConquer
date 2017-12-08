@@ -1,3 +1,4 @@
+import { RequirementService } from './../core/utils/requirements'
 import { UserResource } from './../objects/models/UserResource'
 import { ResourcesService } from './../core/utils/resources'
 import { Request, Response, NextFunction, Router, IRouterMatcher } from 'express'
@@ -91,6 +92,16 @@ export abstract class BaseController {
    * @memberof BaseController
    */
   resourcesService: ResourcesService
+
+  /**
+   * Requirement service
+   * 
+   * @type {Service}
+   * @memberof BaseController
+   */
+  requirementService: RequirementService
+
+
 
   /**
    * Creates an instance of BaseController.

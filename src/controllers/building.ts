@@ -9,14 +9,13 @@ export class BuildingController extends BaseController {
 
   static basePath = '/building'
   private requirementType = 'BUILDING'
-  private requirementService = new RequirementService()
 
   static routes: Route[] = [
     { path: '/', action: 'index' },
     { verb: 'get', path: '/:buildingId', action: 'details' },
     { verb: 'post', path: '/:buildingId', action: 'createOrUpdate' },
   ]
-  // niveau, temps de construction, ressource lvl après, image, description
+
 	/**
 	 * Action qui liste les différents buildings
 	 * 

@@ -40,30 +40,31 @@ export class RequirementService {
 
 
   public async upgradeRequirement(user: User, userRequirement: UserRequirement) {
-    
+
     if (userRequirement.updatedAt > new Date().valueOf())
       return false
 
     const resourcesService = new ResourcesService()
     const userResources = await resourcesService.getUserResources(user)
-    const cost = await resourcesService.getUpgradeCost(user, userRequirement.requirement, userRequirement.level)
+    const cost =
+      await resourcesService.getUpgradeCost(user, userRequirement.requirement, userRequirement.level)
 
-    const buildingTime = userRequirement.requirement.type === "BUILDING" ? 
+    const buildingTime = userRequirement.requirement.type === 'BUILDING' ?
       await this.getBuildingTime(
-        user, 
-        cost[Resources.CEREAL], 
+        user,
+        cost[Resources.CEREAL],
         cost[Resources.MEAT],
       ) :
       await this.getResearchTime(
-        user, 
-        cost[Resources.CEREAL], 
+        user,
+        cost[Resources.CEREAL],
         cost[Resources.MEAT],
       )
 
 
-    
+
     if (!await this.hasRequirements(user, userRequirement.requirement))
-      throw new Error('Needs some requirements')      
+      throw new Error('Needs some requirements')
 
     if (!resourcesService.hasEnoughResources(userResources, cost))
       throw new Error('Not enougth resources')
@@ -79,7 +80,7 @@ export class RequirementService {
   public async hasRequirements(user: User, requirement: Requirement) {
     const requirementsTree = TECH_TREE.get(requirement.id)
     for (const entrie of requirementsTree) {
-      const userRequirement = <UserRequirement[]> await user.$get(
+      const userRequirement = <UserRequirement[]>await user.$get(
         'requirements',
         {
           where: {
@@ -101,20 +102,20 @@ export class RequirementService {
 
   public async createRequirement(user: User, requirementId: string) {
     const requirement = await Requirement.findOne<Requirement>({ where: { id: requirementId } })
-   
+
     const resourcesService = new ResourcesService()
     const userResources = await resourcesService.getUserResources(user)
     const cost = await resourcesService.getUpgradeCost(user, requirement, 0)
-    
-    const buildingTime = requirement.type === "BUILDING" ? 
+
+    const buildingTime = requirement.type === 'BUILDING' ?
       await this.getBuildingTime(
-        user, 
-        cost[Resources.CEREAL], 
+        user,
+        cost[Resources.CEREAL],
         cost[Resources.MEAT],
       ) :
       await this.getResearchTime(
-        user, 
-        cost[Resources.CEREAL], 
+        user,
+        cost[Resources.CEREAL],
         cost[Resources.MEAT],
       )
 
