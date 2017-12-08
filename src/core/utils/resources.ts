@@ -90,9 +90,17 @@ export class ResourcesService {
       let quantity = 0
       let production = 0
       let max: number
+      let userRequirementLevel = 0
+
+      if (userRequirement && userRequirement.updatedAt > new Date().valueOf())
+        userRequirementLevel = userRequirement.level - 1
+      else if (userRequirement && userRequirement.updatedAt <= new Date().valueOf())
+        userRequirementLevel = userRequirement.level
 
       quantity = this.calculUserResource(user, userResource, userRequirement)
-      production = baseProduction(userResource.resource, userRequirement ? userRequirement.level : 0)
+
+
+      production = baseProduction(userResource.resource, userRequirementLevel)
 
       if (userResource.resource === Resources.MONEY.toString()) {
         quantity -= totalMoneyUptake
