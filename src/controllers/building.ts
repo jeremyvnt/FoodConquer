@@ -78,10 +78,8 @@ export class BuildingController extends BaseController {
    */
   public async createOrUpdate(next: NextFunction) {
     const requirementIdentifier = this.req.params.buildingId
-    // const requirementIdentifier = 'Puits'
 
     const user = await User.findOne<User>({ where: { pseudo: 'Jerem' } })
-
     const userRequirement = (<UserRequirement[]>await user.$get(
       'requirements',
       {
@@ -97,21 +95,17 @@ export class BuildingController extends BaseController {
       },
     ))
 
-    if (userRequirement) {
+    if (userRequirement.length) {
       await this.buildingService.upgradeBuilding(user, userRequirement[0])
-        .then((userRequirementUpdated) => {
-          this.res.status(200)
-          this.res.json({
-            data: userRequirementUpdated,
-          })
-        })
+      this.res.redirect(200, BuildingController.basePath)
     } else {
-      // userRequirement doesn't exist we create it WITH SERVICE METHOD [WIP]
+      // userRequirement doesn't exist we create it
       await this.buildingService.createBuilding(user, requirementIdentifier)
-      newUserRequirement.save().then(() => {
-        this.res.status(200)
-      }).catch(next)
+        .then(() => {
+          this.res.redirect(200, BuildingController.basePath)
+        }).catch(next)
     }
   }
+
 }
 

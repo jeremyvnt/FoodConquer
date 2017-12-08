@@ -1,8 +1,9 @@
 import { Resources } from '../../objects/resource'
 import { User, Resource, Requirement, UserRequirement, RequirementResource, UserResource } from '../../models'
-import { Model } from 'sequelize-typescript'
+import { Model, Sequelize } from 'sequelize-typescript'
 import { buildingTime, upgradeCost } from './formula'
 import { ResourcesService } from './resources'
+import { TECH_TREE } from '../../objects/techTree'
 
 export class BuildingService {
 
@@ -16,7 +17,7 @@ export class BuildingService {
         'requirements',
         {
           where: {
-            requirementId: 'Portugais',
+            requirementId: 'portugais',
           },
         },
       ))[0]
@@ -30,7 +31,7 @@ export class BuildingService {
         'requirements',
         {
           where: {
-            RequirementId: 'Portugais',
+            RequirementId: 'portugais',
           },
         },
       ))[0]
@@ -81,46 +82,85 @@ export class BuildingService {
   }
 
 
+
+
   public async upgradeBuilding(user: User, userRequirement: UserRequirement) {
+    
+    if (userRequirement.updatedAt > new Date().valueOf())
+      return false
+
     const resourcesService = new ResourcesService()
     const userResources = await resourcesService.getUserResources(user)
-    const upgradeCost = await this.getUpgradeCost(user, userRequirement.requirement, userRequirement.level)
+    const cost = await this.getUpgradeCost(user, userRequirement.requirement, userRequirement.level)
+
     const buildingTime = await this.getBuildingTime(
       user, 
-      upgradeCost[Resources.CEREAL], 
-      upgradeCost[Resources.MEAT],
+      cost[Resources.CEREAL], 
+      cost[Resources.MEAT],
     )
+    
+    if (!await this.hasRequirements(user, userRequirement.requirement))
+      throw new Error('Needs some requirements')      
 
+    if (!resourcesService.hasEnoughResources(userResources, cost))
+      throw new Error('Not enougth resources')
 
-    for (const resource in upgradeCost) {
-      const cost = upgradeCost[resource]
-      const userResource = userResources.find((userResource) => {
-        return userResource.name === resource
-      })
-      if (userResource.quantity < cost)
-        return false
-    }
+    await resourcesService.withdrawResources(user, userResources, cost)
 
-    for (const resource in upgradeCost) {
-      const cost = upgradeCost[resource]
-      const quantity = userResources.find((userResource) => {
-        return userResource.name === resource
-      }).quantity
-      const userResource = (<UserResource[]>await user.$get(
-        'resources',
-        {
-          where: {
-            resource,
-          },
-        },
-      ))[0]
-
-      userResource.set('quantity', quantity - cost)
-      userResource.set('updatedAt', new Date().valueOf())
-      userResource.save()
-    }
     userRequirement.set('level', userRequirement.level + 1)
     userRequirement.set('updatedAt', new Date().valueOf() + buildingTime * 3600000)
     userRequirement.save()
+  }
+
+
+  public async hasRequirements(user: User, requirement: Requirement) {
+    const requirementsTree = TECH_TREE.get(requirement.id)
+    console.log(JSON.stringify(requirementsTree))
+    for (const entrie of requirementsTree) {
+      const userRequirement = <UserRequirement[]> await user.$get(
+        'requirements',
+        {
+          where: {
+            requirementId: entrie[0],
+            level: {
+              [Sequelize.Op.gte]: entrie[1],
+            },
+          },
+        },
+      )
+      if (!userRequirement.length)
+        return false
+    }
+
+    return true
+  }
+
+
+
+  public async createBuilding(user: User, requirementId: string) {
+    const requirement = await Requirement.findOne<Requirement>({ where: { id: requirementId } })
+   
+    const resourcesService = new ResourcesService()
+    const userResources = await resourcesService.getUserResources(user)
+    const cost = await this.getUpgradeCost(user, requirement, 0)
+    const buildingTime = await this.getBuildingTime(
+      user, 
+      cost[Resources.CEREAL], 
+      cost[Resources.MEAT],
+    )
+
+    if (!resourcesService.hasEnoughResources(userResources, cost))
+      throw new Error('Not enougth resources')
+
+    await resourcesService.withdrawResources(user, userResources, cost)
+
+    const newUserRequirement = new UserRequirement()
+
+    newUserRequirement.$set('requirement', requirement)
+    newUserRequirement.$set('user', user)
+    newUserRequirement.set('level', 1)
+    newUserRequirement.set('updatedAt', new Date().valueOf() + buildingTime * 3600000)
+
+    newUserRequirement.save()
   }
 }

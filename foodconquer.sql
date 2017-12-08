@@ -130,7 +130,7 @@ INSERT INTO RequirementResource(requirementId, resourceId, cost) VALUES ('silot'
 ##Laboratoire
 INSERT INTO RequirementResource(requirementId, resourceId, cost) VALUES ('laboratoire', 'cereal', 200);
 INSERT INTO RequirementResource(requirementId, resourceId, cost) VALUES ('laboratoire', 'meat ', 400);
-INSERT INTO RequirementResource(requirementId, resourceId, cost) VALUES ('laboratoire', 'water', 200);
+INSERT INTO RequirementResource(requirementId, resourceId, cost) VAfindLUES ('laboratoire', 'water', 200);
 INSERT INTO RequirementResource(requirementId, resourceId, cost) VALUES ('laboratoire', 'money', 0);
 
 ##Restaurant
