@@ -97,9 +97,7 @@ export class ResearchController extends BaseController {
       this.res.redirect(200, ResearchController.basePath)
     } else {
       await this.requirementService.createRequirement(user, requirementIdentifier)
-        .then(() => {
-          this.res.redirect(200, ResearchController.basePath)
-        }).catch(next)
+      this.res.redirect(200, ResearchController.basePath)
     }
   }
 }

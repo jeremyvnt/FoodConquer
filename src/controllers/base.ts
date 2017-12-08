@@ -119,6 +119,7 @@ export abstract class BaseController {
     this.req = req
     this.res = res
     this.resourcesService = new ResourcesService()
+    this.requirementService = new RequirementService()
   }
 
   /**

@@ -77,6 +77,7 @@ export class BuildingController extends BaseController {
    */
   public async createOrUpdate(next: NextFunction) {
     const requirementIdentifier = this.req.params.buildingId
+    console.log(requirementIdentifier)
 
     const user = await User.findOne<User>({ where: { pseudo: 'Jerem' } })
     const userRequirement = (<UserRequirement[]>await user.$get(
@@ -100,9 +101,7 @@ export class BuildingController extends BaseController {
     } else {
       // userRequirement doesn't exist we create it
       await this.requirementService.createRequirement(user, requirementIdentifier)
-        .then(() => {
-          this.res.redirect(200, BuildingController.basePath)
-        }).catch(next)
+      this.res.redirect(200, BuildingController.basePath)
     }
   }
 
