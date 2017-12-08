@@ -8,7 +8,7 @@ INSERT INTO Resource(name) VALUES ('money');
 ## Resource Building
 INSERT INTO Requirement(id, name, type, description, levelMax) VALUES (
   'champs',
-  'champs',
+  'Champs',
   'BUILDING',
   'Champs permettant la production de céreals',
   41
@@ -17,7 +17,7 @@ INSERT INTO Requirement(id, name, type, description, levelMax) VALUES (
 ###Bétail
 INSERT INTO Requirement(id, name, type, description, levelMax) VALUES (
   'betail',
-  'betail',
+  'Betail',
   'BUILDING',
   'Elevage de bétail permettant de la production de viande',
   41
@@ -94,6 +94,16 @@ INSERT INTO Requirement(id, name, type, description, levelMax) VALUES (
   30
 );
 
+# Research
+## Espionnage
+INSERT INTO Requirement(id, name, type, description, levelMax) VALUES (
+  'espionnage',
+  'Espionnage',
+  'RESEARCH',
+  'Apprentissage de l''espionnage #NINJA',
+  18
+);
+
 #RequirementResource
 ##Champs
 INSERT INTO RequirementResource(requirementId, resourceId, cost) VALUES ('champs', 'cereal', 60);
@@ -144,6 +154,12 @@ INSERT INTO RequirementResource(requirementId, resourceId, cost) VALUES ('portug
 INSERT INTO RequirementResource(requirementId, resourceId, cost) VALUES ('portugais', 'meat ', 200);
 INSERT INTO RequirementResource(requirementId, resourceId, cost) VALUES ('portugais', 'water', 100);
 INSERT INTO RequirementResource(requirementId, resourceId, cost) VALUES ('portugais', 'money', 0);
+
+##Espionnage
+INSERT INTO RequirementResource(requirementId, resourceId, cost) VALUES ('espionnage', 'cereal', 200);
+INSERT INTO RequirementResource(requirementId, resourceId, cost) VALUES ('espionnage', 'meat ', 1000);
+INSERT INTO RequirementResource(requirementId, resourceId, cost) VALUES ('espionnage', 'water', 200);
+INSERT INTO RequirementResource(requirementId, resourceId, cost) VALUES ('espionnage', 'money', 0);
 
 
 #User 1

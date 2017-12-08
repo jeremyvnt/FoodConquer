@@ -9,14 +9,13 @@ export class BuildingController extends BaseController {
 
   static basePath = '/building'
   private requirementType = 'BUILDING'
-  private requirementService = new RequirementService()
 
   static routes: Route[] = [
     { path: '/', action: 'index' },
     { verb: 'get', path: '/:buildingId', action: 'details' },
     { verb: 'post', path: '/:buildingId', action: 'createOrUpdate' },
   ]
-  // niveau, temps de construction, ressource lvl après, image, description
+
 	/**
 	 * Action qui liste les différents buildings
 	 * 
@@ -78,6 +77,7 @@ export class BuildingController extends BaseController {
    */
   public async createOrUpdate(next: NextFunction) {
     const requirementIdentifier = this.req.params.buildingId
+    console.log(requirementIdentifier)
 
     const user = await User.findOne<User>({ where: { pseudo: 'Jerem' } })
     const userRequirement = (<UserRequirement[]>await user.$get(
@@ -101,9 +101,7 @@ export class BuildingController extends BaseController {
     } else {
       // userRequirement doesn't exist we create it
       await this.requirementService.createRequirement(user, requirementIdentifier)
-        .then(() => {
-          this.res.redirect(200, BuildingController.basePath)
-        }).catch(next)
+      this.res.redirect(200, BuildingController.basePath)
     }
   }
 

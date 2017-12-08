@@ -1,3 +1,4 @@
+import { RequirementService } from './../core/utils/requirements'
 import { UserResource } from './../objects/models/UserResource'
 import { ResourcesService } from './../core/utils/resources'
 import { Request, Response, NextFunction, Router, IRouterMatcher } from 'express'
@@ -93,6 +94,16 @@ export abstract class BaseController {
   resourcesService: ResourcesService
 
   /**
+   * Requirement service
+   * 
+   * @type {Service}
+   * @memberof BaseController
+   */
+  requirementService: RequirementService
+
+
+
+  /**
    * Creates an instance of BaseController.
    * 
    * An instance of a controller handles a single request, therefor it needs the req and res as
@@ -108,6 +119,7 @@ export abstract class BaseController {
     this.req = req
     this.res = res
     this.resourcesService = new ResourcesService()
+    this.requirementService = new RequirementService()
   }
 
   /**
