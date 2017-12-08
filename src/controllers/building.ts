@@ -13,8 +13,8 @@ export class BuildingController extends BaseController {
 
   static routes: Route[] = [
     { path: '/', action: 'index' },
-    { path: '/:buildingId', action: 'details' },
-    { verb: 'post', path: '/', action: 'createOrUpdate' },
+    { verb: 'get', path: '/:buildingId', action: 'details' },
+    { verb: 'post', path: '/:buildingId', action: 'createOrUpdate' },
   ]
   // niveau, temps de construction, ressource lvl après, image, description
 	/**
@@ -77,8 +77,8 @@ export class BuildingController extends BaseController {
    * @memberof BuildingController
    */
   public async createOrUpdate(next: NextFunction) {
-    console.log(this.req.body)
-    const requirementIdentifier = this.req.body.id
+    const requirementIdentifier = this.req.params.buildingId
+    // const requirementIdentifier = 'Puits'
 
     const user = await User.findOne<User>({ where: { pseudo: 'Jerem' } })
 
@@ -95,36 +95,23 @@ export class BuildingController extends BaseController {
           },
         }],
       },
-    ))[0]
+    ))
 
-    // userRequirement exist so we update it
-    /*const cost = await this.buildingService.getUpgradeCost(user, userRequirement)
-    const buildDuration = await this.buildingService.getBuildingTime(
-      user,
-      cost[Resources.CEREAL],
-      cost[Resources.MEAT],
-    )
-
-    userRequirement.update({
-      updatedAt: Date().valueOf() + (buildDuration * 3600000),
-      level: userRequirement.level + 1,
-    }).then(() => {
-      this.res.redirect(200, BuildingController.basePath)
-    }).catch(next)*/
-
-    
     if (userRequirement) {
-      await this.buildingService.upgradeBuilding(user, userRequirement)
-      this.res.redirect(200, BuildingController.basePath)      
+      await this.buildingService.upgradeBuilding(user, userRequirement[0])
+        .then((userRequirementUpdated) => {
+          this.res.status(200)
+          this.res.json({
+            data: userRequirementUpdated,
+          })
+        })
     } else {
-      // userRequirement doesn't exist we create it
-      const newUserRequirement = new UserRequirement(user.id, requirementIdentifier)
+      // userRequirement doesn't exist we create it WITH SERVICE METHOD [WIP]
+      await this.buildingService.createBuilding(user, requirementIdentifier)
       newUserRequirement.save().then(() => {
-        this.res.redirect(200, BuildingController.basePath)
-      }).catch(next)      
+        this.res.status(200)
+      }).catch(next)
     }
-  
-    
   }
 }
 

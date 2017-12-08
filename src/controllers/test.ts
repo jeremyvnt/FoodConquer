@@ -128,20 +128,4 @@ export class TestController extends BaseController {
   public upgradeBuilding(next: NextFunction) {
 
   }
-
-
-  /**
-   * Action qui créé une Todo
-   * 
-   * @param {NextFunction} next 
-   * @memberof TestController
-   */
-  public create(next: NextFunction) {
-    console.log(this.req.body)
-    const todo = new Todo(this.req.body)
-
-    todo.save().then(() => {
-      this.res.json(todo)
-    }).catch(next) // On oublie pas le catch !!!!!
-  }
 }
