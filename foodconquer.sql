@@ -8,7 +8,7 @@ INSERT INTO Resource(name) VALUES ('money');
 ## Resource Building
 INSERT INTO Requirement(id, name, type, description, levelMax) VALUES (
   'champs',
-  'champs',
+  'Champs',
   'BUILDING',
   'Champs permettant la production de céreals',
   41
@@ -17,7 +17,7 @@ INSERT INTO Requirement(id, name, type, description, levelMax) VALUES (
 ###Bétail
 INSERT INTO Requirement(id, name, type, description, levelMax) VALUES (
   'betail',
-  'betail',
+  'Betail',
   'BUILDING',
   'Elevage de bétail permettant de la production de viande',
   41
@@ -130,7 +130,7 @@ INSERT INTO RequirementResource(requirementId, resourceId, cost) VALUES ('silot'
 ##Laboratoire
 INSERT INTO RequirementResource(requirementId, resourceId, cost) VALUES ('laboratoire', 'cereal', 200);
 INSERT INTO RequirementResource(requirementId, resourceId, cost) VALUES ('laboratoire', 'meat ', 400);
-INSERT INTO RequirementResource(requirementId, resourceId, cost) VAfindLUES ('laboratoire', 'water', 200);
+INSERT INTO RequirementResource(requirementId, resourceId, cost) VALUES ('laboratoire', 'water', 200);
 INSERT INTO RequirementResource(requirementId, resourceId, cost) VALUES ('laboratoire', 'money', 0);
 
 ##Restaurant
