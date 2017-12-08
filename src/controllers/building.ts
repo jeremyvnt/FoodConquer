@@ -2,14 +2,14 @@ import { Resources } from './../objects/resource'
 import { buildingTime } from './../core/utils/formula'
 import { User, Requirement, UserRequirement, RequirementResource } from '../models'
 import { ResourcesService } from '../core/utils/resources'
-import { BuildingService } from './../core/utils/buildings'
+import { RequirementService } from './../core/utils/requirements'
 import { BaseController, Route, NextFunction } from './'
 
 export class BuildingController extends BaseController {
 
   static basePath = '/building'
   private requirementType = 'BUILDING'
-  private buildingService = new BuildingService()
+  private requirementService = new RequirementService()
 
   static routes: Route[] = [
     { path: '/', action: 'index' },
@@ -58,8 +58,8 @@ export class BuildingController extends BaseController {
     const level = userRequirement.length ? userRequirement[0].level : 0
     const updatedAt = userRequirement.length ? userRequirement[0].updatedAt : 0
 
-    const cost = await this.buildingService.getUpgradeCost(user, requirement, level)
-    const buildDuration = await this.buildingService.getBuildingTime(
+    const cost = await this.resourcesService.getUpgradeCost(user, requirement, level)
+    const buildDuration = await this.requirementService.getBuildingTime(
       user,
       cost[Resources.CEREAL],
       cost[Resources.MEAT],
@@ -96,11 +96,11 @@ export class BuildingController extends BaseController {
     ))
 
     if (userRequirement.length) {
-      await this.buildingService.upgradeBuilding(user, userRequirement[0])
+      await this.requirementService.upgradeRequirement(user, userRequirement[0])
       this.res.redirect(200, BuildingController.basePath)
     } else {
       // userRequirement doesn't exist we create it
-      await this.buildingService.createBuilding(user, requirementIdentifier)
+      await this.requirementService.createRequirement(user, requirementIdentifier)
         .then(() => {
           this.res.redirect(200, BuildingController.basePath)
         }).catch(next)

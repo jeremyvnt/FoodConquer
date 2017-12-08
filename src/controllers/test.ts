@@ -17,7 +17,6 @@ export class TestController extends BaseController {
     { path: '/', action: 'resources' },
     { path: '/resources', action: 'resources' },
     { path: '/upgrade-building/:buildingId', action: 'upgradeBuilding' },
-    { verb: 'post', path: '/', action: 'create' },
   ]
 
   /**
