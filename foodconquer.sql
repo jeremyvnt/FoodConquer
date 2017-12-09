@@ -106,60 +106,60 @@ INSERT INTO Requirement(id, name, type, description, levelMax) VALUES (
 
 #RequirementResource
 ##Champs
-INSERT INTO RequirementResource(requirementId, resourceId, cost) VALUES ('champs', 'cereal', 60);
-INSERT INTO RequirementResource(requirementId, resourceId, cost) VALUES ('champs', 'meat', 15);
-INSERT INTO RequirementResource(requirementId, resourceId, cost) VALUES ('champs', 'water', 0);
-INSERT INTO RequirementResource(requirementId, resourceId, cost) VALUES ('champs', 'money', 0);
+INSERT INTO RequirementResource(requirementId, resource, cost) VALUES ('champs', 'cereal', 60);
+INSERT INTO RequirementResource(requirementId, resource, cost) VALUES ('champs', 'meat', 15);
+INSERT INTO RequirementResource(requirementId, resource, cost) VALUES ('champs', 'water', 0);
+INSERT INTO RequirementResource(requirementId, resource, cost) VALUES ('champs', 'money', 0);
 ##Betail
-INSERT INTO RequirementResource(requirementId, resourceId, cost) VALUES ('betail', 'cereal', 48);
-INSERT INTO RequirementResource(requirementId, resourceId, cost) VALUES ('betail', 'meat ', 24);
-INSERT INTO RequirementResource(requirementId, resourceId, cost) VALUES ('betail', 'water', 0);
-INSERT INTO RequirementResource(requirementId, resourceId, cost) VALUES ('betail', 'money', 0);
+INSERT INTO RequirementResource(requirementId, resource, cost) VALUES ('betail', 'cereal', 48);
+INSERT INTO RequirementResource(requirementId, resource, cost) VALUES ('betail', 'meat ', 24);
+INSERT INTO RequirementResource(requirementId, resource, cost) VALUES ('betail', 'water', 0);
+INSERT INTO RequirementResource(requirementId, resource, cost) VALUES ('betail', 'money', 0);
 ##Puit
-INSERT INTO RequirementResource(requirementId, resourceId, cost) VALUES ('puits', 'cereal', 225);
-INSERT INTO RequirementResource(requirementId, resourceId, cost) VALUES ('puits', 'meat ', 75);
-INSERT INTO RequirementResource(requirementId, resourceId, cost) VALUES ('puits', 'water', 0);
-INSERT INTO RequirementResource(requirementId, resourceId, cost) VALUES ('puits', 'money', 0);
+INSERT INTO RequirementResource(requirementId, resource, cost) VALUES ('puits', 'cereal', 225);
+INSERT INTO RequirementResource(requirementId, resource, cost) VALUES ('puits', 'meat ', 75);
+INSERT INTO RequirementResource(requirementId, resource, cost) VALUES ('puits', 'water', 0);
+INSERT INTO RequirementResource(requirementId, resource, cost) VALUES ('puits', 'money', 0);
 
 ##Entrepot
-INSERT INTO RequirementResource(requirementId, resourceId, cost) VALUES ('entrepot', 'cereal', 2000);
-INSERT INTO RequirementResource(requirementId, resourceId, cost) VALUES ('entrepot', 'meat', 0);
-INSERT INTO RequirementResource(requirementId, resourceId, cost) VALUES ('entrepot', 'water', 0);
-INSERT INTO RequirementResource(requirementId, resourceId, cost) VALUES ('entrepot', 'money', 0);
+INSERT INTO RequirementResource(requirementId, resource, cost) VALUES ('entrepot', 'cereal', 2000);
+INSERT INTO RequirementResource(requirementId, resource, cost) VALUES ('entrepot', 'meat', 0);
+INSERT INTO RequirementResource(requirementId, resource, cost) VALUES ('entrepot', 'water', 0);
+INSERT INTO RequirementResource(requirementId, resource, cost) VALUES ('entrepot', 'money', 0);
 ##Citerne
-INSERT INTO RequirementResource(requirementId, resourceId, cost) VALUES ('citerne', 'cereal', 2000);
-INSERT INTO RequirementResource(requirementId, resourceId, cost) VALUES ('citerne', 'meat ', 1000);
-INSERT INTO RequirementResource(requirementId, resourceId, cost) VALUES ('citerne', 'water', 0);
-INSERT INTO RequirementResource(requirementId, resourceId, cost) VALUES ('citerne', 'money', 0);
+INSERT INTO RequirementResource(requirementId, resource, cost) VALUES ('citerne', 'cereal', 2000);
+INSERT INTO RequirementResource(requirementId, resource, cost) VALUES ('citerne', 'meat ', 1000);
+INSERT INTO RequirementResource(requirementId, resource, cost) VALUES ('citerne', 'water', 0);
+INSERT INTO RequirementResource(requirementId, resource, cost) VALUES ('citerne', 'money', 0);
 ##Silot
-INSERT INTO RequirementResource(requirementId, resourceId, cost) VALUES ('silot', 'cereal', 2000);
-INSERT INTO RequirementResource(requirementId, resourceId, cost) VALUES ('silot', 'meat ', 2000);
-INSERT INTO RequirementResource(requirementId, resourceId, cost) VALUES ('silot', 'water', 0);
-INSERT INTO RequirementResource(requirementId, resourceId, cost) VALUES ('silot', 'money', 0);
+INSERT INTO RequirementResource(requirementId, resource, cost) VALUES ('silot', 'cereal', 2000);
+INSERT INTO RequirementResource(requirementId, resource, cost) VALUES ('silot', 'meat ', 2000);
+INSERT INTO RequirementResource(requirementId, resource, cost) VALUES ('silot', 'water', 0);
+INSERT INTO RequirementResource(requirementId, resource, cost) VALUES ('silot', 'money', 0);
 
 ##Laboratoire
-INSERT INTO RequirementResource(requirementId, resourceId, cost) VALUES ('laboratoire', 'cereal', 200);
-INSERT INTO RequirementResource(requirementId, resourceId, cost) VALUES ('laboratoire', 'meat ', 400);
-INSERT INTO RequirementResource(requirementId, resourceId, cost) VALUES ('laboratoire', 'water', 200);
-INSERT INTO RequirementResource(requirementId, resourceId, cost) VALUES ('laboratoire', 'money', 0);
+INSERT INTO RequirementResource(requirementId, resource, cost) VALUES ('laboratoire', 'cereal', 200);
+INSERT INTO RequirementResource(requirementId, resource, cost) VALUES ('laboratoire', 'meat ', 400);
+INSERT INTO RequirementResource(requirementId, resource, cost) VALUES ('laboratoire', 'water', 200);
+INSERT INTO RequirementResource(requirementId, resource, cost) VALUES ('laboratoire', 'money', 0);
 
 ##Restaurant
-INSERT INTO RequirementResource(requirementId, resourceId, cost) VALUES ('restaurant', 'cereal', 400);
-INSERT INTO RequirementResource(requirementId, resourceId, cost) VALUES ('restaurant', 'meat ', 200);
-INSERT INTO RequirementResource(requirementId, resourceId, cost) VALUES ('restaurant', 'water', 0);
-INSERT INTO RequirementResource(requirementId, resourceId, cost) VALUES ('restaurant', 'money', 0);
+INSERT INTO RequirementResource(requirementId, resource, cost) VALUES ('restaurant', 'cereal', 400);
+INSERT INTO RequirementResource(requirementId, resource, cost) VALUES ('restaurant', 'meat ', 200);
+INSERT INTO RequirementResource(requirementId, resource, cost) VALUES ('restaurant', 'water', 0);
+INSERT INTO RequirementResource(requirementId, resource, cost) VALUES ('restaurant', 'money', 0);
 
 ##Portugais
-INSERT INTO RequirementResource(requirementId, resourceId, cost) VALUES ('portugais', 'cereal', 400);
-INSERT INTO RequirementResource(requirementId, resourceId, cost) VALUES ('portugais', 'meat ', 200);
-INSERT INTO RequirementResource(requirementId, resourceId, cost) VALUES ('portugais', 'water', 100);
-INSERT INTO RequirementResource(requirementId, resourceId, cost) VALUES ('portugais', 'money', 0);
+INSERT INTO RequirementResource(requirementId, resource, cost) VALUES ('portugais', 'cereal', 400);
+INSERT INTO RequirementResource(requirementId, resource, cost) VALUES ('portugais', 'meat ', 200);
+INSERT INTO RequirementResource(requirementId, resource, cost) VALUES ('portugais', 'water', 100);
+INSERT INTO RequirementResource(requirementId, resource, cost) VALUES ('portugais', 'money', 0);
 
 ##Espionnage
-INSERT INTO RequirementResource(requirementId, resourceId, cost) VALUES ('espionnage', 'cereal', 200);
-INSERT INTO RequirementResource(requirementId, resourceId, cost) VALUES ('espionnage', 'meat ', 1000);
-INSERT INTO RequirementResource(requirementId, resourceId, cost) VALUES ('espionnage', 'water', 200);
-INSERT INTO RequirementResource(requirementId, resourceId, cost) VALUES ('espionnage', 'money', 0);
+INSERT INTO RequirementResource(requirementId, resource, cost) VALUES ('espionnage', 'cereal', 200);
+INSERT INTO RequirementResource(requirementId, resource, cost) VALUES ('espionnage', 'meat ', 1000);
+INSERT INTO RequirementResource(requirementId, resource, cost) VALUES ('espionnage', 'water', 200);
+INSERT INTO RequirementResource(requirementId, resource, cost) VALUES ('espionnage', 'money', 0);
 
 
 #User 1

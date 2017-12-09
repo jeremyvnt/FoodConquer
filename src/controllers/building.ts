@@ -1,6 +1,7 @@
 import { Resources } from './../objects/resource'
 import { buildingTime } from './../core/utils/formula'
 import { User, Requirement, UserRequirement, RequirementResource } from '../models'
+import { UserRequirementRepository } from '../objects/models/repositories/UserRequirementRepository'
 import { ResourcesService } from '../core/utils/resources'
 import { RequirementService } from './../core/utils/requirements'
 import { BaseController, Route, NextFunction } from './'
@@ -34,28 +35,15 @@ export class BuildingController extends BaseController {
 	 * @memberof BuildingController
 	 */
   public async details(next: NextFunction) {
+    const urRepository = new UserRequirementRepository()
     const buildingId = this.req.params.buildingId
 
     const user = await User.findOne<User>({ where: { pseudo: 'Jerem' } })
+    const requirement = await Requirement.findOne<Requirement>({ where: { id: buildingId }})
+    const userRequirement = await urRepository.findOneUserRequirement(user, buildingId)
 
-    const requirement = await Requirement.findOne<Requirement>(
-      {
-        where: {
-          id: buildingId,
-        },
-      },
-    )
-    const userRequirement = <UserRequirement[]>await requirement.$get(
-      'userRequirements',
-      {
-        where: {
-          userId: user.id,
-        },
-      },
-    )
-
-    const level = userRequirement.length ? userRequirement[0].level : 0
-    const updatedAt = userRequirement.length ? userRequirement[0].updatedAt : 0
+    const level = userRequirement ? userRequirement.level : 0
+    const updatedAt = userRequirement ? userRequirement.updatedAt : 0
 
     const cost = await this.resourcesService.getUpgradeCost(user, requirement, level)
     const buildDuration = await this.requirementService.getBuildingTime(
@@ -76,27 +64,14 @@ export class BuildingController extends BaseController {
    * @memberof BuildingController
    */
   public async createOrUpdate(next: NextFunction) {
+    const urRepository = new UserRequirementRepository()
     const requirementIdentifier = this.req.params.buildingId
-    console.log(requirementIdentifier)
 
     const user = await User.findOne<User>({ where: { pseudo: 'Jerem' } })
-    const userRequirement = (<UserRequirement[]>await user.$get(
-      'requirements',
-      {
-        where: {
-          requirementId: requirementIdentifier,
-        },
-        include: [{
-          model: Requirement,
-          where: {
-            type: this.requirementType,
-          },
-        }],
-      },
-    ))
+    const userRequirement = await urRepository.findOneUserRequirement(user, requirementIdentifier)
 
-    if (userRequirement.length) {
-      await this.requirementService.upgradeRequirement(user, userRequirement[0])
+    if (userRequirement) {
+      await this.requirementService.upgradeRequirement(user, userRequirement)
       this.res.redirect(200, BuildingController.basePath)
     } else {
       // userRequirement doesn't exist we create it

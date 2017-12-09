@@ -1,5 +1,6 @@
 import { Resources } from '../../objects/resource'
 import { User, Resource, Requirement, UserRequirement, RequirementResource, UserResource } from '../../models'
+import { UserRequirementRepository } from '../../objects/models/repositories/UserRequirementRepository'
 import { Model, Sequelize } from 'sequelize-typescript'
 import { buildingTime, researchTime } from './formula'
 import { ResourcesService } from './resources'
@@ -7,27 +8,16 @@ import { TECH_TREE } from '../../objects/techTree'
 
 export class RequirementService {
 
+  urRepository: UserRequirementRepository
+
+  constructor() {
+    this.urRepository = new UserRequirementRepository()
+  }
+
   public async getBuildingTime(user: User, cerealCost: number = 0, meatCost: number = 0) {
 
-    const portugaisRequirement = (<UserRequirement[]>await user.$get(
-      'requirements',
-      {
-        where: {
-          requirementId: 'portugais',
-        },
-      },
-    ))
-    const portugaisLevel = portugaisRequirement.length ? portugaisRequirement[0].level : 0
-
-    const artisantRequirement = (<UserRequirement[]>await user.$get(
-      'requirements',
-      {
-        where: {
-          RequirementId: 'artisant',
-        },
-      },
-    ))
-    const artisantLevel = artisantRequirement.length ? artisantRequirement[0].level : 0
+    const portugaisLevel = await this.urRepository.getUserRequirementLevel(user, 'portugais')    
+    const artisantLevel = await this.urRepository.getUserRequirementLevel(user, 'artisant')
 
     return buildingTime(
       cerealCost,
@@ -128,26 +118,17 @@ export class RequirementService {
 
     const newUserRequirement = new UserRequirement()
 
-    newUserRequirement.$set('requirement', requirement)
-    newUserRequirement.$set('user', user)
     newUserRequirement.set('level', 1)
     newUserRequirement.set('updatedAt', new Date().valueOf() + buildingTime * 3600000)
-
     newUserRequirement.save()
+    newUserRequirement.$set('requirement', requirement)
+    newUserRequirement.$set('user', user)
+
   }
 
 
   public async getResearchTime(user: User, cerealCost: number, meatCost: number) {
-    const laboratoireRequirement = (<UserRequirement[]>await user.$get(
-      'requirements',
-      {
-        where: {
-          RequirementId: 'laboratoire',
-        },
-      },
-    ))
-    const laboratoireLevel = laboratoireRequirement.length ? laboratoireRequirement[0].level : 0
-
+    const laboratoireLevel = await this.urRepository.getUserRequirementLevel(user, 'laboratoire')
 
     return researchTime(
       cerealCost,

@@ -67,7 +67,7 @@ export class UnitService {
   public constructCostObject(unitResources: UnitResource[]) {
     const cost: {[index:string]: number} = {}
     unitResources.map((unitResource) => {
-      cost[unitResource.resourceId] = unitResource.cost
+      cost[unitResource.resource] = unitResource.cost
     })
     return cost
   }
