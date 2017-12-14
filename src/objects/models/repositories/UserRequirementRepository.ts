@@ -1,4 +1,11 @@
-import { User, Resource, Requirement, UserRequirement, RequirementResource, UserResource } from '../../../models'
+import { 
+  User,
+  Resource,
+  Requirement,
+  UserRequirement,
+  RequirementResource,
+  UserResource, 
+} from '../../../models'
 
 export class UserRequirementRepository {
 
@@ -7,14 +14,14 @@ export class UserRequirementRepository {
       'requirements',
       {
         where: {
-          requirementId
+          requirementId,
         },
         include: [{
           model: Requirement,
         }],
       },
     )
-    return ur.length ? ur[0] : null;
+    return ur.length ? ur[0] : null
   }  
 
   public async getUserRequirementLevel(user: User, requirementId: string) {
@@ -22,5 +29,14 @@ export class UserRequirementRepository {
     return ur ? ur.level : 0
   }
 
-
+  public async findUserRequirements(user: User, requirementsId: string[]) {
+    return <UserRequirement[]>await user.$get(
+      'requirements',
+      {
+        where: {
+          requirementId: requirementsId,
+        },
+      },
+    )
+  }
 }

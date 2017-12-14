@@ -10,12 +10,21 @@ import { User,
  Unit,
 } from '../../models'
 import { Model } from 'sequelize-typescript'
-import { maxStokage, baseProduction, moneyUptake, upgradeCost } from './formula'
+import { buildingTime } from './formula'
+import { ResourcesService } from './resources'
 import { RequirementService } from './requirements'
-
+import { UserUnitRepository } from '../../objects/models/repositories/UserUnitRepository'
 
 
 export class UnitService {
+
+  uuRepository: UserUnitRepository
+
+  constructor() {
+    this.uuRepository = new UserUnitRepository()
+  }
+
+
 
   public async getUnits(user: User) {
     const requirementService = new RequirementService()
@@ -64,12 +73,55 @@ export class UnitService {
   }
 
 
-  public constructCostObject(unitResources: UnitResource[]) {
+  public async createUnits(user: User, unit: Unit, quantity: number) {
+
+    const resourcesService = new ResourcesService()
+    const requirementService = new RequirementService()
+
+    if (!await requirementService.hasRequirements(user, unit.id))
+      throw new Error('Needs some requirements')
+
+    const userResources = await resourcesService.getUserResources(user)
+    const buildCost = this.constructCostObject(<UnitResource[]> await unit.$get('resources'))
+
+    const maxCanBuild = resourcesService.getMaxUnitToBuild(userResources, buildCost)
+    const quantityToBuild = maxCanBuild < quantity ? maxCanBuild : quantity
+
+    if (quantityToBuild === 0)
+      throw new Error('Not enougth resources')
+
+    await resourcesService.withdrawResources(user, userResources, buildCost, quantityToBuild)
+  
+    const buildingTime = await requirementService.getBuildingTime(
+      user, 
+      buildCost.cereal, 
+      buildCost.meat,
+    ) * quantityToBuild
+
+    let userUnit = await this.uuRepository.findOneUserUnit(user, unit.id)
+    
+    if (!userUnit) {
+      userUnit = new UserUnit()
+      userUnit.set('quantity', quantityToBuild)
+      userUnit.set('updatedAt', new Date().valueOf() + buildingTime * 3600000)
+      userUnit.$set('user', user)
+      userUnit.$set('unit', unit)
+    } else {
+      userUnit.set('quantity', userUnit.quantity + quantityToBuild)
+      if (userUnit.updatedAt > new Date().valueOf())
+        userUnit.set('updatedAt', userUnit.updatedAt + buildingTime * 3600000)
+      else
+        userUnit.set('updatedAt', new Date().valueOf() + buildingTime * 3600000)
+    }
+    userUnit.save()
+  }
+
+
+  private constructCostObject(unitResources: UnitResource[]) {
     const cost: {[index:string]: number} = {}
     unitResources.map((unitResource) => {
       cost[unitResource.resource] = unitResource.cost
     })
     return cost
   }
-
 }

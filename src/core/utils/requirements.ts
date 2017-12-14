@@ -55,7 +55,7 @@ export class RequirementService {
 
 
 
-    if (!await this.hasRequirements(user, userRequirement.requirement))
+    if (!await this.hasRequirements(user, userRequirement.requirement.id))
       throw new Error('Needs some requirements')
 
     if (!resourcesService.hasEnoughResources(userResources, cost))
@@ -69,8 +69,8 @@ export class RequirementService {
   }
 
 
-  public async hasRequirements(user: User, requirement: Requirement) {
-    const requirementsTree = TECH_TREE.get(requirement.id)
+  public async hasRequirements(user: User, objectId: string) {
+    const requirementsTree = TECH_TREE.get(objectId)
     for (const entrie of requirementsTree) {
       const userRequirement = <UserRequirement[]>await user.$get(
         'requirements',
@@ -95,6 +95,9 @@ export class RequirementService {
   public async createRequirement(user: User, requirementId: string) {
     const requirement = await Requirement.findOne<Requirement>({ where: { id: requirementId } })
 
+    if (!await this.hasRequirements(user, requirement.id))
+      throw new Error('Needs some requirements')
+
     const resourcesService = new ResourcesService()
     const userResources = await resourcesService.getUserResources(user)
     const cost = await resourcesService.getUpgradeCost(user, requirement, 0)
@@ -109,7 +112,6 @@ export class RequirementService {
         cost[Resources.CEREAL],
         cost[Resources.MEAT],
       )
-
 
     if (!resourcesService.hasEnoughResources(userResources, cost))
       throw new Error('Not enougth resources')

@@ -55,7 +55,7 @@ export const upgradeCost = (cerealCost: number,
                             meatCost: number,
                             waterCost: number,
                             requirement: Requirement,
-                            level: number): any => {
+                            level: number) => {
 
   const cost: {[index:string] : number} = {
     [Resources.CEREAL]: 0,
