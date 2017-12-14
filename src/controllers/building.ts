@@ -77,7 +77,6 @@ export class BuildingController extends BaseController {
    */
   public async createOrUpdate(next: NextFunction) {
     const requirementIdentifier = this.req.params.buildingId
-    console.log(requirementIdentifier)
 
     const user = await User.findOne<User>({ where: { pseudo: 'Jerem' } })
     const userRequirement = (<UserRequirement[]>await user.$get(
