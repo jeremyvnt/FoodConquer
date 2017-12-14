@@ -22,8 +22,12 @@ export class ResearchController extends BaseController {
 	 * @memberof ResearchController
 	 */
   public async index(next: NextFunction) {
-    const result = await this.getRequirementList(next, this.requirementType)
-    this.res.json(result)
+    try {
+      const result = await this.getRequirementList(next, this.requirementType)
+      this.res.json(result)
+    } catch (error) {
+      next(error)
+    }
   }
 
   /**
@@ -35,25 +39,28 @@ export class ResearchController extends BaseController {
   public async details(next: NextFunction) {
     const urRepository = new UserRequirementRepository()
     const researchId = this.req.params.researchId
+    try {
+      const user = await User.findOne<User>({ where: { pseudo: 'Jerem' } })
+      const requirement = await Requirement.findOne<Requirement>({ where: { id: researchId } })
+      const userRequirement = await urRepository.findOneUserRequirement(user, researchId)
 
-    const user = await User.findOne<User>({ where: { pseudo: 'Jerem' } })
-    const requirement = await Requirement.findOne<Requirement>({ where: { id: researchId }})
-    const userRequirement = await urRepository.findOneUserRequirement(user, researchId)
-
-    const level = userRequirement ? userRequirement.level : 0
-    const updatedAt = userRequirement ? userRequirement.updatedAt : 0
+      const level = userRequirement ? userRequirement.level : 0
+      const updatedAt = userRequirement ? userRequirement.updatedAt : 0
 
 
-    const cost = await this.resourcesService.getUpgradeCost(user, requirement, level)
-    const researchDuration = await this.requirementService.getResearchTime(
-      user,
-      cost[Resources.CEREAL],
-      cost[Resources.MEAT],
-    )
+      const cost = await this.resourcesService.getUpgradeCost(user, requirement, level)
+      const researchDuration = await this.requirementService.getResearchTime(
+        user,
+        cost[Resources.CEREAL],
+        cost[Resources.MEAT],
+      )
 
-    const { id, name, description, type, levelMax } = requirement
-    const research = { id, name, type, description, levelMax, level, updatedAt, cost, researchDuration }
-    this.res.json(research)
+      const { id, name, description, type, levelMax } = requirement
+      const research = { id, name, type, description, levelMax, level, updatedAt, cost, researchDuration }
+      this.res.json(research)
+    } catch (error) {
+      next(error)
+    }
   }
 
   /**
@@ -68,12 +75,15 @@ export class ResearchController extends BaseController {
 
     const user = await User.findOne<User>({ where: { pseudo: 'Jerem' } })
     const userRequirement = await urRepository.findOneUserRequirement(user, requirementIdentifier)
-    if (userRequirement) {
-      await this.requirementService.upgradeRequirement(user, userRequirement)
+    try {
+      if (userRequirement)
+        await this.requirementService.upgradeRequirement(user, userRequirement)
+      else
+        await this.requirementService.createRequirement(user, requirementIdentifier)
       this.res.redirect(200, ResearchController.basePath)
-    } else {
-      await this.requirementService.createRequirement(user, requirementIdentifier)
-      this.res.redirect(200, ResearchController.basePath)
+    } catch (error) {
+      next(error)
     }
+
   }
 }

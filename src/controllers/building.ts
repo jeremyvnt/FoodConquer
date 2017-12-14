@@ -24,8 +24,12 @@ export class BuildingController extends BaseController {
 	 * @memberof BuildingController
 	 */
   public async index(next: NextFunction) {
-    const result = await this.getRequirementList(next, this.requirementType)
-    this.res.json(result)
+    try {
+      const result = await this.getRequirementList(next, this.requirementType)
+      this.res.json(result)
+    } catch (error) {
+      next(error)
+    }
   }
 
 	/**
@@ -38,23 +42,27 @@ export class BuildingController extends BaseController {
     const urRepository = new UserRequirementRepository()
     const buildingId = this.req.params.buildingId
 
-    const user = await User.findOne<User>({ where: { pseudo: 'Jerem' } })
-    const requirement = await Requirement.findOne<Requirement>({ where: { id: buildingId } })
-    const userRequirement = await urRepository.findOneUserRequirement(user, buildingId)
+    try {
+      const user = await User.findOne<User>({ where: { pseudo: 'Jerem' } })
+      const requirement = await Requirement.findOne<Requirement>({ where: { id: buildingId } })
+      const userRequirement = await urRepository.findOneUserRequirement(user, buildingId)
 
-    const level = userRequirement ? userRequirement.level : 0
-    const updatedAt = userRequirement ? userRequirement.updatedAt : 0
+      const level = userRequirement ? userRequirement.level : 0
+      const updatedAt = userRequirement ? userRequirement.updatedAt : 0
 
-    const cost = await this.resourcesService.getUpgradeCost(user, requirement, level)
-    const buildDuration = await this.requirementService.getBuildingTime(
-      user,
-      cost[Resources.CEREAL],
-      cost[Resources.MEAT],
-    )
+      const cost = await this.resourcesService.getUpgradeCost(user, requirement, level)
+      const buildDuration = await this.requirementService.getBuildingTime(
+        user,
+        cost[Resources.CEREAL],
+        cost[Resources.MEAT],
+      )
 
-    const { id, name, description, type, levelMax } = requirement
-    const building = { id, name, type, description, levelMax, level, updatedAt, cost, buildDuration }
-    this.res.json(building)
+      const { id, name, description, type, levelMax } = requirement
+      const building = { id, name, type, description, levelMax, level, updatedAt, cost, buildDuration }
+      this.res.json(building)
+    } catch (error) {
+      next(error)
+    }
   }
 
   /**
@@ -70,15 +78,15 @@ export class BuildingController extends BaseController {
     const user = await User.findOne<User>({ where: { pseudo: 'Jerem' } })
     const userRequirement = await urRepository.findOneUserRequirement(user, requirementIdentifier)
 
-    if (userRequirement) {
-      await this.requirementService.upgradeRequirement(user, userRequirement)
+    try {
+      if (userRequirement)
+        await this.requirementService.upgradeRequirement(user, userRequirement)
+      else
+        await this.requirementService.createRequirement(user, requirementIdentifier)
       this.res.redirect(200, BuildingController.basePath)
-    } else {
-      // userRequirement doesn't exist we create it
-      await this.requirementService.createRequirement(user, requirementIdentifier)
-      this.res.redirect(200, BuildingController.basePath)
+    } catch (error) {
+      next(error)
     }
   }
-
 }
 

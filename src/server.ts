@@ -9,6 +9,7 @@ import {
   TestController,
   BuildingController,
   ResearchController,
+  UnitController,
 } from './controllers/index'
 
 /**
@@ -117,6 +118,7 @@ export class Server {
     TestController.connect(router)
     BuildingController.connect(router)
     ResearchController.connect(router)
+    UnitController.connect(router)
 
     this.app.use(router)
   }
