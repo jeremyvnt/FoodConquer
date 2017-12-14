@@ -37,7 +37,7 @@ export class ResearchController extends BaseController {
     const researchId = this.req.params.researchId
 
     const user = await User.findOne<User>({ where: { pseudo: 'Jerem' } })
-    const requirement = await Requirement.findOne<Requirement>({ where: { id: researchId }})
+    const requirement = await Requirement.findOne<Requirement>({ where: { id: researchId } })
     const userRequirement = await urRepository.findOneUserRequirement(user, researchId)
 
     const level = userRequirement ? userRequirement.level : 0
@@ -68,12 +68,15 @@ export class ResearchController extends BaseController {
 
     const user = await User.findOne<User>({ where: { pseudo: 'Jerem' } })
     const userRequirement = await urRepository.findOneUserRequirement(user, requirementIdentifier)
-    if (userRequirement) {
-      await this.requirementService.upgradeRequirement(user, userRequirement)
+    try {
+      if (userRequirement)
+        await this.requirementService.upgradeRequirement(user, userRequirement)
+      else
+        await this.requirementService.createRequirement(user, requirementIdentifier)
       this.res.redirect(200, ResearchController.basePath)
-    } else {
-      await this.requirementService.createRequirement(user, requirementIdentifier)
-      this.res.redirect(200, ResearchController.basePath)
+    } catch (error) {
+      next(error)
     }
+
   }
 }

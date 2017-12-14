@@ -70,15 +70,15 @@ export class BuildingController extends BaseController {
     const user = await User.findOne<User>({ where: { pseudo: 'Jerem' } })
     const userRequirement = await urRepository.findOneUserRequirement(user, requirementIdentifier)
 
-    if (userRequirement) {
-      await this.requirementService.upgradeRequirement(user, userRequirement)
+    try {
+      if (userRequirement)
+        await this.requirementService.upgradeRequirement(user, userRequirement)
+      else
+        await this.requirementService.createRequirement(user, requirementIdentifier)
       this.res.redirect(200, BuildingController.basePath)
-    } else {
-      // userRequirement doesn't exist we create it
-      await this.requirementService.createRequirement(user, requirementIdentifier)
-      this.res.redirect(200, BuildingController.basePath)
+    } catch (error) {
+      next(error)
     }
   }
-
 }
 
