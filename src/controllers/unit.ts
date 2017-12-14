@@ -21,9 +21,14 @@ export class UnitController extends BaseController {
 	 * @memberof UnitController
 	 */
   public async index(next: NextFunction) {
-    const user = await User.findOne<User>({ where: { pseudo: 'Jerem' } })
-    const units = await this.unitService.getUnits(user)
-    this.res.json(units)
+    try {
+      const user = await User.findOne<User>({ where: { pseudo: 'Jerem' } })
+      const resources = await this.resourcesService.getUserResources(user)
+      const units = await this.unitService.getUnits(user)
+      this.res.json({ resources, units })
+    } catch (error) {
+      next(error)
+    }
   }
 
   /**
