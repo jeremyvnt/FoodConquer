@@ -91,7 +91,6 @@ export class RequirementService {
   }
 
 
-
   public async createRequirement(user: User, requirementId: string) {
     const requirement = await Requirement.findOne<Requirement>({ where: { id: requirementId } })
 
