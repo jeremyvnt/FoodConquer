@@ -57,7 +57,7 @@ export const upgradeCost = (cerealCost: number,
                             requirement: Requirement,
                             level: number): any => {
 
-  const cost = {
+  const cost: {[index:string] : number} = {
     [Resources.CEREAL]: 0,
     [Resources.MEAT]: 0,
     [Resources.WATER]: 0,
@@ -107,3 +107,5 @@ export const researchTime = (cerealCost: number,
 
   return (cerealCost + meatCost) / (1000 * (1 + laboratoireLevel))
 }
+
+

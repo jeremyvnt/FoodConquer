@@ -7,4 +7,5 @@ export * from './objects/models/User'
 export * from './objects/models/UserRequirement'
 export * from './objects/models/UserResource'
 export * from './objects/models/UserUnit'
+export * from './objects/models/UnitResource'
 

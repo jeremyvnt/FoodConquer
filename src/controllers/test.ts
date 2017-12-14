@@ -1,5 +1,6 @@
 import { Champs } from './../core/game/buildings/champs'
 import { ResourcesService } from './../core/utils/resources'
+import { UnitService } from './../core/utils/unit'
 import { User } from './../objects/models/User'
 import { Requirement } from './../objects/models/Requirement'
 import { UserRequirement } from './../objects/models/UserRequirement'
@@ -16,7 +17,7 @@ export class TestController extends BaseController {
   static routes: Route[] = [
     { path: '/', action: 'resources' },
     { path: '/resources', action: 'resources' },
-    { path: '/upgrade-building/:buildingId', action: 'upgradeBuilding' },
+    { path: '/unit', action: 'unit' },
   ]
 
   /**
@@ -56,7 +57,17 @@ export class TestController extends BaseController {
    * @param {NextFunction} next 
    * @memberof TestController
    */
-  public upgradeBuilding(next: NextFunction) {
+  public unit(next: NextFunction) {
+    const resourceService = new UnitService()
 
+    User.findOne<User>({ where: { pseudo: 'Jerem' } }).then((user) => {
+      resourceService.getUnits(user).then((units) => {
+        this.res.json(units)
+      }).catch((err) => {
+        this.res.json(55)
+      })
+    }).catch((err) => {
+      this.res.json(10)
+    })
   }
 }

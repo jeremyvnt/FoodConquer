@@ -1,15 +1,15 @@
-import { Resource, User, Requirement } from '../../models'
+import { Resource, User, Unit } from '../../models'
 import { Resources } from './../resource'
 import {
   Table, Column, Model, CreatedAt, UpdatedAt, DataType, PrimaryKey, ForeignKey, AutoIncrement, BelongsTo,
 } from 'sequelize-typescript'
 
 @Table
-export class RequirementResource extends Model<RequirementResource> {
+export class UnitResource extends Model<UnitResource> {
   @PrimaryKey
-  @ForeignKey(() => Requirement)
+  @ForeignKey(() => Unit)
   @Column
-  requirementId: string
+  unitId: string
 
   @PrimaryKey
   @Column({
@@ -21,12 +21,12 @@ export class RequirementResource extends Model<RequirementResource> {
     ]),
   })
   resource: string
-
+  
   @Column({
     type: DataType.BIGINT,
   })
   cost: number
 
-  @BelongsTo(() => Requirement)
-  requirement: Requirement
+  @BelongsTo(() => Unit)
+  unit: Unit
 }

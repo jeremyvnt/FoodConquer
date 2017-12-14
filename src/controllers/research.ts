@@ -1,5 +1,6 @@
 import { Resources } from './../objects/resource'
 import { User, Requirement, UserRequirement, RequirementResource } from '../models'
+import { UserRequirementRepository } from '../objects/models/repositories/UserRequirementRepository'
 import { ResourcesService } from '../core/utils/resources'
 import { BaseController, Route, NextFunction } from './'
 
@@ -32,38 +33,26 @@ export class ResearchController extends BaseController {
 	 * @memberof BuildingController
 	 */
   public async details(next: NextFunction) {
+    const urRepository = new UserRequirementRepository()
     const researchId = this.req.params.researchId
 
     const user = await User.findOne<User>({ where: { pseudo: 'Jerem' } })
+    const requirement = await Requirement.findOne<Requirement>({ where: { id: researchId }})
+    const userRequirement = await urRepository.findOneUserRequirement(user, researchId)
 
-    const requirement = await Requirement.findOne<Requirement>(
-      {
-        where: {
-          id: researchId,
-        },
-      },
-    )
-    const userRequirement = <UserRequirement[]>await requirement.$get(
-      'userRequirements',
-      {
-        where: {
-          userId: user.id,
-        },
-      },
-    )
+    const level = userRequirement ? userRequirement.level : 0
+    const updatedAt = userRequirement ? userRequirement.updatedAt : 0
 
-    const level = userRequirement.length ? userRequirement[0].level : 0
-    const updatedAt = userRequirement.length ? userRequirement[0].updatedAt : 0
 
     const cost = await this.resourcesService.getUpgradeCost(user, requirement, level)
-    const buildDuration = await this.requirementService.getResearchTime(
+    const researchDuration = await this.requirementService.getResearchTime(
       user,
       cost[Resources.CEREAL],
       cost[Resources.MEAT],
     )
 
     const { id, name, description, type, levelMax } = requirement
-    const research = { id, name, type, description, levelMax, level, updatedAt, cost, buildDuration }
+    const research = { id, name, type, description, levelMax, level, updatedAt, cost, researchDuration }
     this.res.json(research)
   }
 
@@ -74,26 +63,13 @@ export class ResearchController extends BaseController {
    * @memberof BuildingController
    */
   public async createOrUpdate(next: NextFunction) {
+    const urRepository = new UserRequirementRepository()
     const requirementIdentifier = this.req.params.researchId
 
     const user = await User.findOne<User>({ where: { pseudo: 'Jerem' } })
-    const userRequirement = (<UserRequirement[]>await user.$get(
-      'requirements',
-      {
-        where: {
-          requirementId: requirementIdentifier,
-        },
-        include: [{
-          model: Requirement,
-          where: {
-            type: this.requirementType,
-          },
-        }],
-      },
-    ))
-
-    if (userRequirement.length) {
-      await this.requirementService.upgradeRequirement(user, userRequirement[0])
+    const userRequirement = await urRepository.findOneUserRequirement(user, requirementIdentifier)
+    if (userRequirement) {
+      await this.requirementService.upgradeRequirement(user, userRequirement)
       this.res.redirect(200, ResearchController.basePath)
     } else {
       await this.requirementService.createRequirement(user, requirementIdentifier)

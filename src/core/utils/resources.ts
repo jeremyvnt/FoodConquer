@@ -1,11 +1,18 @@
 import { Resources } from '../../objects/resource'
 import { User, Resource, Requirement, UserRequirement, UserResource, RequirementResource } from '../../models'
+import { UserRequirementRepository } from '../../objects/models/repositories/UserRequirementRepository'
 import { Model } from 'sequelize-typescript'
 import { maxStokage, baseProduction, moneyUptake, upgradeCost } from './formula'
 
 
 
 export class ResourcesService {
+
+  urRepository: UserRequirementRepository
+
+  constructor() {
+    this.urRepository = new UserRequirementRepository()
+  }
 
   private getProductionBuildingId(resource: string): string {
     let buildingId: string
@@ -65,7 +72,7 @@ export class ResourcesService {
       'requirements',
       {
         where: {
-          Requirementid: ['champs', 'betail', 'puits', 'mine'],
+          requirementId: ['champs', 'betail', 'puits', 'mine'],
         },
       },
     )
@@ -178,21 +185,7 @@ export class ResourcesService {
 
   private async getStockageMaxResources(user: User, userResource: UserResource) {
     const stockageBuilding = this.getStockageBuildingId(userResource.resource)
-    let level = 0
-
-    try {
-      const userRequirement = <UserRequirement>await user.$get(
-        'requirement',
-        {
-          where: {
-            id: stockageBuilding,
-          },
-        },
-      )
-      level = userRequirement.level
-    } catch (e) {
-
-    }
+    const level = await this.urRepository.getUserRequirementLevel(user, stockageBuilding)
 
     return maxStokage(level)
   }
@@ -229,7 +222,6 @@ export class ResourcesService {
           },
         },
       ))[0]
-
       userResource.set('quantity', quantity - tempCost)
       userResource.set('updatedAt', new Date().valueOf())
       userResource.save()
@@ -244,7 +236,7 @@ export class ResourcesService {
       'resources',
       {
         where: {
-          resourceId: Resources.CEREAL,
+          resource: Resources.CEREAL,
         },
       },
     ))[0]
@@ -253,7 +245,7 @@ export class ResourcesService {
       'resources',
       {
         where: {
-          resourceId: Resources.MEAT,
+          resource: Resources.MEAT,
         },
       },
     ))[0]
@@ -262,7 +254,7 @@ export class ResourcesService {
       'resources',
       {
         where: {
-          resourceId: Resources.WATER,
+          resource: Resources.WATER,
         },
       },
     ))[0]
