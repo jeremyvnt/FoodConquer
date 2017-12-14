@@ -40,9 +40,9 @@ export class UnitService {
     const units = await Unit.findAll<Unit>(
       {
         include: [{
-          model: UnitResource
-        }]
-      }
+          model: UnitResource,
+        }],
+      },
     )
 
     const customUnits = await Promise.all(units.map(async (unit) => {
@@ -63,10 +63,12 @@ export class UnitService {
         if (totalBuilt < 0)
           totalBuilt = 0
       }
-      unit = JSON.parse(JSON.stringify(unit))
-      delete unit.resources
+
+      const newUnit = JSON.parse(JSON.stringify(unit))
+      delete newUnit.resources
+      
       return { 
-        ...unit,
+        ...newUnit,
         remainingTime,
         buildingTime,
         quantity: totalBuilt,
