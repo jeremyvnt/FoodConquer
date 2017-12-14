@@ -198,15 +198,23 @@ export abstract class BaseController {
         },
       }],
     })
+    const buildingList = <Requirement[]>await Requirement.findAll({
+      where: {
+        type: requirementType,
+      },
+    })
+
     const userResources = await this.resourcesService.getUserResources(user)
 
     // merge userResources avec userRequirements
-    const requirements: any = []
-    userRequirements.map((ur) => {
-      const { level, updatedAt } = ur
-      const { id, name, description, type, levelMax } = ur.requirement
-      const requirement = { id, name, type, description, levelMax, level, updatedAt }
-      requirements.push(requirement)
+    const requirements: any[] = buildingList.map((building) => {
+      const ur = userRequirements.find(ur => ur.requirementId === building.id)
+      const tmpBuilding = JSON.parse(JSON.stringify(building))
+      return {
+        ...tmpBuilding,
+        level: ur ? ur.level : null,
+        updatedAt: ur ? ur.updatedAt : null,
+      }
     })
 
     const result = {

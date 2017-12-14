@@ -1,7 +1,6 @@
 import { Resources } from './../objects/resource'
 import { buildingTime } from './../core/utils/formula'
 import { User, Requirement, UserRequirement, RequirementResource, Unit, UserUnit } from '../models'
-import { ResourcesService } from '../core/utils/resources'
 import { UnitService } from './../core/utils/unit'
 import { BaseController, Route, NextFunction } from './'
 
@@ -23,8 +22,9 @@ export class UnitController extends BaseController {
 	 * @memberof UnitController
 	 */
   public async index(next: NextFunction) {
-    const result = await this.getRequirementList(next, this.requirementType)
-    this.res.json(result)
+    const user = await User.findOne<User>({ where: { pseudo: 'Jerem' } })
+    const units = await this.unitService.getUnits(user)
+    this.res.json(units)
   }
 
 	/**
@@ -35,9 +35,7 @@ export class UnitController extends BaseController {
 	 */
   public async details(next: NextFunction) {
     const unitId = this.req.params.unitId
-
     const user = await User.findOne<User>({ where: { pseudo: 'Jerem' } })
-
     const unit = await Unit.findOne<Unit>(
       {
         where: {
@@ -56,14 +54,14 @@ export class UnitController extends BaseController {
     const updatedAt = userUnit.length ? userUnit[0].updatedAt : 0
 
     // TODO
-    const cost = null // await this.resourcesService.getUpgradeCost(user, unit, level)
+    const cost: number[] = null // await this.resourcesService.getUpgradeCost(user, unit, level)
     const buildDuration = await this.requirementService.getBuildingTime(
       user,
-      cost[Resources.CEREAL],
-      cost[Resources.MEAT],
+      4,// cost[Resources.CEREAL],
+      2,// cost[Resources.MEAT],
     )
 
-    const { id, name, description, type, quantity } = unit
+    const { id, name, description, type } = unit
     const unitResult = { id, name, type, description, updatedAt, cost, buildDuration }
     this.res.json(unitResult)
   }
@@ -75,7 +73,7 @@ export class UnitController extends BaseController {
    * @memberof BuildingController
    */
   public async create(next: NextFunction) {
-    const unitId = this.req.params.buildingId
+    const unitId = this.req.params.unitId
 
     const user = await User.findOne<User>({ where: { pseudo: 'Jerem' } })
     const unit = await Unit.findOne<Unit>({ where: { id: unitId } })
@@ -95,9 +93,8 @@ export class UnitController extends BaseController {
     ))
 
     // await this.requirementService.createRequirement(user, unitId)
-    await this.unitService.createUnit(user, unitId)
+    // await this.unitService.createUnit(user, unitId)
     this.res.redirect(200, UnitController.basePath)
   }
-
 }
 

@@ -39,7 +39,7 @@ export class BuildingController extends BaseController {
     const buildingId = this.req.params.buildingId
 
     const user = await User.findOne<User>({ where: { pseudo: 'Jerem' } })
-    const requirement = await Requirement.findOne<Requirement>({ where: { id: buildingId }})
+    const requirement = await Requirement.findOne<Requirement>({ where: { id: buildingId } })
     const userRequirement = await urRepository.findOneUserRequirement(user, buildingId)
 
     const level = userRequirement ? userRequirement.level : 0
