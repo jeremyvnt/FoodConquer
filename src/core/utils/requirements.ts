@@ -70,8 +70,8 @@ export class RequirementService {
 
 
   public async hasRequirements(user: User, objectId: string) {
-    const requirementsTree = TECH_TREE.get(objectId)
-    for (const entrie of requirementsTree) {
+    const requirementsTree = TECH_TREE[objectId]
+    for (const entrie in requirementsTree) {
       const userRequirement = <UserRequirement[]>await user.$get(
         'requirements',
         {

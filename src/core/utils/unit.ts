@@ -14,6 +14,7 @@ import { buildingTime } from './formula'
 import { ResourcesService } from './resources'
 import { RequirementService } from './requirements'
 import { UserUnitRepository } from '../../objects/models/repositories/UserUnitRepository'
+import { TECH_TREE } from '../../objects/techTree'
 
 
 export class UnitService {
@@ -74,6 +75,7 @@ export class UnitService {
         quantity: totalBuilt,
         remainingToBuild: userUnit ? userUnit.quantity - totalBuilt : 0,
         cost: buildCost,
+        requirements: TECH_TREE[newUnit.id],
       }
     }))
     
