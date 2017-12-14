@@ -1,5 +1,6 @@
 import { Resources } from './../resource'
 import { UnitResource } from './UnitResource'
+import { UserUnit } from './UserUnit'
 import {
   Table,
   Column,
@@ -90,5 +91,8 @@ export class Unit extends Model<Unit> {
 
   @HasMany(() => UnitResource)
   resources: UnitResource[]
+
+  @HasMany(() => UserUnit)
+  userUnits: UserUnit[]
 
 }

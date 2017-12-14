@@ -1,10 +1,10 @@
-import {
+import { 
   User,
   Resource,
   Requirement,
   UserRequirement,
   RequirementResource,
-  UserResource,
+  UserResource, 
 } from '../../../models'
 
 export class UserRequirementRepository {
@@ -22,12 +22,21 @@ export class UserRequirementRepository {
       },
     )
     return ur.length ? ur[0] : null
-  }
+  }  
 
   public async getUserRequirementLevel(user: User, requirementId: string) {
     const ur = await this.findOneUserRequirement(user, requirementId)
     return ur ? ur.level : 0
   }
 
-
+  public async findUserRequirements(user: User, requirementsId: string[]) {
+    return <UserRequirement[]>await user.$get(
+      'requirements',
+      {
+        where: {
+          requirementId: requirementsId,
+        },
+      },
+    )
+  }
 }

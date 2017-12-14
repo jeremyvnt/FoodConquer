@@ -68,13 +68,9 @@ export class ResourcesService {
 
 
   public async getUserResources(user: User) {
-    const userRequirements = <UserRequirement[]>await user.$get(
-      'requirements',
-      {
-        where: {
-          requirementId: ['champs', 'betail', 'puits', 'mine'],
-        },
-      },
+    const userRequirements = await this.urRepository.findUserRequirements(
+      user, 
+      ['champs', 'betail', 'puits', 'mine'],
     )
 
     const userResources = <UserResource[]>await user.$get('resources')
@@ -192,7 +188,7 @@ export class ResourcesService {
 
 
 
-  public hasEnoughResources(userResources: any[], cost: any[]) {
+  public hasEnoughResources(userResources: any[], cost: {[index:string]: number}) {
     let canBuy = true
 
     for (const resource in cost) {
@@ -207,13 +203,35 @@ export class ResourcesService {
   }
 
 
+  public getMaxUnitToBuild(userResources: any[], cost:  {[index:string]: number}) {
+    let quantity
 
-  public async withdrawResources(user: User, userResources: any[], cost: any[]) {
+    for (const resource in cost) {
+      const tempCost = cost[resource]
+      const userResource = userResources.find((userResource) => {
+        return userResource.name === resource
+      })
+
+      if (!quantity || quantity > Math.floor(userResource.quantity / tempCost))
+        quantity = Math.floor(userResource.quantity / tempCost)
+    }
+
+    return quantity
+  }
+
+
+
+  public async withdrawResources(user: User, 
+                                 userResources: any[], 
+                                 cost: {[index:string]: number}, 
+                                 multiple: number = 1) {
+
     for (const resource in cost) {
       const tempCost = cost[resource]
       const quantity = userResources.find((userResource) => {
         return userResource.name === resource
       }).quantity
+
       const userResource = (<UserResource[]>await user.$get(
         'resources',
         {
@@ -222,7 +240,7 @@ export class ResourcesService {
           },
         },
       ))[0]
-      userResource.set('quantity', quantity - tempCost)
+      userResource.set('quantity', quantity - tempCost * multiple)
       userResource.set('updatedAt', new Date().valueOf())
       userResource.save()
     }
@@ -232,34 +250,19 @@ export class ResourcesService {
 
   public async getUpgradeCost(user: User, requirement: Requirement, level: number) {
     
-    const cerealCost = (<RequirementResource[]>await requirement.$get(
-      'resources',
-      {
-        where: {
-          resource: Resources.CEREAL,
-        },
-      },
-    ))[0]
+    const requirementResources = <RequirementResource[]>await requirement.$get('resources')
 
-    const meatCost = (<RequirementResource[]>await requirement.$get(
-      'resources',
-      {
-        where: {
-          resource: Resources.MEAT,
-        },
-      },
-    ))[0]
+    const cerealCost = requirementResources.find(rr => rr.resource === Resources.CEREAL)
+    const meatCost = requirementResources.find(rr => rr.resource === Resources.MEAT)
+    const waterCost = requirementResources.find(rr => rr.resource === Resources.WATER)
 
-    const waterCost = (<RequirementResource[]>await requirement.$get(
-      'resources',
-      {
-        where: {
-          resource: Resources.WATER,
-        },
-      },
-    ))[0]
-
-    return upgradeCost(cerealCost.cost, meatCost.cost, waterCost.cost, requirement, level)
+    return upgradeCost(
+      cerealCost ? cerealCost.cost : 0, 
+      meatCost ? meatCost.cost : 0, 
+      waterCost ? waterCost.cost : 0, 
+      requirement, 
+      level,
+    )
   }
 
 
