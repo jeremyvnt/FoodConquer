@@ -28,20 +28,26 @@ export class UnitService {
 
   public async getUnits(user: User) {
     const requirementService = new RequirementService()
-    const units = <UserUnit[]> await user.$get(
+    const userUnits = <UserUnit[]> await user.$get(
       'units',
       {
-        includes: [{
+        include: [{
           model: Unit,
         }],
       },
     )
 
-    const customUnits = await Promise.all(units.map(async (userUnit) => {
+    const units = await Unit.findAll<Unit>(
+      {
+        include: [{
+          model: UnitResource,
+        }],
+      },
+    )
 
-      let unit = <Unit> await userUnit.$get('unit')
-      const resources = <UnitResource[]> await unit.$get('resources')
-      const buildCost = this.constructCostObject(resources)
+    const customUnits = await Promise.all(units.map(async (unit) => {
+      const userUnit = userUnits.find(userUnit => userUnit.unitId === unit.id)
+      const buildCost = this.constructCostObject(unit.resources)
       const buildingTime = await requirementService.getBuildingTime(
         user, 
         buildCost.cereal, 
@@ -49,22 +55,24 @@ export class UnitService {
       )
       
       let remainingTime = 0
-      let totalBuilt = userUnit.quantity
+      let totalBuilt = userUnit && userUnit.quantity || 0
 
-      if (userUnit.updatedAt > new Date().valueOf()) {
+      if (userUnit && userUnit.updatedAt > new Date().valueOf()) {
         remainingTime = (userUnit.updatedAt - new Date().valueOf()) / 3600000
         totalBuilt = Math.floor((userUnit.quantity * buildingTime - remainingTime) / buildingTime)
         if (totalBuilt < 0)
           totalBuilt = 0
       }
+
+      const newUnit = JSON.parse(JSON.stringify(unit))
+      delete newUnit.resources
       
-      unit = JSON.parse(JSON.stringify(unit))
       return { 
-        ...unit,
+        ...newUnit,
         remainingTime,
         buildingTime,
         quantity: totalBuilt,
-        remainingToBuild: userUnit.quantity - totalBuilt,
+        remainingToBuild: userUnit ? userUnit.quantity - totalBuilt : 0,
         cost: buildCost,
       }
     }))
