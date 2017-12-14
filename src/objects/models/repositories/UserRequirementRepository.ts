@@ -10,7 +10,7 @@ import {
 export class UserRequirementRepository {
 
   public async findOneUserRequirement(user: User, requirementId: string) {
-    const ur = <UserRequirement[]> await user.$get(
+    const ur = <UserRequirement[]>await user.$get(
       'requirements',
       {
         where: {

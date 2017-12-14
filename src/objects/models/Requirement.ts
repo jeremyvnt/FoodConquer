@@ -1,8 +1,8 @@
 import { Resource, RequirementResource, UserRequirement } from '../../models'
 import {
-  Table, Column, Model, 
-  CreatedAt, UpdatedAt, DataType, 
-  PrimaryKey, AutoIncrement, BelongsToMany, 
+  Table, Column, Model,
+  CreatedAt, UpdatedAt, DataType,
+  PrimaryKey, AutoIncrement, BelongsToMany,
   HasMany,
 } from 'sequelize-typescript'
 
