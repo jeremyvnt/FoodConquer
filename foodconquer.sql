@@ -190,7 +190,7 @@ INSERT INTO Requirement(id, name, type, description, levelMax) VALUES (
   'poisson',
   'Poisson',
   'RESEARCH',
-  'Technologie dediée à la création d''unités offensives japonnaises',
+  'Technologie dediée à la création d''unités offensives japonaises',
   18
 );
 
@@ -199,34 +199,21 @@ INSERT INTO Requirement(id, name, type, description, levelMax) VALUES (
 ###Champs
 INSERT INTO RequirementResource(requirementId, resource, cost) VALUES ('champs', 'cereal', 60);
 INSERT INTO RequirementResource(requirementId, resource, cost) VALUES ('champs', 'meat', 15);
-INSERT INTO RequirementResource(requirementId, resource, cost) VALUES ('champs', 'water', 0);
-INSERT INTO RequirementResource(requirementId, resource, cost) VALUES ('champs', 'money', 0);
 ###Betail
 INSERT INTO RequirementResource(requirementId, resource, cost) VALUES ('betail', 'cereal', 48);
 INSERT INTO RequirementResource(requirementId, resource, cost) VALUES ('betail', 'meat ', 24);
-INSERT INTO RequirementResource(requirementId, resource, cost) VALUES ('betail', 'water', 0);
-INSERT INTO RequirementResource(requirementId, resource, cost) VALUES ('betail', 'money', 0);
 ###Puit
 INSERT INTO RequirementResource(requirementId, resource, cost) VALUES ('puits', 'cereal', 225);
 INSERT INTO RequirementResource(requirementId, resource, cost) VALUES ('puits', 'meat ', 75);
-INSERT INTO RequirementResource(requirementId, resource, cost) VALUES ('puits', 'water', 0);
-INSERT INTO RequirementResource(requirementId, resource, cost) VALUES ('puits', 'money', 0);
 
 ###Entrepot
 INSERT INTO RequirementResource(requirementId, resource, cost) VALUES ('entrepot', 'cereal', 2000);
-INSERT INTO RequirementResource(requirementId, resource, cost) VALUES ('entrepot', 'meat', 0);
-INSERT INTO RequirementResource(requirementId, resource, cost) VALUES ('entrepot', 'water', 0);
-INSERT INTO RequirementResource(requirementId, resource, cost) VALUES ('entrepot', 'money', 0);
 ###Citerne
 INSERT INTO RequirementResource(requirementId, resource, cost) VALUES ('citerne', 'cereal', 2000);
 INSERT INTO RequirementResource(requirementId, resource, cost) VALUES ('citerne', 'meat ', 1000);
-INSERT INTO RequirementResource(requirementId, resource, cost) VALUES ('citerne', 'water', 0);
-INSERT INTO RequirementResource(requirementId, resource, cost) VALUES ('citerne', 'money', 0);
 ###Silot
 INSERT INTO RequirementResource(requirementId, resource, cost) VALUES ('silot', 'cereal', 2000);
 INSERT INTO RequirementResource(requirementId, resource, cost) VALUES ('silot', 'meat ', 2000);
-INSERT INTO RequirementResource(requirementId, resource, cost) VALUES ('silot', 'water', 0);
-INSERT INTO RequirementResource(requirementId, resource, cost) VALUES ('silot', 'money', 0);
 
 ###Laboratoire
 INSERT INTO RequirementResource(requirementId, resource, cost) VALUES ('laboratoire', 'cereal', 200);
@@ -253,7 +240,6 @@ INSERT INTO RequirementResource(requirementId, resource, cost) VALUES ('concessi
 INSERT INTO RequirementResource(requirementId, resource, cost) VALUES ('espionnage', 'cereal', 200);
 INSERT INTO RequirementResource(requirementId, resource, cost) VALUES ('espionnage', 'meat ', 1000);
 INSERT INTO RequirementResource(requirementId, resource, cost) VALUES ('espionnage', 'water', 200);
-INSERT INTO RequirementResource(requirementId, resource, cost) VALUES ('espionnage', 'money', 0);
 ###Securité
 INSERT INTO RequirementResource(requirementId, resource, cost) VALUES ('securite', 'cereal', 1000);
 INSERT INTO RequirementResource(requirementId, resource, cost) VALUES ('securite', 'meat ', 300);
@@ -262,37 +248,27 @@ INSERT INTO RequirementResource(requirementId, resource, cost) VALUES ('securite
 INSERT INTO RequirementResource(requirementId, resource, cost) VALUES ('colonisation', 'cereal', 4000);
 INSERT INTO RequirementResource(requirementId, resource, cost) VALUES ('colonisation', 'meat ', 8000);
 INSERT INTO RequirementResource(requirementId, resource, cost) VALUES ('colonisation', 'water', 4000);
-INSERT INTO RequirementResource(requirementId, resource, cost) VALUES ('colonisation', 'money', 0);
 ###Bavoire
 INSERT INTO RequirementResource(requirementId, resource, cost) VALUES ('bavoire', 'cereal', 1000);
 INSERT INTO RequirementResource(requirementId, resource, cost) VALUES ('bavoire', 'meat ', 8000);
 INSERT INTO RequirementResource(requirementId, resource, cost) VALUES ('bavoire', 'water', 4000);
-INSERT INTO RequirementResource(requirementId, resource, cost) VALUES ('bavoire', 'money', 0);
 ###Cuisine
 INSERT INTO RequirementResource(requirementId, resource, cost) VALUES ('cuisine', 'cereal', 400);
-INSERT INTO RequirementResource(requirementId, resource, cost) VALUES ('cuisine', 'meat ', 0);
 INSERT INTO RequirementResource(requirementId, resource, cost) VALUES ('cuisine', 'water', 600);
-INSERT INTO RequirementResource(requirementId, resource, cost) VALUES ('cuisine', 'money', 0);
 ###Graisse
 INSERT INTO RequirementResource(requirementId, resource, cost) VALUES ('graisse', 'cereal', 200);
 INSERT INTO RequirementResource(requirementId, resource, cost) VALUES ('graisse', 'meat ', 600);
-INSERT INTO RequirementResource(requirementId, resource, cost) VALUES ('graisse', 'water', 0);
-INSERT INTO RequirementResource(requirementId, resource, cost) VALUES ('graisse', 'money', 0);
 ###Protéine
 INSERT INTO RequirementResource(requirementId, resource, cost) VALUES ('proteine', 'cereal', 800);
 INSERT INTO RequirementResource(requirementId, resource, cost) VALUES ('proteine', 'meat ', 200);
-INSERT INTO RequirementResource(requirementId, resource, cost) VALUES ('proteine', 'water', 0);
-INSERT INTO RequirementResource(requirementId, resource, cost) VALUES ('proteine', 'money', 0);
 ###Riz
 INSERT INTO RequirementResource(requirementId, resource, cost) VALUES ('riz', 'cereal', 2000);
 INSERT INTO RequirementResource(requirementId, resource, cost) VALUES ('riz', 'meat ', 4000);
 INSERT INTO RequirementResource(requirementId, resource, cost) VALUES ('riz', 'water', 600);
-INSERT INTO RequirementResource(requirementId, resource, cost) VALUES ('riz', 'money', 0);
 ###Poisson
 INSERT INTO RequirementResource(requirementId, resource, cost) VALUES ('poisson', 'cereal', 10000);
 INSERT INTO RequirementResource(requirementId, resource, cost) VALUES ('poisson', 'meat ', 20000);
 INSERT INTO RequirementResource(requirementId, resource, cost) VALUES ('poisson', 'water', 6000);
-INSERT INTO RequirementResource(requirementId, resource, cost) VALUES ('poisson', 'money', 0);
 
 #Unit
 INSERT INTO Unit(id, name, description, armor, strength, health, speed, storage, uptake, type) VALUES (
@@ -469,71 +445,46 @@ INSERT INTO Unit(id, name, description, health, armor, strength, storage, speed,
 #UnitResource
 ##Defence
 ###Barrière
-INSERT INTO UnitResource(unitId, resource, type, cost) VALUES ('barriere', 'cereal', 10000);
-INSERT INTO UnitResource(unitId, resource, type, cost) VALUES ('barriere', 'meat', 10000);
-INSERT INTO UnitResource(unitId, resource, type, cost) VALUES ('barriere', 'water', 0);
-INSERT INTO UnitResource(unitId, resource, type, cost) VALUES ('barriere', 'money', 0);
+INSERT INTO UnitResource(unitId, resource, cost) VALUES ('barriere', 'cereal', 10000);
+INSERT INTO UnitResource(unitId, resource, cost) VALUES ('barriere', 'meat', 10000);
 ###Vigile
-INSERT INTO UnitResource(unitId, resource, type, cost) VALUES ('vigile', 'cereal', 6000);
-INSERT INTO UnitResource(unitId, resource, type, cost) VALUES ('vigile', 'meat', 2000);
-INSERT INTO UnitResource(unitId, resource, type, cost) VALUES ('vigile', 'water', 0);
-INSERT INTO UnitResource(unitId, resource, type, cost) VALUES ('vigile', 'money', 0);
+INSERT INTO UnitResource(unitId, resource, cost) VALUES ('vigile', 'cereal', 6000);
+INSERT INTO UnitResource(unitId, resource, cost) VALUES ('vigile', 'meat', 2000);
 ###Chien
-INSERT INTO UnitResource(unitId, resource, type, cost) VALUES ('chien', 'cereal', 2000);
-INSERT INTO UnitResource(unitId, resource, type, cost) VALUES ('chien', 'meat', 0);
-INSERT INTO UnitResource(unitId, resource, type, cost) VALUES ('chien', 'water', 0);
-INSERT INTO UnitResource(unitId, resource, type, cost) VALUES ('chien', 'money', 0);
+INSERT INTO UnitResource(unitId, resource, cost) VALUES ('chien', 'cereal', 2000);
 ###Mirador
-INSERT INTO UnitResource(unitId, resource, type, cost) VALUES ('mirador', 'cereal', 2000);
-INSERT INTO UnitResource(unitId, resource, type, cost) VALUES ('mirador', 'meat', 6000);
-INSERT INTO UnitResource(unitId, resource, type, cost) VALUES ('mirador', 'water', 0);
-INSERT INTO UnitResource(unitId, resource, type, cost) VALUES ('mirador', 'money', 0);
+INSERT INTO UnitResource(unitId, resource, cost) VALUES ('mirador', 'cereal', 2000);
+INSERT INTO UnitResource(unitId, resource, cost) VALUES ('mirador', 'meat', 6000);
 ###Samoraï
-INSERT INTO UnitResource(unitId, resource, type, cost) VALUES ('samorai', 'cereal', 50000);
-INSERT INTO UnitResource(unitId, resource, type, cost) VALUES ('samorai', 'meat', 50000);
-INSERT INTO UnitResource(unitId, resource, type, cost) VALUES ('samorai', 'water', 30000);
-INSERT INTO UnitResource(unitId, resource, type, cost) VALUES ('samorai', 'money', 0);
+INSERT INTO UnitResource(unitId, resource, cost) VALUES ('samorai', 'cereal', 50000);
+INSERT INTO UnitResource(unitId, resource, cost) VALUES ('samorai', 'meat', 50000);
+INSERT INTO UnitResource(unitId, resource, cost) VALUES ('samorai', 'water', 30000);
 ##Attack
 ###Colomb
-INSERT INTO UnitResource(unitId, resource, type, cost) VALUES ('colomb', 'cereal', 10000);
-INSERT INTO UnitResource(unitId, resource, type, cost) VALUES ('colomb', 'meat', 20000);
-INSERT INTO UnitResource(unitId, resource, type, cost) VALUES ('colomb', 'water', 10000);
-INSERT INTO UnitResource(unitId, resource, type, cost) VALUES ('colomb', 'money', 0);
+INSERT INTO UnitResource(unitId, resource, cost) VALUES ('colomb', 'cereal', 10000);
+INSERT INTO UnitResource(unitId, resource, cost) VALUES ('colomb', 'meat', 20000);
+INSERT INTO UnitResource(unitId, resource, cost) VALUES ('colomb', 'water', 10000);
 ###Espion
-INSERT INTO UnitResource(unitId, resource, type, cost) VALUES ('espion', 'cereal', 0);
-INSERT INTO UnitResource(unitId, resource, type, cost) VALUES ('espion', 'meat', 1000);
-INSERT INTO UnitResource(unitId, resource, type, cost) VALUES ('espion', 'water', 0);
-INSERT INTO UnitResource(unitId, resource, type, cost) VALUES ('espion', 'money', 0);
+INSERT INTO UnitResource(unitId, resource, cost) VALUES ('espion', 'meat', 1000);
 ###Chinois
-INSERT INTO UnitResource(unitId, resource, type, cost) VALUES ('chinois', 'cereal', 6000);
-INSERT INTO UnitResource(unitId, resource, type, cost) VALUES ('chinois', 'meat', 4000);
-INSERT INTO UnitResource(unitId, resource, type, cost) VALUES ('chinois', 'water', 0);
-INSERT INTO UnitResource(unitId, resource, type, cost) VALUES ('chinois', 'money', 0);
-###Japonnais
-INSERT INTO UnitResource(unitId, resource, type, cost) VALUES ('japonnais', 'cereal', 45000);
-INSERT INTO UnitResource(unitId, resource, type, cost) VALUES ('japonnais', 'meat', 15000);
-INSERT INTO UnitResource(unitId, resource, type, cost) VALUES ('japonnais', 'water', 0);
-INSERT INTO UnitResource(unitId, resource, type, cost) VALUES ('japonnais', 'money', 0);
+INSERT INTO UnitResource(unitId, resource, cost) VALUES ('chinois', 'cereal', 6000);
+INSERT INTO UnitResource(unitId, resource, cost) VALUES ('chinois', 'meat', 4000);
+###Japonais
+INSERT INTO UnitResource(unitId, resource, cost) VALUES ('japonais', 'cereal', 45000);
+INSERT INTO UnitResource(unitId, resource, cost) VALUES ('japonais', 'meat', 15000);
 ###Ricain
-INSERT INTO UnitResource(unitId, resource, type, cost) VALUES ('ricain', 'cereal', 3000);
-INSERT INTO UnitResource(unitId, resource, type, cost) VALUES ('ricain', 'meat', 1000);
-INSERT INTO UnitResource(unitId, resource, type, cost) VALUES ('ricain', 'water', 0);
-INSERT INTO UnitResource(unitId, resource, type, cost) VALUES ('ricain', 'money', 0);
+INSERT INTO UnitResource(unitId, resource, cost) VALUES ('ricain', 'cereal', 3000);
+INSERT INTO UnitResource(unitId, resource, cost) VALUES ('ricain', 'meat', 1000);
 ###Trafic
-INSERT INTO UnitResource(unitId, resource, type, cost) VALUES ('trafic', 'cereal', 2000);
-INSERT INTO UnitResource(unitId, resource, type, cost) VALUES ('trafic', 'meat', 2000);
-INSERT INTO UnitResource(unitId, resource, type, cost) VALUES ('trafic', 'water', 0);
-INSERT INTO UnitResource(unitId, resource, type, cost) VALUES ('trafic', 'money', 0);
+INSERT INTO UnitResource(unitId, resource, cost) VALUES ('trafic', 'cereal', 2000);
+INSERT INTO UnitResource(unitId, resource, cost) VALUES ('trafic', 'meat', 2000);
 ###Transpoteur
-INSERT INTO UnitResource(unitId, resource, type, cost) VALUES ('transporteur', 'cereal', 6000);
-INSERT INTO UnitResource(unitId, resource, type, cost) VALUES ('transporteur', 'meat', 6000);
-INSERT INTO UnitResource(unitId, resource, type, cost) VALUES ('transporteur', 'water', 0);
-INSERT INTO UnitResource(unitId, resource, type, cost) VALUES ('transporteur', 'money', 0);
+INSERT INTO UnitResource(unitId, resource, cost) VALUES ('transporteur', 'cereal', 6000);
+INSERT INTO UnitResource(unitId, resource, cost) VALUES ('transporteur', 'meat', 6000);
 ###Sumo
-INSERT INTO UnitResource(unitId, resource, type, cost) VALUES ('sumo', 'cereal', 5000000);
-INSERT INTO UnitResource(unitId, resource, type, cost) VALUES ('sumo', 'meat', 4000000);
-INSERT INTO UnitResource(unitId, resource, type, cost) VALUES ('sumo', 'water', 1000000);
-INSERT INTO UnitResource(unitId, resource, type, cost) VALUES ('sumo', 'money', 0);
+INSERT INTO UnitResource(unitId, resource, cost) VALUES ('sumo', 'cereal', 5000000);
+INSERT INTO UnitResource(unitId, resource, cost) VALUES ('sumo', 'meat', 4000000);
+INSERT INTO UnitResource(unitId, resource, cost) VALUES ('sumo', 'water', 1000000);
 
 
 #User 1
