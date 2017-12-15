@@ -1,6 +1,7 @@
 import { RequirementService } from './../core/utils/requirements'
 import { UserResource } from './../objects/models/UserResource'
 import { ResourcesService } from './../core/utils/resources'
+import { TECH_TREE } from '../objects/techTree'
 import { Request, Response, NextFunction, Router, IRouterMatcher } from 'express'
 export { NextFunction }
 
@@ -214,6 +215,7 @@ export abstract class BaseController {
         ...tmpBuilding,
         level: ur ? ur.level : null,
         updatedAt: ur ? ur.updatedAt : null,
+        requirements: TECH_TREE[building.id],
       }
     })
 
