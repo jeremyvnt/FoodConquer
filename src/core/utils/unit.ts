@@ -55,7 +55,7 @@ export class UnitService {
         buildCost.cereal, 
         buildCost.meat,
       )
-      const buildable = await requirementService.hasRequirements(user, unit.id)
+      const available = await requirementService.hasRequirements(user, unit.id)
       
       let remainingTime = 0
       let totalBuilt = userUnit && userUnit.quantity || 0
@@ -72,7 +72,7 @@ export class UnitService {
       
       return { 
         ...newUnit,
-        buildable,
+        available,
         remainingTime,
         buildingTime,
         quantity: totalBuilt,
