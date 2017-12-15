@@ -322,9 +322,9 @@ INSERT INTO Unit(id, name, description, health, armor, strength, speed, storage,
   0,
   'DEFENSE'
 );
-#Samorai
+#Samourai
 INSERT INTO Unit(id, name, description, health, armor, strength, speed, storage, uptake, type) VALUES (
-  'samorai',
+  'samourai',
   'Samoraï',
   'Unité de défense ultime',
   100000,
@@ -456,9 +456,9 @@ INSERT INTO UnitResource(unitId, resource, cost) VALUES ('chien', 'cereal', 2000
 INSERT INTO UnitResource(unitId, resource, cost) VALUES ('mirador', 'cereal', 2000);
 INSERT INTO UnitResource(unitId, resource, cost) VALUES ('mirador', 'meat', 6000);
 ###Samoraï
-INSERT INTO UnitResource(unitId, resource, cost) VALUES ('samorai', 'cereal', 50000);
-INSERT INTO UnitResource(unitId, resource, cost) VALUES ('samorai', 'meat', 50000);
-INSERT INTO UnitResource(unitId, resource, cost) VALUES ('samorai', 'water', 30000);
+INSERT INTO UnitResource(unitId, resource, cost) VALUES ('samourai', 'cereal', 50000);
+INSERT INTO UnitResource(unitId, resource, cost) VALUES ('samourai', 'meat', 50000);
+INSERT INTO UnitResource(unitId, resource, cost) VALUES ('samourai', 'water', 30000);
 ##Attack
 ###Colomb
 INSERT INTO UnitResource(unitId, resource, cost) VALUES ('colomb', 'cereal', 10000);
