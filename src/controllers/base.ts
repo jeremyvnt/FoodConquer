@@ -3,6 +3,7 @@ import { UserResource } from './../objects/models/UserResource'
 import { ResourcesService } from './../core/utils/resources'
 import { TECH_TREE } from '../objects/techTree'
 import { Request, Response, NextFunction, Router, IRouterMatcher } from 'express'
+import * as passport from 'passport'
 export { NextFunction }
 
 import { User, Requirement, UserRequirement, RequirementResource } from '../models'
@@ -119,6 +120,14 @@ export abstract class BaseController {
     this.res = res
     this.resourcesService = new ResourcesService()
     this.requirementService = new RequirementService()
+
+    // Middleware to require login/auth
+    const requireAuth = passport.authenticate('jwt', { session: false })
+    const requireLogin = passport.authenticate('local', {
+      successRedirect: '/',
+      failureRedirect: '/login',
+      session: false,
+    })
   }
 
   /**
@@ -173,7 +182,7 @@ export abstract class BaseController {
         const childController = new (<any>this)(req, res)
 
         // On appelle la bonne action dans le controller enfant
-        childController[route.action](next)
+        childController[route.action]().then((data: any) => res.json(data)).catch((err: any) => next(err))
       })
 
     }

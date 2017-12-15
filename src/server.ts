@@ -6,11 +6,22 @@ import * as cookieParser from 'cookie-parser'
 import * as logger from 'morgan'
 import methodOverride = require('method-override')
 
+import * as passport from 'passport'
+import { Strategy as JwtStrategy, ExtractJwt } from 'passport-jwt'
+import { Strategy as LocalStrategy } from 'passport-local'
+import secret from './boot'
+import { UserService } from './core/utils/user'
+import { User } from './models'
+
+const localOptions = { usernameField: 'email' }
+const userService = new UserService()
+
 import {
   TestController,
   BuildingController,
   ResearchController,
   UnitController,
+  AuthenticationController,
 } from './controllers/index'
 
 /**
@@ -70,6 +81,8 @@ export class Server {
 
     this.useInitialMiddlewares()
 
+    this.usePassportMiddlewares()
+
     this.useControllersRouting()
 
     this.useFallbackMiddlewares()
@@ -92,6 +105,8 @@ export class Server {
     this.app.use(cookieParser('ajksdhfdskdqsdfasdklafvcbvckjhfjka sdf'))
 
     this.app.use(methodOverride())
+    this.app.use(passport.initialize())
+    this.app.use(passport.session())
   }
 
   /**
@@ -104,6 +119,64 @@ export class Server {
     this.app.use(this.errorMiddleware)
   }
 
+
+  /**
+   * Add some fallback middlewares to the response
+   * 
+   * @memberof Server
+   */
+  public usePassportMiddlewares() {
+    // Authentication
+    // Setting up local login strategy
+    const localLogin = new LocalStrategy(localOptions, ((email: string, password: string, done: any) => {
+      User.findOne({ where: { email } }).then((user: User) => {
+        if (!user)
+          return done(null, false, { message: 'Your login details could not be verified. Please try again.' })
+
+        userService.comparePassword(user, password, ((err: Error, isMatch: boolean) => {
+          if (err)
+            return done(err)
+          if (!isMatch)
+            return done(
+              null,
+              false,
+              { message: 'Your login details could not be verified. Please try again.' },
+            )
+
+          return done(null, user)
+        }))
+      })
+        .catch((error) => {
+          return done(error)
+        })
+    }))
+
+    const jwtOptions = {
+      // Telling Passport to check authorization headers for JWT
+      jwtFromRequest: ExtractJwt.fromAuthHeader(),
+      // Telling Passport where to find the secret
+      secretOrKey: secret,
+    }
+
+    // Setting up JWT login strategy
+    const jwtLogin = new JwtStrategy(jwtOptions, ((payload: any, done: any) => {
+      User.findById(payload._id)
+        .then((user: User) => {
+          if (user) {
+            done(null, user)
+          } else {
+            done(null, false)
+          }
+        })
+        .catch((error) => {
+          return done(error, false)
+        })
+    }))
+
+    passport.use(jwtLogin)
+    passport.use(localLogin)
+  }
+
   /**
    * Connection du routing des controllers à l'application
    * 
@@ -112,6 +185,7 @@ export class Server {
   public useControllersRouting() {
     const router = express.Router()
 
+    // CORS configuration
     const options: cors.CorsOptions = {
       allowedHeaders: ['Origin', 'X-Requested-With', 'Content-Type', 'Accept', 'X-Access-Token'],
       credentials: true,
@@ -119,14 +193,22 @@ export class Server {
       origin: '*',
       preflightContinue: false,
     }
-
-    // use cors middleware
     router.use(cors(options))
 
     // Les différents controllers
     // @todo, possible d'utiliser une boucle ici si on indexe tous nos controllers dans le fichier
     // ./controllers/index.js (ce qui est le cas)
     // Cela éviterait de devoir tous les lister ici.
+
+    AuthenticationController.connect(router)
+
+    this.app.use((req, res) => {
+      if (!req.user) {
+        res.redirect('/login')
+      }
+    })
+
+    AuthenticationController.connect(router)
     TestController.connect(router)
     BuildingController.connect(router)
     ResearchController.connect(router)

@@ -2,7 +2,7 @@ import { Server } from './server'
 import { Sequelize } from 'sequelize-typescript'
 
 // On créé une instance de sequalize avec la configuration
-const sequelize =  new Sequelize({
+const sequelize = new Sequelize({
   database: 'foodconquer',
   dialect: 'mysql',
   username: 'root',
@@ -10,6 +10,9 @@ const sequelize =  new Sequelize({
   host: 'localhost',
   modelPaths: [__dirname + '/objects/models'],
 })
+
+const secret = 'foodConquerForTheWin'
+
 
 // On créé une instance de notre serveur avec une configuration
 const server = new Server({
@@ -21,4 +24,6 @@ sequelize.sync().then(() => {
   // Puis on lance le serveur
   server.run()
 })
+
+export default secret
 
