@@ -1,4 +1,5 @@
 import * as express from 'express'
+import * as cors from 'cors'
 import * as path from 'path'
 import * as bodyParser from 'body-parser'
 import * as cookieParser from 'cookie-parser'
@@ -111,6 +112,17 @@ export class Server {
   public useControllersRouting() {
     const router = express.Router()
 
+    const options: cors.CorsOptions = {
+      allowedHeaders: ['Origin', 'X-Requested-With', 'Content-Type', 'Accept', 'X-Access-Token'],
+      credentials: true,
+      methods: 'GET,HEAD,OPTIONS,PUT,PATCH,POST,DELETE',
+      origin: '/',
+      preflightContinue: false,
+    }
+
+    // use cors middleware
+    router.use(cors(options))
+
     // Les différents controllers
     // @todo, possible d'utiliser une boucle ici si on indexe tous nos controllers dans le fichier
     // ./controllers/index.js (ce qui est le cas)
@@ -120,7 +132,9 @@ export class Server {
     ResearchController.connect(router)
     UnitController.connect(router)
 
+    router.options('*', cors(options))
     this.app.use(router)
+
   }
 
   /**
