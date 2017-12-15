@@ -15,6 +15,7 @@ import { ResourcesService } from './resources'
 import { RequirementService } from './requirements'
 import { UserUnitRepository } from '../../objects/models/repositories/UserUnitRepository'
 import { TECH_TREE } from '../../objects/techTree'
+import { PreconditionFailedError } from '../../errors'
 
 
 export class UnitService {
@@ -54,6 +55,7 @@ export class UnitService {
         buildCost.cereal, 
         buildCost.meat,
       )
+      const buildable = await requirementService.hasRequirements(user, unit.id)
       
       let remainingTime = 0
       let totalBuilt = userUnit && userUnit.quantity || 0
@@ -70,6 +72,7 @@ export class UnitService {
       
       return { 
         ...newUnit,
+        buildable,
         remainingTime,
         buildingTime,
         quantity: totalBuilt,
@@ -89,7 +92,7 @@ export class UnitService {
     const requirementService = new RequirementService()
 
     if (!await requirementService.hasRequirements(user, unit.id))
-      throw new Error('Needs some requirements')
+      throw new PreconditionFailedError('Needs some requirements')
 
     const userResources = await resourcesService.getUserResources(user)
     const buildCost = this.constructCostObject(<UnitResource[]> await unit.$get('resources'))
@@ -98,7 +101,7 @@ export class UnitService {
     const quantityToBuild = maxCanBuild < quantity ? maxCanBuild : quantity
 
     if (quantityToBuild === 0)
-      throw new Error('Not enougth resources')
+      throw new PreconditionFailedError('Not enougth resources')
 
     await resourcesService.withdrawResources(user, userResources, buildCost, quantityToBuild)
   

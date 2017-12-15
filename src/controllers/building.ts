@@ -46,6 +46,7 @@ export class BuildingController extends BaseController {
       const user = await User.findOne<User>({ where: { pseudo: 'Jerem' } })
       const requirement = await Requirement.findOne<Requirement>({ where: { id: buildingId } })
       const userRequirement = await urRepository.findOneUserRequirement(user, buildingId)
+      const available = await this.requirementService.hasRequirements(user, buildingId)
 
       const level = userRequirement ? userRequirement.level : 0
       const updatedAt = userRequirement ? userRequirement.updatedAt : 0
@@ -58,8 +59,18 @@ export class BuildingController extends BaseController {
       )
 
       const { id, name, description, type, levelMax } = requirement
-      const building = { id, name, type, description, levelMax, level, updatedAt, cost, buildDuration }
-      this.res.json(building)
+      this.res.json({ 
+        id, 
+        name, 
+        type, 
+        description, 
+        levelMax, 
+        level, 
+        updatedAt, 
+        cost, 
+        buildDuration, 
+        available,
+      })
     } catch (error) {
       next(error)
     }

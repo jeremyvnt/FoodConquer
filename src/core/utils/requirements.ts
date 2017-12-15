@@ -4,6 +4,7 @@ import { UserRequirementRepository } from '../../objects/models/repositories/Use
 import { Model, Sequelize } from 'sequelize-typescript'
 import { buildingTime, researchTime } from './formula'
 import { ResourcesService } from './resources'
+import { PreconditionFailedError } from '../../errors'
 import { TECH_TREE } from '../../objects/techTree'
 
 export class RequirementService {
@@ -56,10 +57,10 @@ export class RequirementService {
 
 
     if (!await this.hasRequirements(user, userRequirement.requirement.id))
-      throw new Error('Needs some requirements')
+      throw new PreconditionFailedError('Needs some requirements')
 
     if (!resourcesService.hasEnoughResources(userResources, cost))
-      throw new Error('Not enougth resources')
+      throw new PreconditionFailedError('Not enougth resources')
 
     await resourcesService.withdrawResources(user, userResources, cost)
 
@@ -95,7 +96,7 @@ export class RequirementService {
     const requirement = await Requirement.findOne<Requirement>({ where: { id: requirementId } })
 
     if (!await this.hasRequirements(user, requirement.id))
-      throw new Error('Needs some requirements')
+      throw new PreconditionFailedError('Needs some requirements')
 
     const resourcesService = new ResourcesService()
     const userResources = await resourcesService.getUserResources(user)
@@ -113,7 +114,7 @@ export class RequirementService {
       )
 
     if (!resourcesService.hasEnoughResources(userResources, cost))
-      throw new Error('Not enougth resources')
+      throw new PreconditionFailedError('Not enougth resources')
 
     await resourcesService.withdrawResources(user, userResources, cost)
 
