@@ -3,6 +3,7 @@ import { User, Requirement, UserRequirement, RequirementResource } from '../mode
 import { UserRequirementRepository } from '../objects/models/repositories/UserRequirementRepository'
 import { ResourcesService } from '../core/utils/resources'
 import { BaseController, Route, NextFunction } from './'
+import { TECH_TREE } from '../objects/techTree'
 
 export class ResearchController extends BaseController {
 
@@ -68,6 +69,7 @@ export class ResearchController extends BaseController {
         updatedAt, 
         cost, 
         researchDuration,
+        requirements: TECH_TREE[researchId],
       })
     } catch (error) {
       next(error)
