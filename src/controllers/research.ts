@@ -3,6 +3,7 @@ import { User, Requirement, UserRequirement, RequirementResource } from '../mode
 import { UserRequirementRepository } from '../objects/models/repositories/UserRequirementRepository'
 import { ResourcesService } from '../core/utils/resources'
 import { BaseController, Route, NextFunction } from './'
+import { TECH_TREE } from '../objects/techTree'
 
 export class ResearchController extends BaseController {
 
@@ -43,6 +44,7 @@ export class ResearchController extends BaseController {
       const user = await User.findOne<User>({ where: { pseudo: 'Jerem' } })
       const requirement = await Requirement.findOne<Requirement>({ where: { id: researchId } })
       const userRequirement = await urRepository.findOneUserRequirement(user, researchId)
+      const available = await this.requirementService.hasRequirements(user, researchId)
 
       const level = userRequirement ? userRequirement.level : 0
       const updatedAt = userRequirement ? userRequirement.updatedAt : 0
@@ -56,8 +58,19 @@ export class ResearchController extends BaseController {
       )
 
       const { id, name, description, type, levelMax } = requirement
-      const research = { id, name, type, description, levelMax, level, updatedAt, cost, researchDuration }
-      this.res.json(research)
+      this.res.json({ 
+        id, 
+        name, 
+        type, 
+        description, 
+        available,
+        levelMax, 
+        level, 
+        updatedAt, 
+        cost, 
+        researchDuration,
+        requirements: TECH_TREE[researchId],
+      })
     } catch (error) {
       next(error)
     }
