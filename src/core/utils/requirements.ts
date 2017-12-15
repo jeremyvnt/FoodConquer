@@ -76,9 +76,9 @@ export class RequirementService {
         'requirements',
         {
           where: {
-            requirementId: entrie[0],
+            requirementId: entrie,
             level: {
-              [Sequelize.Op.gte]: entrie[1],
+              [Sequelize.Op.gte]: requirementsTree[entrie],
             },
           },
         },
