@@ -183,7 +183,9 @@ export class Server {
     res: express.Response,
     next: express.NextFunction,
   ) {
-    res.status(err.status || 500)
+    res.status(err.statusCode || 500)
+    /*if (err.code)
+      res.statusMessage = err.code*/
     res.json({
       error: {
         message: err.message || 'Unknown error',
