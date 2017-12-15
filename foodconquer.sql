@@ -295,7 +295,175 @@ INSERT INTO RequirementResource(requirementId, resource, cost) VALUES ('poisson'
 INSERT INTO RequirementResource(requirementId, resource, cost) VALUES ('poisson', 'money', 0);
 
 #Unit
-INSERT INTO Unit() VALUES (
+INSERT INTO Unit(id, name, description, armor, strength, health, speed, storage, uptake, type) VALUES (
+  'barriere',
+  'Barrière',
+  'Bouclier de défence',
+  2000,
+  0,
+  20000,
+  0,
+  0,
+  0,
+  'DEFENSE'
+);
+#Vigile
+INSERT INTO Unit(id, name, description, health, armor, strength, speed, storage, uptake, type) VALUES (
+  'vigile',
+  'Vigile',
+  'Unité de défense avancée',
+  8000,
+  100,
+  250,
+  0,
+  0,
+  0,
+  'DEFENSE'
+);
+#Chien
+INSERT INTO Unit(id, name, description, health, armor, strength, speed, storage, uptake, type) VALUES (
+  'chien',
+  'Chien',
+  'Unité de défense basique',
+  2000,
+  20,
+  80,
+  0,
+  0,
+  0,
+  'DEFENSE'
+);
+#Mirador
+INSERT INTO Unit(id, name, description, health, armor, strength, speed, storage, uptake, type) VALUES (
+  'mirador',
+  'Mirador',
+  'Unité de défense expert',
+  8000,
+  500,
+  150,
+  0,
+  0,
+  0,
+  'DEFENSE'
+);
+#Samorai
+INSERT INTO Unit(id, name, description, health, armor, strength, speed, storage, uptake, type) VALUES (
+  'samorai',
+  'Samoraï',
+  'Unité de défense ultime',
+  100000,
+  300,
+  3000,
+  0,
+  0,
+  0,
+  'DEFENSE'
+);
+
+
+#Colomb
+INSERT INTO Unit(id, name, description, health, armor, strength, storage, speed, uptake, type) VALUES (
+  'colomb',
+  'Colomb',
+  'Unité de colonisation',
+  30000,
+  100,
+  50,
+  7500,
+  2500,
+  1000,
+  'ATTACK'
+);
+#Espion
+INSERT INTO Unit(id, name, description, health, armor, strength, storage, speed, uptake, type) VALUES (
+  'espion',
+  'Espion',
+  'Unité d''espionnage',
+  1000,
+  0,
+  0,
+  5,
+  100000000,
+  1,
+  'ATTACK'
+);
+#Chinois
+INSERT INTO Unit(id, name, description, health, armor, strength, storage, speed, uptake, type) VALUES (
+  'chinois',
+  'Chinois',
+  'Unité offensive',
+  10000,
+  25,
+  150,
+  100,
+  10000,
+  75,
+  'ATTACK'
+);
+#Japonais
+INSERT INTO Unit(id, name, description, health, armor, strength, storage, speed, uptake, type) VALUES (
+  'japonais',
+  'Japonais',
+  'Unité offensive avancée',
+  60000,
+  200,
+  1000,
+  1500,
+  10000,
+  500,
+  'ATTACK'
+);
+#Ricain
+INSERT INTO Unit(id, name, description, health, armor, strength, storage, speed, uptake, type) VALUES (
+  'ricain',
+  'Ricain',
+  'Unité offensive basique',
+  4000,
+  10,
+  50,
+  50,
+  12500,
+  20,
+  'ATTACK'
+);
+#Sumo
+INSERT INTO Unit(id, name, description, health, armor, strength, storage, speed, uptake, type) VALUES (
+  'sumo',
+  'Sumo',
+  'Unité offensive ultime #TMORT',
+  9000000,
+  50000,
+  200000,
+  1000000,
+  100,
+  1,
+  'ATTACK'
+);
+#Trafic
+INSERT INTO Unit(id, name, description, health, armor, strength, storage, speed, uptake, type) VALUES (
+  'trafic',
+  'Trafic',
+  'Unité de collecte',
+  4000,
+  10,
+  5,
+  5000,
+  5000,
+  10,
+  'ATTACK'
+);
+#Transporteur
+INSERT INTO Unit(id, name, description, health, armor, strength, storage, speed, uptake, type) VALUES (
+  'transporteur',
+  'Transporteur',
+  'Unité de collecte avancée',
+  12000,
+  25,
+  5,
+  25000,
+  7500,
+  50,
+  'ATTACK'
 );
 
 #UnitResource
@@ -315,11 +483,11 @@ INSERT INTO UnitResource(unitId, resource, type, cost) VALUES ('chien', 'cereal'
 INSERT INTO UnitResource(unitId, resource, type, cost) VALUES ('chien', 'meat', 0);
 INSERT INTO UnitResource(unitId, resource, type, cost) VALUES ('chien', 'water', 0);
 INSERT INTO UnitResource(unitId, resource, type, cost) VALUES ('chien', 'money', 0);
-###Camera
-INSERT INTO UnitResource(unitId, resource, type, cost) VALUES ('camera', 'cereal', 2000);
-INSERT INTO UnitResource(unitId, resource, type, cost) VALUES ('camera', 'meat', 6000);
-INSERT INTO UnitResource(unitId, resource, type, cost) VALUES ('camera', 'water', 0);
-INSERT INTO UnitResource(unitId, resource, type, cost) VALUES ('camera', 'money', 0);
+###Mirador
+INSERT INTO UnitResource(unitId, resource, type, cost) VALUES ('mirador', 'cereal', 2000);
+INSERT INTO UnitResource(unitId, resource, type, cost) VALUES ('mirador', 'meat', 6000);
+INSERT INTO UnitResource(unitId, resource, type, cost) VALUES ('mirador', 'water', 0);
+INSERT INTO UnitResource(unitId, resource, type, cost) VALUES ('mirador', 'money', 0);
 ###Samoraï
 INSERT INTO UnitResource(unitId, resource, type, cost) VALUES ('samorai', 'cereal', 50000);
 INSERT INTO UnitResource(unitId, resource, type, cost) VALUES ('samorai', 'meat', 50000);
