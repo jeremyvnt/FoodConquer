@@ -9,7 +9,7 @@ import methodOverride = require('method-override')
 import * as passport from 'passport'
 import { Strategy as JwtStrategy, ExtractJwt } from 'passport-jwt'
 import { Strategy as LocalStrategy } from 'passport-local'
-import secret from './boot'
+import { secret } from './boot'
 import { UserService } from './core/utils/user'
 import { User } from './models'
 
@@ -150,10 +150,10 @@ export class Server {
           return done(error)
         })
     }))
-
+    
     const jwtOptions = {
       // Telling Passport to check authorization headers for JWT
-      jwtFromRequest: ExtractJwt.fromAuthHeader(),
+      jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
       // Telling Passport where to find the secret
       secretOrKey: secret,
     }

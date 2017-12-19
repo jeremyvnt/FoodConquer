@@ -11,7 +11,7 @@ const sequelize = new Sequelize({
   modelPaths: [__dirname + '/objects/models'],
 })
 
-const secret = 'foodConquerForTheWin'
+export const secret = 'foodConquerForTheWin'
 
 
 // On créé une instance de notre serveur avec une configuration
@@ -25,5 +25,4 @@ sequelize.sync().then(() => {
   server.run()
 })
 
-export default secret
 

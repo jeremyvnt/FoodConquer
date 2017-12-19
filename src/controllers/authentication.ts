@@ -2,7 +2,7 @@ import { BaseController, Route, NextFunction } from './'
 import { User } from '../models'
 import * as jwt from 'jsonwebtoken'
 import secret from '../boot'
-crypto = require('crypto')
+import crypto from 'crypto'
 
 export class AuthenticationController extends BaseController {
   static routes: Route[] = [
