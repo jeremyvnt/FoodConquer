@@ -1,5 +1,6 @@
 import { RequirementService } from './../core/utils/requirements'
 import { UserResource } from './../objects/models/UserResource'
+import { UserRequirementRepository } from './../objects/models/repositories/UserRequirementRepository'
 import { ResourcesService } from './../core/utils/resources'
 import { TECH_TREE } from '../objects/techTree'
 import { Request, RequestHandler, Response, NextFunction, Router, IRouterMatcher } from 'express'
@@ -197,7 +198,7 @@ export abstract class BaseController {
  */
   async getRequirementList(next: NextFunction, requirementType: string) {
     // Get current user (grâce à Passport)
-    const user = await User.findOne<User>({ where: { pseudo: 'Jerem' } })
+    const user = this.req.user
     const userRequirements = <UserRequirement[]>await user.$get('requirements', {
       include: [{
         model: Requirement,
@@ -225,10 +226,12 @@ export abstract class BaseController {
         requirements: TECH_TREE[building.id],
       }
     })
+    const inProgress = await this.requirementService.getRequirementInProgress(user, requirementType)
 
     const result = {
       resources: userResources,
       requirements,
+      inProgress,
     }
 
     return result

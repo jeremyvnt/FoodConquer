@@ -1,3 +1,4 @@
+import { Sequelize } from 'sequelize-typescript'
 import { 
   User,
   Resource,
@@ -38,5 +39,22 @@ export class UserRequirementRepository {
         },
       },
     )
+  }
+
+
+  public async findRequirementInProgress(user: User, type: string) {
+    return await UserRequirement.findOne({
+      where: {
+        updatedAt: {
+          [Sequelize.Op.gt]: new Date().valueOf()
+        },
+      },
+      include : [{
+        model: Requirement,
+        where: {
+          type,
+        },
+      }],
+    })
   }
 }

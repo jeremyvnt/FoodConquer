@@ -41,7 +41,7 @@ export class BuildingController extends BaseController {
   public async details(next: NextFunction) {
     const urRepository = new UserRequirementRepository()
     const buildingId = this.req.params.buildingId
-    const user = await User.findOne<User>({ where: { pseudo: 'Jerem' } })
+    const user = this.req.user
     const requirement = await Requirement.findOne<Requirement>({ where: { id: buildingId } })
     const userRequirement = await urRepository.findOneUserRequirement(user, buildingId)
 
@@ -70,7 +70,7 @@ export class BuildingController extends BaseController {
     const urRepository = new UserRequirementRepository()
     const requirementIdentifier = this.req.params.buildingId
 
-    const user = await User.findOne<User>({ where: { pseudo: 'Jerem' } })
+    const user = this.req.user
     const userRequirement = await urRepository.findOneUserRequirement(user, requirementIdentifier)
 
     try {

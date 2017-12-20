@@ -137,4 +137,16 @@ export class RequirementService {
       laboratoireLevel,
     )
   }
+
+  public async getRequirementInProgress(user: User, requirementType: string) {
+    const inProgress = await this.urRepository.findRequirementInProgress(user, requirementType)
+
+    if (inProgress)
+      return { 
+        requirementId: inProgress.requirementId, 
+        updatedAt: inProgress.updatedAt 
+      }
+    else
+      return {}
+  }
 }

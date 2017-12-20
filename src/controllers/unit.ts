@@ -21,14 +21,10 @@ export class UnitController extends BaseController {
 	 * @memberof UnitController
 	 */
   public async index(next: NextFunction) {
-    try {
-      const user = await User.findOne<User>({ where: { pseudo: 'Jerem' } })
+      const user = this.req.user
       const resources = await this.resourcesService.getUserResources(user)
       const units = await this.unitService.getUnits(user)
-      this.res.json({ resources, units })
-    } catch (error) {
-      next(error)
-    }
+      return { resources, units }
   }
 
   /**
@@ -41,14 +37,11 @@ export class UnitController extends BaseController {
     const unitId = this.req.params.unitId
     const quantity = this.req.body.quantity
 
-    const user = await User.findOne<User>({ where: { pseudo: 'Jerem' } })
-    const unit = await Unit.findOne<Unit>({ where: { id: unitId } })
-    try {
-      await this.unitService.createUnits(user, unit, quantity)
-      this.res.redirect(200, UnitController.basePath)
-    } catch (error) {
-      next(error)
-    }
+    const user = this.req.user
+    const unit = this.req.user
+    
+    await this.unitService.createUnits(user, unit, quantity)
+    return {result: 'ok'}
   }
 }
 

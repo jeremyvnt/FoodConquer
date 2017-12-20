@@ -117,8 +117,8 @@ export class UnitService {
       userUnit = new UserUnit()
       userUnit.set('quantity', quantityToBuild)
       userUnit.set('updatedAt', new Date().valueOf() + buildingTime * 3600000)
-      userUnit.$set('user', user)
-      userUnit.$set('unit', unit)
+      userUnit.set('userId', user.id)
+      userUnit.set('unitId', unit.id)
     } else {
       userUnit.set('quantity', userUnit.quantity + quantityToBuild)
       if (userUnit.updatedAt > new Date().valueOf())

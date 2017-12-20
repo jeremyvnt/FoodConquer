@@ -1,3 +1,4 @@
+import { Sequelize } from 'sequelize-typescript'
 import { 
   User,
   UserUnit,
