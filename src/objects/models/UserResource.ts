@@ -2,12 +2,21 @@ import { Resource } from './Resource'
 import { Resources } from './../resource'
 import { User } from './User'
 import {
-  Table,Column, Model, CreatedAt, UpdatedAt, DataType, PrimaryKey, ForeignKey, AutoIncrement,
+  Table,
+  Column,
+  Model,
+  CreatedAt,
+  UpdatedAt,
+  DataType,
+  PrimaryKey,
+  ForeignKey,
+  AutoIncrement,
+  BelongsTo,
 } from 'sequelize-typescript'
 
 
 @Table
-export class UserResource extends Model<UserResource> {    
+export class UserResource extends Model<UserResource> {
   @PrimaryKey
   @ForeignKey(() => Resource)
   @Column({
@@ -24,6 +33,10 @@ export class UserResource extends Model<UserResource> {
   @ForeignKey(() => User)
   @Column({ type: DataType.BIGINT })
   userId: number
+
+  @BelongsTo(() => User)
+  user: User
+
 
   @Column
   quantity: number

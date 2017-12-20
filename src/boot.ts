@@ -6,7 +6,7 @@ const sequelize = new Sequelize({
   database: 'foodconquer',
   dialect: 'mysql',
   username: 'root',
-  password: '',
+  password: 'root',
   host: 'localhost',
   modelPaths: [__dirname + '/objects/models'],
 })

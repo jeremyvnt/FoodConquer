@@ -11,6 +11,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "@types/bcrypt": "^1.0.0",
     "@types/bcrypt-nodejs": "0.0.30",
     "@types/body-parser": "^1.16.6",
     "@types/cookie-parser": "^1.4.1",
@@ -22,6 +23,7 @@
     "@types/passport": "^0.4.1",
     "@types/passport-jwt": "^3.0.0",
     "@types/passport-local": "^1.0.32",
+    "bcrypt": "^1.0.3",
     "bcrypt-nodejs": "0.0.3",
     "body-parser": "^1.18.2",
     "cookie-parser": "^1.4.3",
