@@ -23,20 +23,19 @@ export class AuthenticationController extends BaseController {
 
   private setUserInfo(user: any) {
     return {
-      id: user.id,
       pseudo: user.pseudo,
       password: user.password,
       email: user.email,
     }
   }
 
-  public login(next: NextFunction) {
+  public async login(next: NextFunction) {
 
     const userInfo = this.setUserInfo(this.req.user)
 
-    this.res.status(200).json({
+    return ({
       token: 'JWT ' + this.generateToken(userInfo),
-      user: this.req.user,
+      user: userInfo,
     })
   }
 
@@ -49,18 +48,18 @@ export class AuthenticationController extends BaseController {
 
     if (!email)
       throw new UnprocessableEntityError('Vous devez entrer votre adresse mail.')
-   
-    if (!pseudo) 
+
+    if (!pseudo)
       throw new UnprocessableEntityError('Vouz devez fournir un pseudo.')
-    
-    if (!password) 
+
+    if (!password)
       throw new UnprocessableEntityError('Vous devez entrer votre mot de passe.')
 
 
     const existingUser = await User.findOne({ where: { email } })
-    if (existingUser) 
+    if (existingUser)
       throw new UnprocessableEntityError('Cet email est déja utilisé.')
-      
+
 
     // If email is unique and password was provided, create account
     const user = await userService.createUser(pseudo, password, email)
@@ -69,7 +68,7 @@ export class AuthenticationController extends BaseController {
     return {
       token: 'JWT ' + this.generateToken(userInfo),
       user: userInfo,
-    }        
+    }
   }
 }
 

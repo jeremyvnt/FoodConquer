@@ -154,14 +154,14 @@ export class Server {
 
     const jwtOptions = {
       // Telling Passport to check authorization headers for JWT
-      jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
+      jwtFromRequest: ExtractJwt.fromAuthHeaderWithScheme('JWT'),
       // Telling Passport where to find the secret
       secretOrKey: secret,
     }
 
     // Setting up JWT login strategy
     const jwtLogin = new JwtStrategy(jwtOptions, ((payload: any, done: any) => {
-      User.findById(payload._id)
+      User.findOne({ where: { email: payload.email } })
         .then((user: User) => {
           if (user) {
             done(null, user)
@@ -184,7 +184,7 @@ export class Server {
    * @memberof Server
    */
   public useControllersRouting() {
-    const router = express.Router()
+    const router = express.Router({ mergeParams: true })
 
     // CORS configuration
     const options: cors.CorsOptions = {
@@ -201,12 +201,15 @@ export class Server {
     // ./controllers/index.js (ce qui est le cas)
     // Cela éviterait de devoir tous les lister ici.
 
-    AuthenticationController.connect(router)
-    PassportController.connect(router)
-    TestController.connect(router)
-    BuildingController.connect(router)
-    ResearchController.connect(router)
-    UnitController.connect(router)
+    const requireAuth = passport.authenticate('jwt', { session: false })
+    const requireLogin = passport.authenticate('local', { session: false })
+
+    AuthenticationController.connect(router, requireLogin)
+    PassportController.connect(router, requireAuth)
+    TestController.connect(router, requireAuth)
+    BuildingController.connect(router, requireAuth)
+    ResearchController.connect(router, requireAuth)
+    UnitController.connect(router, requireAuth)
 
     router.options('*', cors(options))
     this.app.use(router)

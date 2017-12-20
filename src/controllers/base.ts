@@ -2,7 +2,7 @@ import { RequirementService } from './../core/utils/requirements'
 import { UserResource } from './../objects/models/UserResource'
 import { ResourcesService } from './../core/utils/resources'
 import { TECH_TREE } from '../objects/techTree'
-import { Request, Response, NextFunction, Router, IRouterMatcher } from 'express'
+import { Request, RequestHandler, Response, NextFunction, Router, IRouterMatcher } from 'express'
 import * as passport from 'passport'
 export { NextFunction }
 
@@ -139,7 +139,7 @@ export abstract class BaseController {
    * @param {Router} router 
    * @memberof BaseController
    */
-  static connect(router: Router): void {
+  static connect(router: Router, handler?: RequestHandler): void {
     for (const idx in this.routes) {
       const route = this.routes[idx]
 
@@ -169,7 +169,7 @@ export abstract class BaseController {
       // Cette astuce nous permet de conserver le typage sur la méthode à utiliser
       //
       // Enfin, on appelle cette méthode avec le path, et la méthode de callback.
-      (<IRouterMatcher<Router>>(<any>router)[verb])(path, (
+      (<IRouterMatcher<Router>>(<any>router)[verb])(path, handler, (
         req: Request,
         res: Response,
         next: NextFunction,
@@ -182,7 +182,7 @@ export abstract class BaseController {
         const childController = new (<any>this)(req, res)
 
         // On appelle la bonne action dans le controller enfant
-        childController[route.action]().then((data: any) => res.json(data)).catch((err: any) => next(err))
+        childController[route.action](next).then((data: any) => res.json(data)).catch((err: any) => next(err))
       })
 
     }

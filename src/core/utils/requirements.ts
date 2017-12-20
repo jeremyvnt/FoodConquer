@@ -17,7 +17,7 @@ export class RequirementService {
 
   public async getBuildingTime(user: User, cerealCost: number = 0, meatCost: number = 0) {
 
-    const portugaisLevel = await this.urRepository.getUserRequirementLevel(user, 'portugais')    
+    const portugaisLevel = await this.urRepository.getUserRequirementLevel(user, 'portugais')
     const artisantLevel = await this.urRepository.getUserRequirementLevel(user, 'artisant')
 
     return buildingTime(
@@ -37,20 +37,20 @@ export class RequirementService {
     const resourcesService = new ResourcesService()
     const userResources = await resourcesService.getUserResources(user)
     const cost = await resourcesService.getUpgradeCost(
-      user, 
-      userRequirement.requirement, 
+      user,
+      userRequirement.requirement,
       userRequirement.level,
     )
 
-    const buildingTime = userRequirement.requirement.type === 'BUILDING' ? 
+    const buildingTime = userRequirement.requirement.type === 'BUILDING' ?
       await this.getBuildingTime(
-        user, 
-        cost[Resources.CEREAL], 
+        user,
+        cost[Resources.CEREAL],
         cost[Resources.MEAT],
       ) :
       await this.getResearchTime(
-        user, 
-        cost[Resources.CEREAL], 
+        user,
+        cost[Resources.CEREAL],
         cost[Resources.MEAT],
       )
 
@@ -122,10 +122,9 @@ export class RequirementService {
 
     newUserRequirement.set('level', 1)
     newUserRequirement.set('updatedAt', new Date().valueOf() + buildingTime * 3600000)
+    newUserRequirement.set('requirementId', requirement.id)
+    newUserRequirement.set('userId', user.id)
     newUserRequirement.save()
-    newUserRequirement.$set('requirement', requirement)
-    newUserRequirement.$set('user', user)
-
   }
 
 
@@ -138,6 +137,4 @@ export class RequirementService {
       laboratoireLevel,
     )
   }
-
-
 }

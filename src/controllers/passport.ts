@@ -10,8 +10,8 @@ export class PassportController extends BaseController {
   public access(next: NextFunction) {
     if (!this.req.user)
       next(new UnauthorizedError())
-    
-    next()
+
+    return next('route')
   }
 }
 
