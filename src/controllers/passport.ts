@@ -11,7 +11,7 @@ export class PassportController extends BaseController {
     if (!this.req.user)
       next(new UnauthorizedError())
 
-    return next('route')
+    return next()
   }
 }
 

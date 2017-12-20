@@ -6,12 +6,11 @@ import crypto from 'crypto'
 import { UnprocessableEntityError } from '../errors'
 import { UserService } from '../core/utils/user'
 
-export class AuthenticationController extends BaseController {
+export class RegisterController extends BaseController {
 
   static basePath = '/auth'
 
   static routes: Route[] = [
-    { verb: 'post', path: '/login', action: 'login' },
     { verb: 'post', path: '/register', action: 'register' },
   ]
 
@@ -27,16 +26,6 @@ export class AuthenticationController extends BaseController {
       password: user.password,
       email: user.email,
     }
-  }
-
-  public async login(next: NextFunction) {
-
-    const userInfo = this.setUserInfo(this.req.user)
-
-    return ({
-      token: 'JWT ' + this.generateToken(userInfo),
-      user: userInfo,
-    })
   }
 
   public async register(next: NextFunction) {

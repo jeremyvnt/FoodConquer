@@ -16,12 +16,15 @@ import { User } from './models'
 const localOptions = { usernameField: 'email' }
 const userService = new UserService()
 
+
+import { UnauthorizedError } from './errors'
 import {
   TestController,
   BuildingController,
   ResearchController,
   UnitController,
-  AuthenticationController,
+  LoginController,
+  RegisterController,
   PassportController,
 } from './controllers'
 
@@ -204,8 +207,12 @@ export class Server {
     const requireAuth = passport.authenticate('jwt', { session: false })
     const requireLogin = passport.authenticate('local', { session: false })
 
-    AuthenticationController.connect(router, requireLogin)
-    PassportController.connect(router, requireAuth)
+
+    // this.app.use(this.accessMiddleware)
+
+    RegisterController.connect(router, (res, req, next) => { next() })
+    LoginController.connect(router, requireLogin)
+    // PassportController.connect(router, requireAuth)
     TestController.connect(router, requireAuth)
     BuildingController.connect(router, requireAuth)
     ResearchController.connect(router, requireAuth)
