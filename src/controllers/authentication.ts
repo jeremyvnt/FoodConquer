@@ -1,10 +1,15 @@
 import { BaseController, Route, NextFunction } from './'
 import { User } from '../models'
 import * as jwt from 'jsonwebtoken'
-import secret from '../boot'
+import { secret } from '../boot'
 import crypto from 'crypto'
+import { UnprocessableEntityError } from '../errors'
+import { UserService } from '../core/utils/user'
 
 export class AuthenticationController extends BaseController {
+
+  static basePath = '/auth'
+
   static routes: Route[] = [
     { verb: 'post', path: '/login', action: 'login' },
     { verb: 'post', path: '/register', action: 'register' },
@@ -35,57 +40,36 @@ export class AuthenticationController extends BaseController {
     })
   }
 
-  public register(next: NextFunction) {
+  public async register(next: NextFunction) {
     const email: string = this.req.body.email
-    const pseudo: string = this.req.body.firstName
+    const pseudo: string = this.req.body.pseudo
     const password: string = this.req.body.password
 
-    // Return error if no email provided
-    if (!email) {
-      return this.res.status(422).send({ error: 'You must enter an email address.' })
-    }
+    const userService = new UserService()
 
-    // Return error if full name not provided
-    if (!pseudo) {
-      return this.res.status(422).send({ error: 'You must enter your pseudo.' })
-    }
+    if (!email)
+      throw new UnprocessableEntityError('Vous devez entrer votre adresse mail.')
+   
+    if (!pseudo) 
+      throw new UnprocessableEntityError('Vouz devez fournir un pseudo.')
+    
+    if (!password) 
+      throw new UnprocessableEntityError('Vous devez entrer votre mot de passe.')
 
-    // Return error if no password provided
-    if (!password) {
-      return this.res.status(422).send({ error: 'You must enter a password.' })
-    }
 
-    User.findOne({ where: { email } }).then((existingUser: User) => {
-      // If user is not unique, return error
-      if (existingUser) {
-        return this.res.status(422).send({ error: 'That email address is already in use.' })
-      }
+    const existingUser = await User.findOne({ where: { email } })
+    if (existingUser) 
+      throw new UnprocessableEntityError('Cet email est déja utilisé.')
+      
 
-      // If email is unique and password was provided, create account
-      const user = new User()
-      user.set('email', email)
-      user.set('password', password)
-      user.set('pseudo', pseudo)
-      user.save().then((user) => {
-        // Subscribe member to Mailchimp list
-        // mailchimp.subscribeToNewsletter(user.email);
+    // If email is unique and password was provided, create account
+    const user = await userService.createUser(pseudo, password, email)
+    const userInfo = this.setUserInfo(user)
 
-        // Respond with JWT if user was created
-
-        const userInfo = this.setUserInfo(user)
-
-        this.res.status(201).json({
-          token: 'JWT ' + this.generateToken(userInfo),
-          user: userInfo,
-        })
-      })
-        .catch((error) => {
-          return next(error)
-        })
-    })
-      .catch((error) => {
-        return next(error)
-      })
+    return {
+      token: 'JWT ' + this.generateToken(userInfo),
+      user: userInfo,
+    }        
   }
 }
 

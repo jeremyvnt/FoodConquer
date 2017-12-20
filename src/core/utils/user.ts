@@ -1,5 +1,5 @@
 import { User, UserResource, Resource } from '../../models'
-import bcrypt from 'bcrypt-nodejs'
+import * as bcrypt from 'bcrypt-nodejs'
 
 export class UserService {
 
@@ -49,6 +49,8 @@ export class UserService {
     userMoneyResource.set('resource', 'money')
     userMoneyResource.$set('user', newUser)
     userMoneyResource.save()
+
+    return newUser
   }
 
   public comparePassword(user: User, actualPassword: string, callback: any) {

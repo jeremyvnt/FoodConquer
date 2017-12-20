@@ -22,7 +22,8 @@ import {
   ResearchController,
   UnitController,
   AuthenticationController,
-} from './controllers/index'
+  PassportController,
+} from './controllers'
 
 /**
  * Les options de lancement du serveur
@@ -150,7 +151,7 @@ export class Server {
           return done(error)
         })
     }))
-    
+
     const jwtOptions = {
       // Telling Passport to check authorization headers for JWT
       jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
@@ -201,14 +202,7 @@ export class Server {
     // Cela éviterait de devoir tous les lister ici.
 
     AuthenticationController.connect(router)
-
-    this.app.use((req, res) => {
-      if (!req.user) {
-        res.redirect('/login')
-      }
-    })
-
-    AuthenticationController.connect(router)
+    PassportController.connect(router)
     TestController.connect(router)
     BuildingController.connect(router)
     ResearchController.connect(router)
