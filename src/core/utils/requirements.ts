@@ -147,6 +147,6 @@ export class RequirementService {
         updatedAt: inProgress.updatedAt 
       }
     else
-      return {}
+      return null
   }
 }
