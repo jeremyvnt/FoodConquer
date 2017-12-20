@@ -53,8 +53,10 @@ export class RegisterController extends BaseController {
     // If email is unique and password was provided, create account
     const user = await userService.createUser(pseudo, password, email)
     const userInfo = this.setUserInfo(user)
+    const resources = await this.resourcesService.getUserResources(user)
 
     return {
+      resources,
       token: 'JWT ' + this.generateToken(userInfo),
       user: userInfo,
     }

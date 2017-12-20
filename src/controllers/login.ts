@@ -31,8 +31,10 @@ export class LoginController extends BaseController {
   public async login(next: NextFunction) {
 
     const userInfo = this.setUserInfo(this.req.user)
+    const resources = await this.resourcesService.getUserResources(this.req.user)
 
     return ({
+      resources,
       token: 'JWT ' + this.generateToken(userInfo),
       user: userInfo,
     })
