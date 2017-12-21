@@ -100,19 +100,14 @@ export class ResourcesService {
       else if (userRequirement && userRequirement.updatedAt <= new Date().valueOf())
         userRequirementLevel = userRequirement.level
 
-      quantity = this.calculUserResource(user, userResource, userRequirement)
+      quantity = await this.calculUserResource(user, userResource, userRequirement)
 
 
       production = baseProduction(userResource.resource, userRequirementLevel)
 
-      if (userResource.resource === Resources.MONEY.toString()) {
+      if (userResource.resource === Resources.MONEY.toString())
         quantity -= totalMoneyUptake
-      } else {
-        max = <number>await this.getStockageMaxResources(user, userResource)
-        if (quantity > max)
-          quantity = max
-      }
-
+      
       const resource = {
         quantity,
         production,
@@ -125,13 +120,13 @@ export class ResourcesService {
     return resources
   }
 
-  private calculUserResource(user: User,
+  private async calculUserResource(user: User,
                              userResource: UserResource,
-                             userRequirement?: UserRequirement): number {
+                             userRequirement?: UserRequirement) {
 
     let quantity: number
     if (userResource.resource !== Resources.MONEY.toString()) {
-      quantity = this.calculUserBaseResource(user, userResource, userRequirement)
+      quantity = await this.calculUserBaseResource(user, userResource, userRequirement)
     } else {
       quantity = this.calculUserSpecialResource(userResource, userRequirement)
     }
@@ -139,29 +134,39 @@ export class ResourcesService {
     return Math.round(quantity)
   }
 
-  private calculUserBaseResource(user: User,
+  private async calculUserBaseResource(user: User,
                                  userResource: UserResource,
-                                 userRequirement?: UserRequirement): number {
+                                 userRequirement?: UserRequirement) {
 
     const resource = userResource.resource
     let quantity = userResource.quantity
+    const max = await this.getStockageMaxResources(user, userResource)
+    let production = 0
+    let finalQuantity = 0
 
     if (userRequirement && userRequirement.updatedAt > new Date().valueOf()) {
-      quantity += ((new Date().valueOf() - userResource.updatedAt) / 3600000) *
+      production = ((new Date().valueOf() - userResource.updatedAt) / 3600000) *
         baseProduction(resource, userRequirement.level - 1)
     } else {
       if (userRequirement && userResource.updatedAt < userRequirement.updatedAt) {
-        quantity += ((new Date().valueOf() - userRequirement.updatedAt) / 3600000) *
+        production = ((new Date().valueOf() - userRequirement.updatedAt) / 3600000) *
           baseProduction(resource, userRequirement.level)
           + ((userRequirement.updatedAt - userResource.updatedAt) / 3600000) *
           baseProduction(resource, userRequirement.level - 1)
       } else {
-        quantity += ((new Date().valueOf() - userResource.updatedAt) / 3600000) *
+        production = ((new Date().valueOf() - userResource.updatedAt) / 3600000) *
           baseProduction(resource, userRequirement ? userRequirement.level : 0)
       }
     }
 
-    return quantity
+    if (quantity + production < max)
+      finalQuantity = quantity + production
+    else if (quantity > max)
+      finalQuantity = quantity
+    else if (quantity < max && quantity + production > max)
+      finalQuantity = max
+
+    return finalQuantity
   }
 
   private calculUserSpecialResource(userResource: UserResource,
