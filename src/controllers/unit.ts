@@ -24,7 +24,8 @@ export class UnitController extends BaseController {
       const user = this.req.user
       const resources = await this.resourcesService.getUserResources(user)
       const units = await this.unitService.getUnits(user)
-      return { resources, units }
+      const progressList = await this.unitService.getProgressList(user)
+      return { resources, units, progressList }
   }
 
   /**
@@ -38,7 +39,7 @@ export class UnitController extends BaseController {
     const quantity = this.req.body.quantity
 
     const user = this.req.user
-    const unit = await Unit.findOne(unitId)
+    const unit = await Unit.findById(unitId)
     
     await this.unitService.createUnits(user, unit, quantity)
     return {result: 'ok'}

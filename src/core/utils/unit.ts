@@ -137,4 +137,28 @@ export class UnitService {
     })
     return cost
   }
+
+  public async getProgressList(user: User) {
+    const requirementService = new RequirementService()
+    const list = await this.uuRepository.findProgressUnits(user)
+
+    const customList = await Promise.all(list.map(async (userUnit) => {
+      
+      const buildCost = this.constructCostObject(userUnit.unit.resources)
+      const buildingTime = await requirementService.getBuildingTime(
+        user, 
+        buildCost.cereal, 
+        buildCost.meat,
+      )
+      const remainingTime = (userUnit.updatedAt - new Date().valueOf()) / 3600000
+      const totalBuilt = Math.floor((userUnit.quantity * buildingTime - remainingTime) / buildingTime)
+      const remainingToBuild = userUnit.quantity - totalBuilt
+      return {
+        remainingTime,
+        remainingToBuild,
+        id: userUnit.unitId,
+      }
+    }))
+    return customList
+  }
 }

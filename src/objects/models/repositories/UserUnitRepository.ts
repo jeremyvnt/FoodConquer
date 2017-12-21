@@ -3,6 +3,7 @@ import {
   User,
   UserUnit,
   Unit,
+  Resource,
 } from '../../../models'
 
 export class UserUnitRepository {
@@ -21,4 +22,24 @@ export class UserUnitRepository {
     )
     return ur.length ? ur[0] : null
   }  
+
+
+  public async findProgressUnits(user: User) {
+    return <UserUnit[]> await user.$get(
+      'units',
+      {
+        where: {
+          updatedAt: {
+            [Sequelize.Op.gte]: new Date().valueOf(),
+          }
+        },
+        include: [{
+          model: Unit,
+          include: [{
+            model: Resource,
+          }],
+        }],
+      },
+    )
+  }
 }
