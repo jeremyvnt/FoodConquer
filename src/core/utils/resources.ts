@@ -105,9 +105,12 @@ export class ResourcesService {
 
       production = baseProduction(userResource.resource, userRequirementLevel)
 
-      if (userResource.resource === Resources.MONEY.toString())
+      if (userResource.resource === Resources.MONEY.toString()) {
         quantity -= totalMoneyUptake
-      
+      } else {
+        max = await this.getStockageMaxResources(user, userResource)
+      }
+
       const resource = {
         quantity,
         production,
