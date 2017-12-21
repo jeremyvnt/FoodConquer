@@ -3,7 +3,7 @@ import {
   User,
   UserUnit,
   Unit,
-  Resource,
+  UnitResource,
 } from '../../../models'
 
 export class UserUnitRepository {
@@ -36,7 +36,7 @@ export class UserUnitRepository {
         include: [{
           model: Unit,
           include: [{
-            model: Resource,
+            model: UnitResource,
           }],
         }],
       },
