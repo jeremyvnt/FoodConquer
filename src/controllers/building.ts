@@ -24,12 +24,7 @@ export class BuildingController extends BaseController {
 	 * @memberof BuildingController
 	 */
   public async index(next: NextFunction) {
-    try {
-      const result = await this.getRequirementList(next, this.requirementType)
-      this.res.json(result)
-    } catch (error) {
-      next(error)
-    }
+    return await this.getRequirementList(next, this.requirementType)
   }
 
 	/**
@@ -54,10 +49,21 @@ export class BuildingController extends BaseController {
       cost[Resources.CEREAL],
       cost[Resources.MEAT],
     )
+    const available = await this.requirementService.hasRequirements(user, buildingId)
 
     const { id, name, description, type, levelMax } = requirement
-    const building = { id, name, type, description, levelMax, level, updatedAt, cost, buildDuration }
-    return building
+    return { 
+      id, 
+      name, 
+      type, 
+      description, 
+      levelMax, 
+      level, 
+      updatedAt, 
+      cost, 
+      buildDuration,
+      available,
+    }
   }
 
   /**
@@ -72,16 +78,14 @@ export class BuildingController extends BaseController {
 
     const user = this.req.user
     const userRequirement = await urRepository.findOneUserRequirement(user, requirementIdentifier)
-
-    try {
-      if (userRequirement)
-        await this.requirementService.upgradeRequirement(user, userRequirement)
-      else
-        await this.requirementService.createRequirement(user, requirementIdentifier)
-      this.res.redirect(200, BuildingController.basePath)
-    } catch (error) {
-      next(error)
-    }
+  
+    if (userRequirement)
+      await this.requirementService.upgradeRequirement(user, userRequirement)
+    else
+      await this.requirementService.createRequirement(user, requirementIdentifier)
+      
+    return { result: 'ok' }
   }
 }
+
 

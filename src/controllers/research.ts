@@ -23,8 +23,7 @@ export class ResearchController extends BaseController {
 	 * @memberof ResearchController
 	 */
   public async index(next: NextFunction) {
-      const result = await this.getRequirementList(next, this.requirementType)
-      return result
+      return await this.getRequirementList(next, this.requirementType)
   }
 
   /**
