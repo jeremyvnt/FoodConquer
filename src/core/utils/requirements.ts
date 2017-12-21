@@ -71,7 +71,6 @@ export class RequirementService {
 
 
   public async hasRequirements(user: User, objectId: string) {
-    console.log(objectId)
     const requirementsTree = TECH_TREE[objectId]
     for (const entrie in requirementsTree) {
       const userRequirement = <UserRequirement[]>await user.$get(

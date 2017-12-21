@@ -90,8 +90,6 @@ export class UnitService {
 
     const resourcesService = new ResourcesService()
     const requirementService = new RequirementService()
-    const available = await requirementService.hasRequirements(user, unit.id)
-    console.log(available)
 
     if (!await requirementService.hasRequirements(user, unit.id))
       throw new PreconditionFailedError('Needs some requirements')
