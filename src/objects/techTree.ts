@@ -25,7 +25,7 @@ const SAMOURAI_TECH: {[index: string]: number} = {
 }
 
 const COLONISATION_TECH: {[index: string]: number} = { laboratoire: 5 }
-const COLON_TECH: {[index: string]: number} = { colonisation: 1 }
+const COLOMB_TECH: {[index: string]: number} = { colonisation: 1 }
 
 const BAVOIRE_TECH: {[index: string]: number} = { laboratoire: 1 }
 const PROTEINE_TECH: {[index: string]: number} = { bavoire: 4, cuisine: 3 }
@@ -74,7 +74,7 @@ export const TECH_TREE: {[index: string]: {[index: string]: number}}  = {
   vigile: VIGILE_TECH,
   samourai: SAMOURAI_TECH,
   colonisation: COLONISATION_TECH,
-  colon: COLON_TECH,
+  colomb: COLOMB_TECH,
   espion: ESPION_TECH,
   bavoire: BAVOIRE_TECH,
   proteine: PROTEINE_TECH,
