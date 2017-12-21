@@ -38,7 +38,7 @@ export class UnitController extends BaseController {
     const quantity = this.req.body.quantity
 
     const user = this.req.user
-    const unit = this.req.user
+    const unit = await Unit.findOne(unitId)
     
     await this.unitService.createUnits(user, unit, quantity)
     return {result: 'ok'}
