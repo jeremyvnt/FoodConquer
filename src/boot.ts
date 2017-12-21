@@ -5,8 +5,8 @@ import { Sequelize } from 'sequelize-typescript'
 const sequelize = new Sequelize({
   database: 'foodconquer',
   dialect: 'mysql',
-  username: 'root',
-  password: 'root',
+  username: 'pkf',
+  password: 'parkingfacile',
   host: 'localhost',
   modelPaths: [__dirname + '/objects/models'],
 })
