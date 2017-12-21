@@ -144,6 +144,7 @@ export class RequirementService {
     if (inProgress)
       return { 
         requirementId: inProgress.requirementId, 
+        level: inProgress.level,
         updatedAt: inProgress.updatedAt 
       }
     else
